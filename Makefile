@@ -18,7 +18,7 @@ BUILD   = build
 SRC     = src
 KERNEL  = kernel
 COMMON  = common
-INCLUDE = ./include
+INCLUDE = include
 
 # Assemble lists of corresponding source files for assembly, kernel and common
 ASM_FILES  = $(wildcard $(SRC)/$(KERNEL)/*.S)
