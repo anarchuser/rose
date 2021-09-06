@@ -4,58 +4,71 @@
 # Cross-compiler
 ARMGNU ?= aarch64-linux-gnu
 
-# Options for C and Asembly, respectively
-COPS = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only
-ASMOPS = -Iinclude 
+# Options for C, Asembly, and the linker, respectively
+COPS   = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only
+ASMOPS = -Iinclude
+LOPS   = -ffreestanding -nostdlib
+
+# Mount point and boot partition
+MNT = build/mnt
+BOOT_PART = /dev/mmcblk0p1
 
 # Directories for built files, source files (kernel and common) and header files (include)
-BUILD_DIR = build
-SRC_DIR   = src
-KSRC_DIR  = $(SRC_DIR)/kernel
-CSRC_DIR  = $(SRC_DIR)/common
-HEAD_DIR  = include
+BUILD   = build
+SRC     = src
+KERNEL  = kernel
+COMMON  = common
+INCLUDE = ./include
 
 # Assemble lists of corresponding source files for assembly, kernel and common
-ASM_FILES  = $(wildcard $(KSRC_DIR)/*.S)
-KSRC_FILES = $(wildcard $(KSRC_DIR)/*.c)
-CSRC_FILES = $(wildcard $(CSRC_DIR)/*.c)
+ASM_FILES  = $(wildcard $(SRC)/$(KERNEL)/*.S)
+KERNEL_SOURCES = $(wildcard $(SRC)/$(KERNEL)/*.c)
+COMMON_SOURCES = $(wildcard $(SRC)/$(COMMON)/*.c)
 
 # Assemble list of compiled objects, correspondingly
-OBJECTS  = $(patsubst $(KSRC_DIR)/%.S, $(BUILD_DIR)/$(KSRC_DIR)/%_S.o, $(ASM_FILES))
-OBJECTS += $(patsubst $(KSRC_DIR)/%.c, $(BUILD_DIR)/$(KSRC_DIR)/%.o, $(KSRC_FILES))
-OBJECTS += $(patsubst $(CSRC_DIR)/%.c, $(BUILD_DIR)/$(CSRC_DIR)/%.o, $(CSRC_FILES))
-
-# Assemble list of header files
-HEADERS  = $(wildcard $(HEAD_DIR)/*.h)
+OBJECTS  = $(patsubst $(SRC)/$(KERNEL)/%.S, $(BUILD)/$(SRC)/$(KERNEL)/%_S.o, $(ASM_FILES))
+OBJECTS += $(patsubst $(SRC)/$(KERNEL)/%.c, $(BUILD)/$(SRC)/$(KERNEL)/%.o, $(KERNEL_SOURCES))
+OBJECTS += $(patsubst $(CSRC)/%.c, $(BUILD)/$(CSRC)/%.o, $(COMMON_SOURCES))
 
 # Default target (invoked by `make` or `make all`). Produces 'kernel8.img' which can then be booted from
-all: kernel8.img
+all: clean kernel8.img
+
+# Build kernel executable and linkable file where we can extract the kernel from
+kernel8.elf: $(OBJECTS) $(SRC)/linker.ld
+	$(ARMGNU)-ld -T $(SRC)/linker.ld -o $(BUILD)/kernel8.elf $(OBJECTS)
+
+# Build actual kernel image
+kernel8.img: $(SRC)/linker.ld $(OBJECTS) kernel8.elf
+	echo $(OBJECTS)
+	$(ARMGNU)-objcopy $(BUILD)/kernel8.elf -O binary kernel8.img
 
 # All assembly source targets
-$(BUILD_DIR)/$(KSRC_DIR)/%_S.o: $(KSRC_DIR)/%.S
+$(BUILD)/$(SRC)/$(KERNEL)/%_S.o: $(SRC)/$(KERNEL)/%.S
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< -o $@
 
 # All kernel source targets
-$(BUILD_DIR)/$(KSRC_DIR)/%.o: $(KSRC_DIR)/%.c
+$(BUILD)/$(SRC)/$(KERNEL)/%.o: $(SRC)/$(KERNEL)/%.c
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
 
 # All common source targets
-$(BUILD_DIR)/$(CSRC_DIR)/%.o: $(CSRC_DIR)/%.c
+$(BUILD)/$(CSRC)/%.o: $(CSRC)/%.c
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
 
 # Remove kernel and build directory
 clean:
-	rm -rf $(BUILD_DIR) *.img
+	rm -rf $(BUILD) *.img
 
 # Compile lists with the dependencies between objects
 DEP_FILES = $(OBJECTS:%.o=%.d)
 	-include $(DEP_FILES)
 
-# Actual kernel building target
-kernel8.img: $(SRC_DIR)/linker.ld $(OBJECTS)
-	echo $(OBJECTS)
-	$(ARMGNU)-ld -T $(SRC_DIR)/linker.ld -o $(BUILD_DIR)/kernel8.elf  $(OBJECTS)
-	$(ARMGNU)-objcopy $(BUILD_DIR)/kernel8.elf -O binary kernel8.img
+# Mount boot partition of SD card onto set mount point to copy image onto it
+flash: kernel8.img
+	mkdir -p $(MNT)
+	sudo mount $(BOOT_PART) $(MNT)
+	sudo cp kernel8.img $(MNT)
+	sudo umount $(MNT)
+
