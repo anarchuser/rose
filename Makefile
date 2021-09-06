@@ -9,6 +9,10 @@ COPS   = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-o
 ASMOPS = -Iinclude
 LOPS   = -ffreestanding -nostdlib
 
+# Mount point and boot partition
+MNT = build/mnt
+BOOT_PART = /dev/mmcblk0p1
+
 # Directories for built files, source files (kernel and common) and header files (include)
 BUILD   = build
 SRC     = src
@@ -60,3 +64,11 @@ clean:
 # Compile lists with the dependencies between objects
 DEP_FILES = $(OBJECTS:%.o=%.d)
 	-include $(DEP_FILES)
+
+# Mount boot partition of SD card onto set mount point to copy image onto it
+flash: kernel8.img
+	mkdir -p $(MNT)
+	sudo mount $(BOOT_PART) $(MNT)
+	sudo cp kernel8.img $(MNT)
+	sudo umount $(MNT)
+
