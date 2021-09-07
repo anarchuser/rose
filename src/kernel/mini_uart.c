@@ -27,7 +27,8 @@ void uart_send_string(char* str)
 	}
 }
 
-void uart_init(void) {
+void uart_init(void)
+{
   unsigned int selector;
   int target = BAUD_RATE_REG(115200);
 
@@ -52,4 +53,11 @@ void uart_init(void) {
   put32(AUX_MU_BAUD_REG, target);
 
   put32(AUX_MU_CNTL_REG, 3);
+}
+
+
+// This function is required by printf function
+void putc ( void* p, char c)
+{
+    uart_send(c);
 }

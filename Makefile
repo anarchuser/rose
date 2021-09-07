@@ -2,7 +2,7 @@
 # | Merged from https://jsandler18.github.io/ and https://github.com/s-matyukevich/raspberry-pi-os
 
 # Cross-compiler
-ARMGNU ?= aarch64-linux-gnu
+ARMGNU ?= aarch64-none-elf
 
 # Options for C, Asembly, and the linker, respectively
 COPS   = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only
