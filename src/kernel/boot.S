@@ -1,3 +1,5 @@
+#include "kernel/arm/sysregs.h"
+
 #include "kernel/mm.h"
 
 .section ".text.boot"
@@ -13,11 +15,26 @@ proc_hang:
 	b 	proc_hang
 
 master:
+	ldr	x0, =SCTLR_VALUE_MMU_DISABLED
+	msr	sctlr_el1, x0		
+
+	ldr	x0, =HCR_VALUE
+	msr	hcr_el2, x0
+
+	ldr	x0, =SPSR_VALUE
+	msr	spsr_el2, x0
+
+	adr	x0, el1_entry		
+	msr	elr_el2, x0
+
+	eret				
+
+el1_entry:
 	adr	x0, bss_begin
 	adr	x1, bss_end
 	sub	x1, x1, x0
 	bl 	memzero
 
-	mov	sp, #LOW_MEMORY 
+	mov	sp, #LOW_MEMORY
 	bl	kernel_main
 	b 	proc_hang		// should never come here
