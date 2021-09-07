@@ -21,14 +21,16 @@ COMMON  = common
 INCLUDE = include
 
 # Assemble lists of corresponding source files for assembly, kernel and common
-ASM_FILES  = $(wildcard $(SRC)/$(KERNEL)/*.S)
-KERNEL_SOURCES = $(wildcard $(SRC)/$(KERNEL)/*.c)
-COMMON_SOURCES = $(wildcard $(SRC)/$(COMMON)/*.c)
+SRC_KERNEL = $(wildcard $(SRC)/$(KERNEL)/*.c)
+ASM_KERNEL = $(wildcard $(SRC)/$(KERNEL)/*.S)
+SRC_COMMON = $(wildcard $(SRC)/$(COMMON)/*.c)
+ASM_COMMON = $(wildcard $(SRC)/$(COMMON)/*.S)
 
 # Assemble list of compiled objects, correspondingly
-OBJECTS  = $(patsubst $(SRC)/$(KERNEL)/%.S, $(BUILD)/$(SRC)/$(KERNEL)/%_S.o, $(ASM_FILES))
-OBJECTS += $(patsubst $(SRC)/$(KERNEL)/%.c, $(BUILD)/$(SRC)/$(KERNEL)/%.o, $(KERNEL_SOURCES))
-OBJECTS += $(patsubst $(CSRC)/%.c, $(BUILD)/$(CSRC)/%.o, $(COMMON_SOURCES))
+OBJECTS  = $(patsubst $(SRC)/$(KERNEL)/%.c, $(BUILD)/$(SRC)/$(KERNEL)/%_c.o, $(SRC_KERNEL))
+OBJECTS += $(patsubst $(SRC)/$(KERNEL)/%.S, $(BUILD)/$(SRC)/$(KERNEL)/%_S.o, $(ASM_KERNEL))
+OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(SRC_COMMON))
+OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
 # Default target (invoked by `make` or `make build`). Produces 'kernel8.img' which can then be booted from
 build: clean kernel8.img
@@ -42,20 +44,25 @@ kernel8.img: $(SRC)/linker.ld $(OBJECTS) kernel8.elf
 	echo $(OBJECTS)
 	$(ARMGNU)-objcopy $(BUILD)/kernel8.elf -O binary kernel8.img
 
+# All kernel source targets
+$(BUILD)/$(SRC)/$(KERNEL)/%_c.o: $(SRC)/$(KERNEL)/%.c
+	mkdir -p $(@D)
+	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
+
 # All assembly source targets
 $(BUILD)/$(SRC)/$(KERNEL)/%_S.o: $(SRC)/$(KERNEL)/%.S
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< -o $@
 
-# All kernel source targets
-$(BUILD)/$(SRC)/$(KERNEL)/%.o: $(SRC)/$(KERNEL)/%.c
+# All common source targets
+$(BUILD)/$(SRC)/$(COMMON)/%_c.o: $(SRC)/$(COMMON)/%.c
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
 
-# All common source targets
-$(BUILD)/$(CSRC)/%.o: $(CSRC)/%.c
+# All assembly source targets
+$(BUILD)/$(SRC)/$(COMMON)/%_S.o: $(SRC)/$(COMMON)/%.S
 	mkdir -p $(@D)
-	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
+	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< -o $@
 
 # Remove kernel and build directory
 clean:
