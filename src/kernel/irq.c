@@ -57,11 +57,10 @@ void handle_irq(void) {
 	 unsigned int irq = irq_ack_reg & 0x2FF;
 	 switch (irq) {
 	 	 case (SYSTEM_TIMER_IRQ_1):
-	 	 	 handle_timer_irq();
 	 	 	 put32(GICC_EOIR, irq_ack_reg);
-	 	 	 break;
+			 handle_timer_irq();
+			 break;
 	 	 default:
 	 	 	 printf("Unknown pending irq: %x\r\n", irq);
-	 	 	 break;
 	}
 }
