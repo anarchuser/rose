@@ -28,7 +28,7 @@ const char *entry_error_messages[] = {
 };
 
 void enable_interrupt(unsigned int irq) {
-	 printf("%x\r\n", irq);
+	 printf("\nInterrupt pointer%p\r\n", irq);
 	 unsigned int n = irq / 32;
 	 unsigned int offset = irq % 32;
 	 unsigned int enableRegister = GICD_ENABLE_IRQ_BASE + (4*n);
@@ -44,7 +44,7 @@ void assign_target(unsigned int irq, unsigned int cpu) {
 }
 
 void show_invalid_entry_message(int type, unsigned long esr, unsigned long address) {
-	 printf("%s, ESR: %x, address, %x\r\n", entry_error_messages[type], esr, address);
+	 printf("type %s, ESR: %x, address, %x\r\n", entry_error_messages[type], esr, address);
 }
 
 void enable_interrupt_controller() {

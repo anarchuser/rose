@@ -26,7 +26,7 @@
 // SCR_EL3, Secure Configuration Register (EL3), Page 2648 of AArch64-Reference-Manual.
 // ***************************************
 
-#define SCR_RESERVED	    		(3 << 4)
+#define SCR_RESERVED	    	(3 << 4)
 #define SCR_RW				(1 << 10)
 #define SCR_NS				(1 << 0)
 #define SCR_VALUE	    	    	(SCR_RESERVED | SCR_RW | SCR_NS)
@@ -38,5 +38,12 @@
 #define SPSR_MASK_ALL 			(7 << 6)
 #define SPSR_EL1h			(5 << 0)
 #define SPSR_VALUE			(SPSR_MASK_ALL | SPSR_EL1h)
+
+// ***************************************
+// ESR_EL1, Exception Syndrome Register (EL1). Page 2431 of AArch64-Reference-Manual.
+// ***************************************
+
+#define ESR_ELx_EC_SHIFT		26
+#define ESR_ELx_EC_SVC64		0x15
 
 #endif
