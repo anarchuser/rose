@@ -1,7 +1,7 @@
 #ifndef _ROSE_K_P_MINI_UART_H
 #define _ROSE_K_P_MINI_UART_H
 
-#include "base.h"
+#include "kernel/peripherals/base.h"
 
 #define SYSTEM_CLOCK_FREQ              500000000
 #define BAUD_RATE_REG(target_baudrate) ((SYSTEM_CLOCK_FREQ / target_baudrate / 8) - 1)
