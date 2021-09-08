@@ -70,5 +70,6 @@ flash: kernel8.img
 	mkdir -p $(MNT)
 	sudo mount $(BOOT_PART) $(MNT)
 	sudo cp kernel8.img $(MNT)
+	sudo cp $(SRC)/config.txt $(MNT)
 	sudo umount $(MNT)
 
