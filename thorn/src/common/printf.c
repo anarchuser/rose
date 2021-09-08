@@ -200,6 +200,17 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         ui2a (va_arg (va, unsigned int), 16, (ch == 'P'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
+                case 'p': case 'P':
+                    putf(putp, '0');
+                    putf(putp, 'x');
+#ifdef  PRINTF_LONG_SUPPORT
+                    if (lng)
+                        uli2a(va_arg(va, unsigned long int),16,(ch=='P'),bf);
+                    else
+#endif
+                    ui2a(va_arg(va, unsigned int),16,(ch=='P'),bf);
+                    putchw(putp,putf,w,lz,bf);
+                    break;
                 case '%':
                     putf (putp, ch);
                 default:
