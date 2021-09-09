@@ -17,7 +17,6 @@ void call_sys_write(char * buf);
 int call_sys_clone(unsigned long fn, unsigned long arg, unsigned long stack);
 unsigned long call_sys_malloc();
 void call_sys_exit();
-void offset_sys_call_table (unsigned long offset);
 
 #endif
 #endif  /*_SYS_H */

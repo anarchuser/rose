@@ -65,7 +65,6 @@ void kernel_main(void)
 	enable_interrupt_controller();
 	enable_irq();
     task_init();
-    offset_sys_call_table(KERNEL_START);
 
 	int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0, 0);
 	if (res < 0) {

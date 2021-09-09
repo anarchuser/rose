@@ -26,7 +26,3 @@ void sys_exit(){
 }
 
 void * sys_call_table[] = { sys_write, sys_malloc, sys_clone, sys_exit };
-void offset_sys_call_table (unsigned long offset) {
-    for (int i = 0; i < (sizeof(sys_call_table) / sizeof(* sys_call_table)); i++)
-        sys_call_table [i] += offset;
-};
