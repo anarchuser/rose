@@ -80,3 +80,9 @@ flash: kernel8.img
 	sudo cp $(SRC)/config.txt $(MNT)
 	sudo umount $(MNT)
 
+
+# Run on qemu
+run: kernel8.img
+	qemu-img resize kernel8.img -f raw $((2 ** 32))
+	qemu-system-aarch64 -cpu cortex-a72 -machine type=raspi3 -m 1024 -serial stdio -drive file=kernel8.img,format=raw
+
