@@ -1,30 +1,23 @@
-#include "kernel/utils.h"
-#include "kernel/peripherals/mini_uart.h"
+#include "common/utils.h"
+#include "kernel/peripherals/uart.h"
 #include "kernel/peripherals/gpio.h"
 #include "common/stdbool.h"
 
 void _uart_send ( char c )
 {
-	while(1) {
-		if(get32(AUX_MU_LSR_REG)&0x20) 
-			break;
-	}
-	put32(AUX_MU_IO_REG,c);
+	while (get32 (UART_FR) & (1 << 5));
+	put32(UART_DR, c);
 }
 
 char _uart_recv ( void )
 {
-	while(1) {
-		if(get32(AUX_MU_LSR_REG)&0x01) 
-			break;
-	}
-	return(get32(AUX_MU_IO_REG)&0xFF);
+	while (get32 (UART_FR) & (1 << 4));
+	return (get32 (UART_DR) & 0xFF);
 }
 
-void _uart_send_string(char* str)
-{
-	for (int i = 0; str[i] != '\0'; i ++) {
-		_uart_send((char)str[i]);
+void _uart_send_string(char* str) {
+	for (int i = 0; str[i] != 0; i ++) {
+		_uart_send(str[i]);
 	}
 }
 
@@ -33,13 +26,12 @@ void _uart_init(void) {
     if (is_initialised) return;
 
     unsigned int selector;
-    int target = BAUD_RATE_REG(115200);
 
     selector = get32(GPFSEL1);
     selector &= ~(7<<12);
-    selector |= 2<<12;
+    selector |= 4<<12;
     selector &= ~(7<<15);
-    selector |= 2<<15;
+    selector |= 4<<15;
     put32(GPFSEL1, selector);
 
     put32(GPPUD, 0);
@@ -48,14 +40,20 @@ void _uart_init(void) {
     delay(150);
     put32(GPPUDCLK0, 0);
 
-    put32(AUX_ENABLES, 1);
-    put32(AUX_MU_CNTL_REG, 0);
-    put32(AUX_MU_IER_REG, 0);
-    put32(AUX_MU_LCR_REG, 3);
-    put32(AUX_MU_MCR_REG, 0);
-    put32(AUX_MU_BAUD_REG, target);
+    // Disable UART_
+    put32(UART_CR, 0);
+    put32(UART_IMSC, 0);
 
-    put32(AUX_MU_CNTL_REG, 3);
+    // UART__CLOCK_FREQ / (16 * BAUD_RATE) =
+    // 48MHz / (16 * 115200) = 26.0416-
+    put32(UART_IBRD, 26);    // 26 (Integer part of baud rate divisor
+    put32(UART_FBRD, 3);     // floor (0.04126 * 64 + 0.5) = 3
+
+    // Enable FiFo
+    put32(UART_LCR_H, (7 << 4));
+
+    // Enable Receive, Transmit, and UART_ itself
+    put32(UART_CR, (1 << 9) | (1 << 8) | (1 << 0));
 
     is_initialised = true;
 }

@@ -59,10 +59,3 @@ void mini_uart_init(void) {
 
     is_initialised = true;
 }
-
-
-// This function is required by printf function
-void putc ( void* p, char c)
-{
-    uart_send(c);
-}

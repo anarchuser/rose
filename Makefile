@@ -83,6 +83,6 @@ flash: kernel8.img
 
 # Run on qemu
 run: kernel8.img
-	qemu-img resize kernel8.img -f raw $((2 ** 32))
+	qemu-img resize kernel8.img -f raw 4294967296
 	qemu-system-aarch64 -cpu cortex-a72 -machine type=raspi3 -m 1024 -serial stdio -drive file=kernel8.img,format=raw
 

@@ -7,6 +7,11 @@ char _uart_recv ( void );
 void _uart_send ( char c );
 void _uart_send_string (char* str);
 
+// This function is required by printf function
+void putc ( void* p, char c) {
+    _uart_send(c);
+}
+
 #define uart_init _uart_init
 #define uart_recv _uart_recv
 #define uart_send _uart_send
