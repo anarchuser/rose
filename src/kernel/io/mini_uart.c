@@ -27,8 +27,7 @@ void uart_send_string(char* str)
 	}
 }
 
-void uart_init(void)
-{
+void uart_init(void) {
   unsigned int selector;
   int target = BAUD_RATE_REG(115200);
 
