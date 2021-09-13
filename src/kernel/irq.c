@@ -28,7 +28,7 @@ const char *entry_error_messages[] = {
 };
 
 void enable_interrupt(unsigned int irq) {
-	 printf("\nInterrupt pointer %p\r\n", irq);
+	 printf("Interrupt pointer %p\r\n", irq);
 	 unsigned int n = irq / 32;
 	 unsigned int offset = irq % 32;
 	 unsigned int enableRegister = GICD_ENABLE_IRQ_BASE + (4*n);

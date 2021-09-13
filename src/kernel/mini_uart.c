@@ -3,7 +3,7 @@
 #include "kernel/peripherals/mini_uart.h"
 #include "kernel/peripherals/gpio.h"
 
-void uart_send ( char c )
+void mini_uart_send ( char c )
 {
 	while(1) {
 		if(get32(AUX_MU_LSR_REG)&0x20)
@@ -12,7 +12,7 @@ void uart_send ( char c )
 	put32(AUX_MU_IO_REG,c);
 }
 
-char uart_recv ( void )
+char mini_uart_recv ( void )
 {
 	while(1) {
 		if(get32(AUX_MU_LSR_REG)&0x01)
@@ -21,14 +21,14 @@ char uart_recv ( void )
 	return(get32(AUX_MU_IO_REG)&0xFF);
 }
 
-void uart_send_string(char* str)
+void mini_uart_send_string(char* str)
 {
 	for (int i = 0; str[i] != '\0'; i ++) {
-		uart_send((char)str[i]);
+		mini_uart_send((char)str[i]);
 	}
 }
 
-void uart_init(void) {
+void mini_uart_init(void) {
     static volatile bool init_progress = false;
     static volatile bool init_done = false;
 
@@ -63,12 +63,7 @@ void uart_init(void) {
 
     put32(AUX_MU_CNTL_REG, 3);
 
+    mini_uart_send_string ("Initialised mini UART\r\n");
+
     init_done = true;
-}
-
-
-// This function is required by printf function
-void putc ( void* p, char c)
-{
-    uart_send(c);
 }

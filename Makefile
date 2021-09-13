@@ -18,7 +18,7 @@ BUILD   = build
 SRC     = src
 KERNEL  = kernel
 COMMON  = common
-INCLUDE = include
+INCLUDE = ./include
 
 # Assemble lists of corresponding source files for assembly, kernel and common
 SRC_KERNEL = $(wildcard $(SRC)/$(KERNEL)/*.c)
@@ -32,8 +32,8 @@ OBJECTS += $(patsubst $(SRC)/$(KERNEL)/%.S, $(BUILD)/$(SRC)/$(KERNEL)/%_S.o, $(A
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(SRC_COMMON))
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
-# Default target (invoked by `make` or `make build`). Produces 'kernel8.img' which can then be booted from
-build: clean kernel8.img
+# Default target (invoked by `make` or `make all`). Produces 'kernel8.img' which can then be booted from
+all: clean kernel8.img
 
 # Build kernel executable and linkable file where we can extract the kernel from
 kernel8.elf: $(OBJECTS) $(SRC)/linker.ld
@@ -79,4 +79,11 @@ flash: kernel8.img
 	sudo cp kernel8.img $(MNT)
 	sudo cp $(SRC)/config.txt $(MNT)
 	sudo umount $(MNT)
+
+
+# Run on qemu
+run: kernel8.img
+	qemu-img resize kernel8.img -f raw 4294967296
+	qemu-system-aarch64 -cpu cortex-a72 -machine type=raspi3 -m 1024 -kernel kernel8.img -nographic -serial null -chardev stdio,id=uart1 -serial chardev:uart1 -monitor none
+
 
