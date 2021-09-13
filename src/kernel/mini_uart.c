@@ -1,4 +1,5 @@
 #include "common/utils.h"
+#include "common/stdbool.h"
 #include "kernel/peripherals/mini_uart.h"
 #include "kernel/peripherals/gpio.h"
 
@@ -27,32 +28,42 @@ void uart_send_string(char* str)
 	}
 }
 
-void uart_init(void)
-{
-  unsigned int selector;
-  int target = BAUD_RATE_REG(115200);
+void uart_init(void) {
+    static volatile bool init_progress = false;
+    static volatile bool init_done = false;
 
-  selector = get32(GPFSEL1);
-  selector &= ~(7<<12);
-  selector |= 2<<12;
-  selector &= ~(7<<15);
-  selector |= 2<<15;
-  put32(GPFSEL1, selector);
+    if (init_progress) {
+        while (!init_done);
+        return;
+    }
+    init_progress = true;
 
-  put32(GPPUD, 0);
-  delay(150);
-  put32(GPPUDCLK0, (1<<14) | (1<<15));
-  delay(150);
-  put32(GPPUDCLK0, 0);
+    unsigned int selector;
+    int target = BAUD_RATE_REG(115200);
 
-  put32(AUX_ENABLES, 1);
-  put32(AUX_MU_CNTL_REG, 0);
-  put32(AUX_MU_IER_REG, 0);
-  put32(AUX_MU_LCR_REG, 3);
-  put32(AUX_MU_MCR_REG, 0);
-  put32(AUX_MU_BAUD_REG, target);
+    selector = get32(GPFSEL1);
+    selector &= ~(7<<12);
+    selector |= 2<<12;
+    selector &= ~(7<<15);
+    selector |= 2<<15;
+    put32(GPFSEL1, selector);
 
-  put32(AUX_MU_CNTL_REG, 3);
+    put32(GPPUD, 0);
+    delay(150);
+    put32(GPPUDCLK0, (1<<14) | (1<<15));
+    delay(150);
+    put32(GPPUDCLK0, 0);
+
+    put32(AUX_ENABLES, 1);
+    put32(AUX_MU_CNTL_REG, 0);
+    put32(AUX_MU_IER_REG, 0);
+    put32(AUX_MU_LCR_REG, 3);
+    put32(AUX_MU_MCR_REG, 0);
+    put32(AUX_MU_BAUD_REG, target);
+
+    put32(AUX_MU_CNTL_REG, 3);
+
+    init_done = true;
 }
 
 
