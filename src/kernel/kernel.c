@@ -72,7 +72,5 @@ void kernel_main(void)
 		return;
 	}
 
-	while (1){
-		schedule();
-	}
+	while (1);
 }
