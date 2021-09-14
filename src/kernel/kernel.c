@@ -5,8 +5,9 @@
 #include "kernel/irq.h"
 #include "kernel/sched.h"
 #include "kernel/fork.h"
-#include "kernel/uart.h"
 #include "kernel/sys.h"
+
+#include "kernel/mini_uart.h"
 
 void user_process1(char *array)
 {

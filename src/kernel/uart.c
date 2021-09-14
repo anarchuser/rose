@@ -1,7 +1,4 @@
-#include "common/utils.h"
-#include "kernel/peripherals/uart.h"
-#include "kernel/peripherals/gpio.h"
-#include "common/stdbool.h"
+#include "kernel/uart.h"
 
 void _uart_send ( char c )
 {
@@ -64,4 +61,8 @@ void _uart_init(void) {
     _uart_send_string ("Initialised mini UART\r\n");
 
     init_done = true;
+}
+
+void _putc ( void* p, char c) {
+    _uart_send(c);
 }

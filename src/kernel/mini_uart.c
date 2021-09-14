@@ -1,7 +1,4 @@
-#include "common/utils.h"
-#include "common/stdbool.h"
-#include "kernel/peripherals/mini_uart.h"
-#include "kernel/peripherals/gpio.h"
+#include "kernel/mini_uart.h"
 
 void mini_uart_send ( char c )
 {
@@ -56,7 +53,7 @@ void mini_uart_init(void) {
 
     put32(AUX_ENABLES, 1);
     put32(AUX_MU_CNTL_REG, 0);
-    put32(AUX_MU_IER_REG, 0);
+    put32(AUX_MU_IER_REG, ENABLE_MU_REC_INT);
     put32(AUX_MU_LCR_REG, 3);
     put32(AUX_MU_MCR_REG, 0);
     put32(AUX_MU_BAUD_REG, target);
@@ -66,4 +63,12 @@ void mini_uart_init(void) {
     mini_uart_send_string ("Initialised mini UART\r\n");
 
     init_done = true;
+}
+
+void handle_mini_uart_irq( void ) {
+    mini_uart_send (mini_uart_recv());
+}
+
+void mini_putc ( void* p, char c) {
+    mini_uart_send(c);
 }

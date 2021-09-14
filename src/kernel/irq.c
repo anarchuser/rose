@@ -1,9 +1,4 @@
-#include "common/utils.h"
-#include "common/printf.h"
-#include "kernel/timer.h"
-#include "kernel/entry.h"
-#include "kernel/peripherals/irq.h"
-#include "kernel/arm/sysregs.h"
+#include "kernel/irq.h"
 
 const char *entry_error_messages[] = {
 	"SYNC_INVALID_EL1t",
@@ -50,17 +45,13 @@ void show_invalid_entry_message(int type, unsigned long esr, unsigned long addre
 void enable_interrupt_controller() {
 	 assign_target(SYSTEM_TIMER_IRQ_1, 0);
 	 enable_interrupt(SYSTEM_TIMER_IRQ_1);
+     put32(ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1 | ENABLE_AUX_INT);
 }
 
 void handle_irq(void) {
-	 unsigned int irq_ack_reg = get32(GICC_IAR);
-	 unsigned int irq = irq_ack_reg & 0x2FF;
-	 switch (irq) {
-	 	 case (SYSTEM_TIMER_IRQ_1):
-	 	 	 put32(GICC_EOIR, irq_ack_reg);
-			 handle_timer_irq();
-			 break;
-	 	 default:
-	 	 	 printf("Unknown pending irq: %x\r\n", irq);
-	}
+    unsigned int irq1 = get32(IRQ_PENDING_1);
+	unsigned int irq2 = get32(AUX_IRQ_REG);
+
+	if (irq1 & SYSTEM_TIMER_IRQ_1)  handle_timer_irq();
+	if (irq2 & MINI_UART_IRQ)       handle_mini_uart_irq();
 }
