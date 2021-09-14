@@ -45,13 +45,19 @@ void show_invalid_entry_message(int type, unsigned long esr, unsigned long addre
 void enable_interrupt_controller() {
 	 assign_target(SYSTEM_TIMER_IRQ_1, 0);
 	 enable_interrupt(SYSTEM_TIMER_IRQ_1);
-     put32(ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1 | ENABLE_AUX_INT);
+     put32(ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1
+#ifdef _IO_MINI_UART_H
+            | ENABLE_AUX_INT
+#endif
+     );
 }
 
 void handle_irq(void) {
     unsigned int irq1 = get32(IRQ_PENDING_1);
-	unsigned int irq2 = get32(AUX_IRQ_REG);
-
 	if (irq1 & SYSTEM_TIMER_IRQ_1)  handle_timer_irq();
+
+#ifdef _IO_MINI_UART_H
+    unsigned int irq2 = get32(AUX_IRQ_REG);
 	if (irq2 & MINI_UART_IRQ)       handle_mini_uart_irq();
+#endif
 }

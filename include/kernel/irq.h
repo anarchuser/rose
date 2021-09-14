@@ -9,7 +9,6 @@
 #include "kernel/arm/sysregs.h"
 
 #include "kernel/mini_uart.h"
-#include "kernel/peripherals/mini_uart.h"
 
 void enable_interrupt_controller( void );
 
