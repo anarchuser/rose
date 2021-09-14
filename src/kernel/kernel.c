@@ -1,3 +1,4 @@
+#include "kernel/mini_uart.h"
 #include "common/printf.h"
 #include "common/utils.h"
 #include "kernel/mm.h"
@@ -5,7 +6,6 @@
 #include "kernel/irq.h"
 #include "kernel/sched.h"
 #include "kernel/fork.h"
-#include "kernel/uart.h"
 #include "kernel/sys.h"
 
 void user_process1(char *array)
@@ -71,8 +71,7 @@ void kernel_main(void)
 		printf("error while starting kernel process");
 		return;
 	}
-
-	while (1){
-		schedule();
-	}
+    while (1) {
+        schedule();
+    }
 }

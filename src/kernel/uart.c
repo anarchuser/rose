@@ -1,7 +1,4 @@
-#include "common/utils.h"
-#include "kernel/peripherals/uart.h"
-#include "kernel/peripherals/gpio.h"
-#include "common/stdbool.h"
+#include "kernel/uart.h"
 
 void _uart_send ( char c )
 {
@@ -61,7 +58,11 @@ void _uart_init(void) {
     // Enable Receive, Transmit, and UART_ itself
     put32(UART_CR, (1 << 9) | (1 << 8) | (1 << 0));
 
-    _uart_send_string ("Initialised mini UART\r\n");
+    _uart_send_string ("Initialised standard UART\r\n");
 
     init_done = true;
+}
+
+void _putc ( void* p, char c) {
+    _uart_send(c);
 }

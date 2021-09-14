@@ -32,8 +32,8 @@ OBJECTS += $(patsubst $(SRC)/$(KERNEL)/%.S, $(BUILD)/$(SRC)/$(KERNEL)/%_S.o, $(A
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(SRC_COMMON))
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
-# Default target (invoked by `make` or `make all`). Produces 'kernel8.img' which can then be booted from
-all: clean kernel8.img
+# Default target (invoked by `make` or `make build`). Produces 'kernel8.img' which can then be booted from
+build: clean kernel8.img
 
 # Build kernel executable and linkable file where we can extract the kernel from
 kernel8.elf: $(OBJECTS) $(SRC)/linker.ld

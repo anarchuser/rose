@@ -6,6 +6,7 @@
 #define SYSTEM_CLOCK_FREQ 500000000
 #define BAUD_RATE_REG(target_baudrate) ((SYSTEM_CLOCK_FREQ/target_baudrate/8)-1)
 
+#define AUX_IRQ_REG     (PBASE+0x00215000)
 #define AUX_ENABLES     (PBASE+0x00215004)
 #define AUX_MU_IO_REG   (PBASE+0x00215040)
 #define AUX_MU_IER_REG  (PBASE+0x00215044)
@@ -18,5 +19,7 @@
 #define AUX_MU_CNTL_REG (PBASE+0x00215060)
 #define AUX_MU_STAT_REG (PBASE+0x00215064)
 #define AUX_MU_BAUD_REG (PBASE+0x00215068)
+
+#define ENABLE_MU_REC_INT	(0xFD)
 
 #endif  /*_P_MINI_UART_H */
