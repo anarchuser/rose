@@ -6,11 +6,11 @@
 #include "kernel/mm.h"
 
 #define SNAKE_MAX_LENGTH 262
-#define SNAKE_LENGTH 1
+#define SNAKE_START_LENGTH 1
 #define SNAKE_BODY '@'
 
 static long segments[SNAKE_MAX_LENGTH];
-static unsigned char length = 0;
+static unsigned char length = SNAKE_START_LENGTH;
 static unsigned char head = 0;
 
 void snake (char c);

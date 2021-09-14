@@ -65,7 +65,7 @@ char draw_pixel(int x, int y, char c) {
     set_pixel (x, y, c);
     move_cursor_to (x, y);
     put_pixel (c);
-    printf("\033[1D");
+    cursor_left (1);
 }
 
 char put_pixel(char c) {
