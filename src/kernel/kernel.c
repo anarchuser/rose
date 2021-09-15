@@ -56,22 +56,36 @@ void kernel_process(){
 }
 
 
-void kernel_main(void)
-{
-	uart_init();
-	init_printf(0, putc);
-	irq_vector_init();
-	timer_init();
-	enable_interrupt_controller();
-	enable_irq();
-    task_init();
+void kernel_main(int processor_id) {
+	
+	static unsigned int current_processor = 0;
 
-	int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0, 0);
-	if (res < 0) {
-		printf("error while starting kernel process");
-		return;
+	if (processor_id == current_processor) {
+		uart_init();
+		init_printf(0, putc);
+		irq_vector_init();
+		timer_init();
+		enable_interrupt_controller();
+		enable_irq();
+    		task_init();
 	}
-    while (1) {
-        schedule();
-    }
+
+	while (processor_id != current_processor);
+
+	printf("Hello, from processor %d\n\r", processor_id);
+
+	current_processor++;
+
+	if (processor_id == 0) {
+		while (current_processor != 4);
+		int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0, 0);
+		if (res < 0) {
+			printf("error while starting kernel process");
+			return;
+		}
+    		
+		while (1) {
+        		schedule();
+    		}
+	}
 }
