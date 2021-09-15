@@ -11,78 +11,93 @@ void snake (char c) {
         draw_pixel(startx + i, starty, SNAKE_BODY);
     }
 
-
     while(1) {
-        delay(SNAKE_SPEED);
-        handle_right();
-        delay(SNAKE_SPEED);
-        handle_right();
-        delay(SNAKE_SPEED);
-        handle_down();
-        delay(SNAKE_SPEED);
-        handle_down();
-        delay(SNAKE_SPEED);
-        handle_left();
-        delay(SNAKE_SPEED);
-        handle_left();
-        delay(SNAKE_SPEED);
-        handle_up();
-        delay(SNAKE_SPEED);
-        handle_up();
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_down();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_left();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_down();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_right();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_down();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_right();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_up();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_right();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_up();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_left();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_up();
+        }
+        for (int i = 0; i < 3; i++) {
+            delay(SNAKE_SPEED);
+            handle_left();
+        }
     }
 }
 
 void handle_up() {
-    head = (head + 1) % length;
-    long tail = segments[head];
-    set_pixel(tail >> 32, tail & 0xFFFF, ' ');
-    put_pixel(' ');
-    cursor_left(1);
-
+    remove_tail();
     cursor_up(1);
-    segments[head] = combine (cursor_x, cursor_y);
-    set_pixel(cursor_x, cursor_y, SNAKE_BODY);
-    put_pixel(SNAKE_BODY);
-    cursor_left(1);
+    add_head();
 }
 
 void handle_down() {
-    head = (head + 1) % length;
-    long tail = segments[head];
-    set_pixel(tail >> 32, tail & 0xFFFF, ' ');
-    put_pixel(' ');
-    cursor_left(1);
-
+    remove_tail();
     cursor_down(1);
-    segments[head] = combine (cursor_x, cursor_y);
-    set_pixel(cursor_x, cursor_y, SNAKE_BODY);
-    put_pixel(SNAKE_BODY);
-    cursor_left(1);
+    add_head();
 }
 
 void handle_right() {
-    head = (head + 1) % length;
-    long tail = segments[head];
-    set_pixel(tail >> 32, tail & 0xFFFF, ' ');
-    put_pixel(' ');
-    cursor_left(1);
-
+    remove_tail();
     cursor_right(1);
-    segments[head] = combine (cursor_x, cursor_y);
-    set_pixel(cursor_x, cursor_y, SNAKE_BODY);
-    put_pixel(SNAKE_BODY);
-    cursor_left(1);
+    add_head();
 }
 
 void handle_left() {
+    remove_tail();
+    cursor_left(1);
+    add_head();
+}
+
+void remove_tail() {
     head = (head + 1) % length;
     long tail = segments[head];
-    set_pixel(tail >> 32, tail & 0xFFFF, ' ');
-    put_pixel(' ');
-    cursor_left(2);
+    swap_coords();
+    draw_pixel(tail >> 32, tail & 0xFFFF, ' ');
+    swap_coords();
+}
 
-    segments[head] = combine (cursor_x, cursor_y);
-    set_pixel(cursor_x, cursor_y, SNAKE_BODY);
-    put_pixel(SNAKE_BODY);
-    cursor_left(1);
+void add_head() {
+    segments[head] = combine (get_x(), get_y());
+    swap_coords();
+    draw_pixel(segments[head] >> 32, segments[head] & 0xFFFF, SNAKE_BODY);
+    swap_coords();
 }

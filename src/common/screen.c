@@ -99,6 +99,14 @@ char set_cursor(char c) {
     return set_pixel (cursor_x, cursor_y, c);
 }
 
+int get_x() {
+    return cursor_x;
+}
+
+int get_y() {
+    return cursor_y;
+}
+
 void move_cursor_to(int x, int y) {
     move_cursor_by (x - cursor_x, y - cursor_y);
 }
@@ -134,4 +142,14 @@ void cursor_left(int n) {
 
 long combine (int x, int y) {
     return (((long) x) << 32) + y;
+}
+
+void swap_coords() {
+    static int x = 0;
+    static int y = 0;
+    int tempx = x;
+    int tempy = y;
+    x = cursor_x;
+    y = cursor_y;
+    move_cursor_to (tempx, tempy);
 }
