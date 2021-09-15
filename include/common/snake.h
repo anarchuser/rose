@@ -5,9 +5,10 @@
 #include "common/screen.h"
 #include "kernel/mm.h"
 
-#define SNAKE_MAX_LENGTH 262
+#define SNAKE_MAX_LENGTH 256
 #define SNAKE_START_LENGTH 1
 #define SNAKE_BODY '@'
+#define SNAKE_SPEED 5000000
 
 static long segments[SNAKE_MAX_LENGTH];
 static unsigned char length = SNAKE_START_LENGTH;

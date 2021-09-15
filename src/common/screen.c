@@ -117,19 +117,19 @@ void reset_cursor() {
 }
 void cursor_up(int n) {
     printf("\033[%dA", n);
-    cursor_y--;
+    cursor_y -= n;
 }
 void cursor_down(int n) {
     printf("\033[%dB", n);
-    cursor_y++;
+    cursor_y += n;
 }
 void cursor_right(int n) {
     printf("\033[%dC", n);
-    cursor_x++;
+    cursor_x += n;
 }
 void cursor_left(int n) {
     printf("\033[%dD", n);
-    cursor_x--;
+    cursor_x -= n;
 }
 
 long combine (int x, int y) {
