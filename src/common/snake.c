@@ -10,56 +10,9 @@ void snake (char c) {
         segments[i] = combine (startx + i, starty);
         draw_pixel(startx + i, starty, SNAKE_BODY);
     }
-
-    while(1) {
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_down();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_left();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_down();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_right();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_down();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_right();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_up();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_right();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_up();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_left();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_up();
-        }
-        for (int i = 0; i < 3; i++) {
-            delay(SNAKE_SPEED);
-            handle_left();
-        }
+    while (1) {
+        delay(SNAKE_SPEED);
+        move_snake (0);
     }
 }
 
@@ -93,6 +46,27 @@ void remove_tail() {
     swap_coords();
     draw_pixel(tail >> 32, tail & 0xFFFF, ' ');
     swap_coords();
+}
+
+void move_snake() {
+    switch (direction) {
+        case 'A':
+            handle_up();
+            return;
+        case 'B':
+            handle_down();
+            return;
+        case 'C':
+            handle_right();
+            return;
+        case 'D':
+            handle_left();
+            return;
+    }
+}
+
+void update_dir(char c) {
+    direction = c;
 }
 
 void add_head() {

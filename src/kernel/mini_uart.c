@@ -65,7 +65,7 @@ void mini_uart_init (void) {
 }
 
 void handle_mini_uart_irq (void) {
-    mini_uart_send (mini_uart_recv ());
+    update_dir (mini_uart_recv ());
 }
 
 void mini_putc (void * p, char c) {

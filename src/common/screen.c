@@ -66,6 +66,7 @@ char draw_pixel(int x, int y, char c) {
     move_cursor_to (x, y);
     put_pixel (c);
     cursor_left (1);
+    return c;
 }
 
 char put_pixel(char c) {

@@ -8,11 +8,12 @@
 #define SNAKE_MAX_LENGTH 256
 #define SNAKE_START_LENGTH 32
 #define SNAKE_BODY '@'
-#define SNAKE_SPEED 5000000
+#define SNAKE_SPEED 2000000
 
 static long segments[SNAKE_MAX_LENGTH];
 static unsigned char length = SNAKE_START_LENGTH;
 static unsigned char head = SNAKE_START_LENGTH - 1;
+static char direction = 'C';
 
 void snake (char c);
 
@@ -22,7 +23,10 @@ void handle_up();
 void handle_down();
 void handle_right();
 void handle_left();
+void move_snake();
+void update_dir(char c);
 void remove_tail();
+void add_head();
 
 #endif //ROSE_SNAKE_H
 

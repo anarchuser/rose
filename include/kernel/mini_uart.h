@@ -6,6 +6,7 @@
 #include "common/stdbool.h"
 #include "kernel/peripherals/mini_uart.h"
 #include "kernel/peripherals/gpio.h"
+#include "common/snake.h"
 
 void mini_uart_init (void);
 

@@ -13,12 +13,11 @@ static int cursor_y = 0;
 
 void clear_screen ();
 
-void add_border ();
+void draw_border ();
 
 void draw_screen ();
 
 char get_pixel (int x, int y);
-
 char draw_pixel(int x, int y, char c);
 char put_pixel(char c);
 char set_pixel(int x, int y, char c);
