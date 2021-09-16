@@ -16,24 +16,38 @@ static unsigned char head = SNAKE_START_LENGTH - 1;
 static char direction = 0;
 static char SNAKE_WALLS[] = "|-+@";
 static int period = 1000000;
+static int food_x = (29 % WIDTH - 2) + 1;
+static int food_y = (39 % HEIGHT - 2) + 1;
 
 void snake (char c);
 
-void clear_screen();
+void clear_screen ();
 
-void handle_up();
-void handle_down();
-void handle_right();
-void handle_left();
-void move_snake();
-void update_dir(char c);
-void remove_tail();
-void elongate();
-void add_head();
-bool is_wall(int x, int y);
-bool is_food(int x, int y);
-void change_period(int change);
-void game_over();
+void handle_up ();
+
+void handle_down ();
+
+void handle_right ();
+
+void handle_left ();
+
+void move_snake ();
+
+void update_dir (char c);
+
+void remove_tail ();
+
+void elongate ();
+
+void add_head ();
+
+bool is_wall (int x, int y);
+
+bool is_food (int x, int y);
+
+void change_period (int change);
+
+void game_over ();
 
 #endif //ROSE_SNAKE_H
 
