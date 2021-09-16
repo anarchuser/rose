@@ -3,13 +3,13 @@
 
 #include "common/stddef.h"
 
-#define THREAD_CPU_CONTEXT            0        // offset of cpu_context in task_struct
+#define THREAD_CPU_CONTEXT          0        // offset of cpu_context in task_struct
 
 #ifndef __ASSEMBLER__
 
-#define THREAD_SIZE                4096
+#define THREAD_SIZE                 4096
 
-#define NR_TASKS                64
+#define NR_TASKS                    64
 
 #define FIRST_TASK task[0]
 #define LAST_TASK task[NR_TASKS-1]

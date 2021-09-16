@@ -3,7 +3,7 @@
 
 #include "common/stddef.h"
 
-#define __NR_syscalls        4
+#define __NR_syscalls       4
 
 #define SYS_WRITE_NUMBER    0        // syscal numbers
 #define SYS_MALLOC_NUMBER   1
