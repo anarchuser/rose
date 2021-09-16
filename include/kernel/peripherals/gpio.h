@@ -1,5 +1,5 @@
-#ifndef	_ROSE_K_P_GPIO_H
-#define	_ROSE_K_P_GPIO_H
+#ifndef    _ROSE_K_P_GPIO_H
+#define    _ROSE_K_P_GPIO_H
 
 #include "kernel/peripherals/base.h"
 

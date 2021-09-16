@@ -1,5 +1,5 @@
-#ifndef	_ROSE_K_P_MINI_UART_H
-#define	_ROSE_K_P_MINI_UART_H
+#ifndef    _ROSE_K_P_MINI_UART_H
+#define    _ROSE_K_P_MINI_UART_H
 
 #include "base.h"
 
@@ -20,6 +20,6 @@
 #define AUX_MU_STAT_REG (PBASE+0x00215064)
 #define AUX_MU_BAUD_REG (PBASE+0x00215068)
 
-#define ENABLE_MU_REC_INT	(0xFD)
+#define ENABLE_MU_REC_INT    (0xFD)
 
 #endif  /*_ROSE_K_P_MINI_UART_H */

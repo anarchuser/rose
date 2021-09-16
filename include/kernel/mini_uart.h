@@ -1,21 +1,24 @@
 #ifndef _ROSE_K_UART_H
-#ifndef	_ROSE_K_MINI_UART_H
-#define	_ROSE_K_MINI_UART_H
+#ifndef    _ROSE_K_MINI_UART_H
+#define    _ROSE_K_MINI_UART_H
 
 #include "common/utils.h"
 #include "common/stdbool.h"
 #include "kernel/peripherals/mini_uart.h"
 #include "kernel/peripherals/gpio.h"
 
-void mini_uart_init ( void );
-char mini_uart_recv ( void );
-void mini_uart_send ( char c );
-void mini_uart_send_string(char* str);
+void mini_uart_init (void);
 
-void handle_mini_uart_irq( void );
+char mini_uart_recv (void);
+
+void mini_uart_send (char c);
+
+void mini_uart_send_string (char * str);
+
+void handle_mini_uart_irq (void);
 
 // This function is required by printf function
-void mini_putc ( void* p, char c);
+void mini_putc (void * p, char c);
 
 #define uart_init mini_uart_init
 #define uart_recv mini_uart_recv
