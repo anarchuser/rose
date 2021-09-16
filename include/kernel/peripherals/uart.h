@@ -1,5 +1,5 @@
-#ifndef	_P_UART_H
-#define	_P_UART_H
+#ifndef    _ROSE_K_P_UART_H
+#define    _ROSE_K_P_UART_H
 
 #include "base.h"
 
@@ -21,4 +21,4 @@
 #define UART_ICR          ( UART_BASE + 0x044 )
 #define UART_MACR         ( UART_BASE + 0x048 )
 
-#endif  /*_P_UART_H */
+#endif  /*_ROSE_K_P_UART_H */

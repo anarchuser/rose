@@ -1,5 +1,5 @@
-#ifndef ROSE_SCREEN_H
-#define ROSE_SCREEN_H
+#ifndef _ROSE_C_SCREEN_H
+#define _ROSE_C_SCREEN_H
 
 #include "common/printf.h"
 
@@ -8,10 +8,14 @@
 
 static char screen[HEIGHT * WIDTH];
 
-void clear_screen();
-void draw_border();
-void draw_screen();
-char get_pixel(int x, int y);
-char set_pixel(int x, int y, char c);
+void clear_screen ();
 
-#endif //ROSE_SCREEN_H
+void draw_border ();
+
+void draw_screen ();
+
+char get_pixel (int x, int y);
+
+char set_pixel (int x, int y, char c);
+
+#endif //_ROSE_C_SCREEN_H

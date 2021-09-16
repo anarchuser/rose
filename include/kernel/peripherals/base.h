@@ -1,6 +1,6 @@
-#ifndef	_P_BASE_H
-#define	_P_BASE_H
+#ifndef    _ROSE_K_P_BASE_H
+#define    _ROSE_K_P_BASE_H
 
 #define PBASE 0xFE000000
 
-#endif  /*_P_BASE_H */
+#endif  /*_ROSE_K_P_BASE_H */
