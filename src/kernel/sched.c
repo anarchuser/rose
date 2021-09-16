@@ -99,6 +99,6 @@ void exit_process(){
 
 
 void task_init() {
-    memzero ((unsigned long) current, sizeof(struct task_struct));
+    memzero ((ptr_t) current, sizeof(struct task_struct));
     current->priority = 1;
 }

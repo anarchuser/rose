@@ -1,6 +1,8 @@
 #ifndef _ROSE_K_SCHED_H
 #define _ROSE_K_SCHED_H
 
+#include "common/stddef.h"
+
 #define THREAD_CPU_CONTEXT			0 		// offset of cpu_context in task_struct
 
 #ifndef __ASSEMBLER__
@@ -43,8 +45,8 @@ struct task_struct {
 	long counter;
 	long priority;
 	long preempt_count;
-    unsigned long stack;
-    unsigned long flags;
+    ptr_t stack;
+    ptr_t flags;
 };
 
 extern void sched_init(void);

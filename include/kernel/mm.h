@@ -2,6 +2,7 @@
 #define	_ROSE_K_MM_H
 
 #include "peripherals/base.h"
+#include "common/stddef.h"
 
 #define PAGE_SHIFT	 	12
 #define TABLE_SHIFT 		9
@@ -19,11 +20,11 @@
 #ifndef __ASSEMBLER__
 
 extern char _start;
-#define KERNEL_START ((unsigned long) & _start)
+#define KERNEL_START ((ptr_t) & _start)
 
-unsigned long get_free_page();
-void free_page(unsigned long p);
-void memzero(unsigned long src, unsigned long n);
+ptr_t get_free_page();
+void free_page(ptr_t p);
+void memzero(ptr_t src, ptr_t n);
 
 #endif
 
