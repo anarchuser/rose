@@ -4,8 +4,8 @@
 #include "common/printf.h"
 #include "common/stdbool.h"
 
-#define HEIGHT 79
 #define WIDTH  316
+#define HEIGHT 79
 
 static char screen[HEIGHT * WIDTH];
 static int cursor_x = 0;
@@ -13,6 +13,8 @@ static int cursor_y = 0;
 
 void clear_screen ();
 
+void fancy_clear_screen();
+bool try_draw (int x, int y, char c);
 void draw_border ();
 
 void draw_screen ();

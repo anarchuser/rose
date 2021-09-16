@@ -2,7 +2,29 @@
 
 void clear_screen() {
     printf("\033[2J");
+    for (int i = 0; i < HEIGHT * WIDTH; i++) {
+        screen[i] = 0;
+    }
     reset_cursor();
+}
+
+void fancy_clear_screen() {
+    reset_cursor();
+    for (int i = 0; i < WIDTH; i += 4) {
+        for (int j = 0; j < i; j += 4) {
+            draw_pixel (i - j, j, '#');
+            try_draw (i - j - 80, j, ' ');
+        }
+    }
+    clear_screen();
+}
+
+bool try_draw(int x, int y, char c) {
+    if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
+        draw_pixel (x, y, c);
+        return true;
+    }
+    return false;
 }
 
 void draw_border() {

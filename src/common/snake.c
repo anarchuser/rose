@@ -6,36 +6,75 @@ void snake (char c) {
 
     clear_screen();
     draw_border();
+
+    draw_pixel(200, 40, SNAKE_FOOD);
+
+    move_cursor_to(startx, starty);
     for (int i = 0; i < SNAKE_START_LENGTH; i++) {
         segments[i] = combine (startx + i, starty);
-        draw_pixel(startx + i, starty, SNAKE_BODY);
+        put_pixel(SNAKE_BODY);
     }
+    cursor_left(1);
+
+
     while (1) {
-        delay(SNAKE_SPEED);
+        delay(period);
         move_snake (0);
     }
 }
 
 void handle_up() {
-    remove_tail();
+    int x = get_x();
+    int y = get_y() - 1;
+    if (is_food(x, y)) {
+        elongate();
+    } else if (is_wall (x, y)) {
+        game_over();
+    } else {
+        remove_tail();
+    }
     cursor_up(1);
     add_head();
 }
 
 void handle_down() {
-    remove_tail();
+    int x = get_x();
+    int y = get_y() + 1;
+    if (is_food(get_x(), get_y() + 1)) {
+        elongate();
+    } else if (is_wall (x, y)) {
+        game_over();
+    } else {
+        remove_tail();
+    }
     cursor_down(1);
     add_head();
 }
 
 void handle_right() {
-    remove_tail();
+    int x = get_x() + 1;
+    int y = get_y();
+    if (is_food(x, y)) {
+        elongate();
+    } else if (is_wall (x, y)) {
+        game_over();
+    } else {
+        remove_tail();
+    }
     cursor_right(1);
     add_head();
 }
 
 void handle_left() {
-    remove_tail();
+    int x = get_x() - 1;
+    int y = get_y();
+    if (is_food(x, y)) {
+        elongate();
+    } else if (is_wall (x, y)) {
+        game_over();
+    } else {
+        remove_tail();
+    }
     cursor_left(1);
     add_head();
 }
@@ -45,6 +84,17 @@ void remove_tail() {
     long tail = segments[head];
     swap_coords();
     draw_pixel(tail >> 32, tail & 0xFFFF, ' ');
+    swap_coords();
+}
+void elongate() {
+    head++;
+    for (int i = 0; i < length - head; i++) {
+        segments[length - i] = segments[length - i - 1];
+    }
+    length++;
+
+    swap_coords();
+    draw_pixel(get_x() * 873824 % (WIDTH - 2) + 1, get_y() * 47882 % (HEIGHT - 2) + 1, SNAKE_FOOD);
     swap_coords();
 }
 
@@ -74,4 +124,33 @@ void add_head() {
     swap_coords();
     draw_pixel(segments[head] >> 32, segments[head] & 0xFFFF, SNAKE_BODY);
     swap_coords();
+}
+
+bool is_wall(int x, int y) {
+    for (int i = 0; SNAKE_WALLS[i]; i++) {
+        if (SNAKE_WALLS[i] == get_pixel (x, y)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool is_food(int x, int y) {
+    return get_pixel(x, y) == SNAKE_FOOD;
+}
+
+void change_period(int change) {
+    period += change;
+}
+
+void game_over() {
+    move_cursor_to(150, 30);
+    printf("YOU DIED!");
+    cursor_down(2);
+    cursor_left(9);
+    printf("Score: %d", length);
+    update_dir (0);
+    delay(10000000);
+    fancy_clear_screen();
+    snake(0);
 }

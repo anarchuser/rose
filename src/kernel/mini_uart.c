@@ -65,7 +65,20 @@ void mini_uart_init (void) {
 }
 
 void handle_mini_uart_irq (void) {
-    update_dir (mini_uart_recv ());
+    char c = mini_uart_recv ();
+    switch (c) {
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+            update_dir(c);
+            break;
+        case '+':
+            change_period (40000);
+            break;
+        case '-':
+            change_period (-40000);
+    }
 }
 
 void mini_putc (void * p, char c) {

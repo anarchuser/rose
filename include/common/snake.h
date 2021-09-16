@@ -6,14 +6,16 @@
 #include "kernel/mm.h"
 
 #define SNAKE_MAX_LENGTH 256
-#define SNAKE_START_LENGTH 32
+#define SNAKE_START_LENGTH 10
 #define SNAKE_BODY '@'
-#define SNAKE_SPEED 2000000
+#define SNAKE_FOOD '#'
 
 static long segments[SNAKE_MAX_LENGTH];
 static unsigned char length = SNAKE_START_LENGTH;
 static unsigned char head = SNAKE_START_LENGTH - 1;
-static char direction = 'C';
+static char direction = 0;
+static char SNAKE_WALLS[] = "|-+@";
+static int period = 1000000;
 
 void snake (char c);
 
@@ -26,7 +28,12 @@ void handle_left();
 void move_snake();
 void update_dir(char c);
 void remove_tail();
+void elongate();
 void add_head();
+bool is_wall(int x, int y);
+bool is_food(int x, int y);
+void change_period(int change);
+void game_over();
 
 #endif //ROSE_SNAKE_H
 
