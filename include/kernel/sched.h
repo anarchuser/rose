@@ -1,7 +1,7 @@
-#ifndef _SCHED_H
-#define _SCHED_H
+#ifndef _ROSE_K_SCHED_H
+#define _ROSE_K_SCHED_H
 
-#define THREAD_CPU_CONTEXT			0 		// offset of cpu_context in task_struct 
+#define THREAD_CPU_CONTEXT			0 		// offset of cpu_context in task_struct
 
 #ifndef __ASSEMBLER__
 

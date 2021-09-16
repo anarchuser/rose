@@ -1,5 +1,5 @@
-#ifndef _FORK_H
-#define _FORK_H
+#ifndef _ROSE_K_FORK_H
+#define _ROSE_K_FORK_H
 
 #include "kernel/sched.h"
 

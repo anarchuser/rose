@@ -1,5 +1,5 @@
-#ifndef	_P_MINI_UART_H
-#define	_P_MINI_UART_H
+#ifndef	_ROSE_K_P_MINI_UART_H
+#define	_ROSE_K_P_MINI_UART_H
 
 #include "base.h"
 
@@ -22,4 +22,4 @@
 
 #define ENABLE_MU_REC_INT	(0xFD)
 
-#endif  /*_P_MINI_UART_H */
+#endif  /*_ROSE_K_P_MINI_UART_H */

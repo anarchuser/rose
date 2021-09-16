@@ -1,5 +1,5 @@
-#ifndef _P_IRQ_H
-#define _P_IRQ_H
+#ifndef _ROSE_K_P_IRQ_H
+#define _ROSE_K_P_IRQ_H
 
 #include "kernel/peripherals/base.h"
 
@@ -34,4 +34,4 @@
 #define MINI_UART_IRQ       (1 << 0)
 #define ENABLE_AUX_INT      (1 << 29)
 
-#endif  /*_P_IRQ_H */
+#endif  /*_ROSE_K_P_IRQ_H */

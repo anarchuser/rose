@@ -1,5 +1,5 @@
-#ifndef _SYSREGS_H
-#define _SYSREGS_H
+#ifndef _ROSE_K_A_SYSREGS_H
+#define _ROSE_K_A_SYSREGS_H
 
 // ***************************************
 // SCTLR_EL1, System Control Register (EL1), Page 2654 of AArch64-Reference-Manual.
@@ -46,4 +46,4 @@
 #define ESR_ELx_EC_SHIFT		26
 #define ESR_ELx_EC_SVC64		0x15
 
-#endif
+#endif /*_ROSE_K_A_SYSREGS_H*/

@@ -1,6 +1,6 @@
-#ifndef _IO_UART_H
-#ifndef	_IO_MINI_UART_H
-#define	_IO_MINI_UART_H
+#ifndef _ROSE_K_UART_H
+#ifndef	_ROSE_K_MINI_UART_H
+#define	_ROSE_K_MINI_UART_H
 
 #include "common/utils.h"
 #include "common/stdbool.h"
@@ -24,5 +24,5 @@ void mini_putc ( void* p, char c);
 
 #define putc mini_putc
 
-#endif  /*_IO_MINI_UART_H */
-#endif  /*_IO_UART_H */
+#endif  /*_ROSE_K_MINI_UART_H */
+#endif  /*_ROSE_K_UART_H */

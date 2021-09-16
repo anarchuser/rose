@@ -1,5 +1,5 @@
-#ifndef	_MM_H
-#define	_MM_H
+#ifndef	_ROSE_K_MM_H
+#define	_ROSE_K_MM_H
 
 #include "peripherals/base.h"
 
@@ -27,4 +27,4 @@ void memzero(unsigned long src, unsigned long n);
 
 #endif
 
-#endif  /*_MM_H */
+#endif  /*_ROSE_K_MM_H */

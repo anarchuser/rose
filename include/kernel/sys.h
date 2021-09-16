@@ -1,5 +1,5 @@
-#ifndef	_SYS_H
-#define	_SYS_H
+#ifndef	_ROSE_K_SYS_H
+#define	_ROSE_K_SYS_H
 
 #define __NR_syscalls	    4
 
@@ -19,4 +19,4 @@ unsigned long call_sys_malloc();
 void call_sys_exit();
 
 #endif
-#endif  /*_SYS_H */
+#endif  /*_ROSE_K_SYS_H */

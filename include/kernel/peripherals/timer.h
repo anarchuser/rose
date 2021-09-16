@@ -1,5 +1,5 @@
-#ifndef	_P_TIMER_H
-#define	_P_TIMER_H
+#ifndef	_ROSE_K_P_TIMER_H
+#define	_ROSE_K_P_TIMER_H
 
 #include "kernel/peripherals/base.h"
 
@@ -16,4 +16,4 @@
 #define TIMER_CS_M2	(1 << 2)
 #define TIMER_CS_M3	(1 << 3)
 
-#endif  /*_P_TIMER_H */
+#endif  /*_ROSE_K_P_TIMER_H */
