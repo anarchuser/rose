@@ -1,5 +1,5 @@
-#ifndef ROSE_SCREEN_H
-#define ROSE_SCREEN_H
+#ifndef _ROSE_C_SCREEN_H
+#define _ROSE_C_SCREEN_H
 
 #include "common/printf.h"
 
@@ -14,4 +14,4 @@ void draw_screen();
 char get_pixel(int x, int y);
 char set_pixel(int x, int y, char c);
 
-#endif //ROSE_SCREEN_H
+#endif //_ROSE_C_SCREEN_H

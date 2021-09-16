@@ -1,5 +1,5 @@
-#ifndef ROSE_HelloWorld_H
-#define ROSE_HelloWorld_H
+#ifndef _ROSE_C_HelloWorld_H
+#define _ROSE_C_HelloWorld_H
 
 #include "common/screen.h"
 
@@ -29,6 +29,6 @@ printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf("
 printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(",");printf(",");printf(",");printf(",");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf(" ");printf("\r\n");
 }
 
-#endif //ROSE_HelloWorld_H
+#endif //_ROSE_C_HelloWorld_H
 
 /* Copyright (C) 2020 Aaron Alef */
