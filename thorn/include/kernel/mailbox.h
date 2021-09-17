@@ -2,6 +2,7 @@
 #define _ROSE_K_MAILBOX_H
 
 #include "common/utils.h"
+#include "common/stddef.h"
 #include "kernel/peripherals/mailbox.h"
 #include "kernel/mm.h"
 
@@ -31,7 +32,7 @@ typedef struct {
     unsigned int identity;
     unsigned int buffer_size;
     unsigned int response;
-    unsigned char * buffer;
+    byte_t * buffer;
 } mbox_tag_t;
 
 typedef struct {

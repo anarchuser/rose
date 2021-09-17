@@ -63,7 +63,6 @@ void kernel_main (int processor_id) {
     
     if (processor_id == current_processor) {
         uart_init ();
-        init_gpu ();
         init_printf (0, putc);
         irq_vector_init ();
         timer_init ();
@@ -72,6 +71,12 @@ void kernel_main (int processor_id) {
         task_init ();
 
         LOG("Logging works");
+        
+        if (! init_gpu ()) {
+            printf ("Error while initialising framebuffer\r\n");
+        } else {
+            get_fb ();
+        }
     }
     
     while (processor_id != current_processor);

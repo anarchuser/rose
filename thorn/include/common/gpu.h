@@ -1,7 +1,11 @@
 #ifndef _ROSE_C_GPU_H
 #define _ROSE_C_GPU_H
 
+#include "common/stdbool.h"
+#include "common/stddef.h"
+#include "kernel/peripherals/gpu.h"
 #include "kernel/mailbox.h"
+#include "kernel/mm.h"
 
 // Reference:
 // https://jsandler18.github.io/extra/prop-channel.html
@@ -14,8 +18,11 @@
 
 #define GPU_COLOUR_DEPTH   24
 
-void init_gpu (void);
+// framebuffer
+static ptr_t fb;
 
-void * request_framebuffer (void);
+bool init_gpu (void);
+
+ptr_t get_fb (void);
 
 #endif //_ROSE_C_GPU_H
