@@ -59,12 +59,13 @@ void kernel_process () {
 
 void kernel_init (void) {
     uart_init ();
-    init_printf (0, putc);
-    irq_vector_init ();
-    timer_init ();
-    enable_interrupt_controller ();
-    enable_irq ();
-    task_init ();
+    init_gpu ();
+        init_printf (0, putc);
+        irq_vector_init ();
+        timer_init ();
+        enable_interrupt_controller ();
+        enable_irq ();
+        task_init ();
 
     printf ("Initialising Framebuffer...\r\n");
     int gpu_status = init_gpu ();
