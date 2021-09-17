@@ -1,6 +1,7 @@
 #include "kernel/mini_uart.h"
 #include "common/printf.h"
 #include "common/utils.h"
+#include "common/gpu.h"
 #include "kernel/mm.h"
 #include "kernel/timer.h"
 #include "kernel/irq.h"
@@ -62,6 +63,7 @@ void kernel_main (int processor_id) {
     
     if (processor_id == current_processor) {
         uart_init ();
+        init_gpu ();
         init_printf (0, putc);
         irq_vector_init ();
         timer_init ();
