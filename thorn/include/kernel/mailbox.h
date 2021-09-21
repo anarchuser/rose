@@ -2,6 +2,7 @@
 #define _ROSE_K_MAILBOX_H
 
 #include "common/utils.h"
+#include "common/stdbool.h"
 #include "common/stddef.h"
 #include "kernel/peripherals/mailbox.h"
 #include "kernel/mm.h"
@@ -41,13 +42,11 @@ typedef struct {
     mbox_tag_t * tags;
 } mbox_property_t;
 
+// Send message and check responses
+bool mailbox_request (unsigned int data_ptr, channel_t channel);
 
-void mailbox_send (unsigned int data, channel_t channel);
-
-// Returns address of message
-unsigned int mailbox_read (channel_t channel);
-
-unsigned int mailbox_send_tags (channel_t channel, mbox_tag_t * tags);
+// Returns total size written
+unsigned int mailbox_write_msg (unsigned int message[], mbox_tag_t * tags);
 
 // Returns total size written
 unsigned int mailbox_write_tags (mbox_tag_t * dest, mbox_tag_t * src);

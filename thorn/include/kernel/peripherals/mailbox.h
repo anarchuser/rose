@@ -16,4 +16,6 @@
 
 #define MBOX_IRQ_ENABLE (1 << 0)
 
+#define MBOX_SUCCESS    0x80000000
+
 #endif //_ROSE_K_P_MAILBOX_H
