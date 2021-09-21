@@ -90,10 +90,17 @@ void kernel_main (int processor_id) {
     if (processor_id == 0) {
         kernel_init ();
 
-        if (! init_gpu ()) {
-            printf ("Error while initialising framebuffer\r\n");
+        printf ("Initialising Framebuffer...\r\n");
+        int gpu_status = init_gpu ();
+        if (! gpu_status) {
+            printf ("Error while initialising Framebuffer\r\n");
         } else {
-            get_fb ();
+            unsigned long fb = get_fb ();
+            if (! fb) {
+                printf ("Error: Invalid Framebuffer received\r\n");
+            } else {
+                printf ("Received framebuffer: %p\r\n", fb);
+            }
         }
     }
 

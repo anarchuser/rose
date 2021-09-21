@@ -3,11 +3,10 @@
 
 #include "common/printf.h"
 
-#define LOG(msg)                                                           \
-    do {                                                                   \
-        static int __counter__ = 0;                                        \
-        printf (__FILE__ ":%d:[%d] %s\r\n", __LINE__, __counter__++, msg); \
-    } while (0)
+#define LOG(msg)                                                           \do {                                           \
+    static int __counter__ = 0;                                        \
+    printf(__FILE__":%d:[%d] %s\r\n", __LINE__, __counter__++, msg);   \
+} while (0)
 
 #define ASSERT(expr)                  \
     do {                              \
