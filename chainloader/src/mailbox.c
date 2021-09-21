@@ -20,7 +20,7 @@ unsigned int mailbox_read (channel_t channel) {
     } while ((value & 0xF) != channel);
     
     // Return most significant bits (actual address)
-    return value >> 4;
+    return ((value >> 4) << 4);
 }
 
 unsigned int mailbox_send_tags (channel_t channel, mbox_tag_t * tags) {
