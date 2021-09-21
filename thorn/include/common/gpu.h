@@ -1,6 +1,8 @@
 #ifndef _ROSE_C_GPU_H
 #define _ROSE_C_GPU_H
 
+#include "common/printf.h"
+
 #include "common/stdbool.h"
 #include "common/stddef.h"
 #include "kernel/peripherals/gpu.h"

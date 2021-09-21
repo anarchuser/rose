@@ -28,7 +28,7 @@ bool mailbox_request (unsigned int data_ptr, channel_t channel) {
     
     LOG ("Read pointer to property response");
     // Get the pointer to the property request message
-    mbox_property_t * property = (mbox_property_t * ) ((unsigned long) (* msg_ptr & ~ 0xFF));
+    mbox_property_t * property = (mbox_property_t * ) ((unsigned long) (* msg_ptr & ~0xFF));
     
     char * buffer[100];
     sprinf (buffer, "Returning response code: operation %s",
@@ -59,7 +59,7 @@ unsigned int mailbox_write_msg (unsigned int message[], mbox_tag_t * tags, int t
 
 unsigned int mailbox_write_tags (mbox_tag_t * dest, mbox_tag_t * src, int tags_count) {
     unsigned int written = 0;
-    for (int i = 0; i < tags_count; i ++) {
+    for (int i = 0; i < tags_count; i++) {
         dest += written;
         
         unsigned int buffer_size = src->buffer_size;
@@ -68,7 +68,7 @@ unsigned int mailbox_write_tags (mbox_tag_t * dest, mbox_tag_t * src, int tags_c
         dest->buffer_size = buffer_size;
         dest->response = 0;
         
-        for (unsigned int i = 0; i < buffer_size; i ++) {
+        for (unsigned int i = 0; i < buffer_size; i++) {
             dest->buffer[written] = src->buffer[written];
         }
         written += 3 * sizeof (unsigned int) + buffer_size;

@@ -61,21 +61,28 @@ void kernel_main (int processor_id) {
     
     static unsigned int current_processor = 0;
     
-    if (processor_id == current_processor) {
+    if (processor_id == 0) {
         uart_init ();
         init_printf (0, putc);
-        irq_vector_init ();
-        timer_init ();
-        enable_interrupt_controller ();
-        enable_irq ();
-        task_init ();
+//        irq_vector_init ();
+//        timer_init ();
+//        enable_interrupt_controller ();
+//        enable_irq ();
+//        task_init ();
 
         LOG("Logging works");
         
-        if (! init_gpu ()) {
-            printf ("Error while initialising framebuffer\r\n");
+        printf ("Initialising Framebuffer...\r\n");
+        int gpu_status = init_gpu ();
+        if (! gpu_status) {
+            printf ("Error while initialising Framebuffer\r\n");
         } else {
-            get_fb ();
+            unsigned long fb = get_fb ();
+            if (! fb) {
+                printf ("Error: Invalid Framebuffer received\r\n");
+            } else {
+                printf ("Received framebuffer: %p\r\n", fb);
+            }
         }
     }
     
@@ -84,17 +91,17 @@ void kernel_main (int processor_id) {
     printf ("Hello, from processor %d\n\r", processor_id);
     
     current_processor++;
-    
-    if (processor_id == 0) {
-        while (current_processor != 4);
-        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
-        if (res < 0) {
-            printf ("error while starting kernel process");
-            return;
-        }
-        
-        while (1) {
-            schedule ();
-        }
-    }
+
+//    if (processor_id == 0) {
+//        while (current_processor != 4);
+//        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
+//        if (res < 0) {
+//            printf ("error while starting kernel process");
+//            return;
+//        }
+//
+//        while (1) {
+//            schedule ();
+//        }
+//    }
 }

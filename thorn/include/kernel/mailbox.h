@@ -7,6 +7,9 @@
 #include "kernel/peripherals/mailbox.h"
 #include "kernel/mm.h"
 
+#include "common/debug.h"
+#include "common/logging.h"
+
 // Documentation:
 // https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface
 
@@ -46,9 +49,9 @@ typedef struct {
 bool mailbox_request (unsigned int data_ptr, channel_t channel);
 
 // Returns total size written
-unsigned int mailbox_write_msg (unsigned int message[], mbox_tag_t * tags);
+unsigned int mailbox_write_msg (unsigned int message[], mbox_tag_t * tags, int tags_count);
 
 // Returns total size written
-unsigned int mailbox_write_tags (mbox_tag_t * dest, mbox_tag_t * src);
+unsigned int mailbox_write_tags (mbox_tag_t * dest, mbox_tag_t * src, int tags_count);
 
 #endif //_ROSE_K_MAILBOX_H

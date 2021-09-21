@@ -23,7 +23,10 @@ bool init_gpu () {
     colour_depth->response = 0;
     colour_depth->buffer = (byte_t * ) & colour_depth_buffer;
     
-    mailbox_write_msg (buffer, (mbox_tag_t *) tag_buffer);
+    
+    printf ("Preparing screen configuration request...\r\n");
+    mailbox_write_msg (buffer, (mbox_tag_t *) tag_buffer, 3);
+    printf ("Sending screen configuration request...\r\n");
     if (! mailbox_request ((unsigned int) buffer, PROPERTY_ARM_VC)) return false;
     
     byte_t alignment[] = {16};
@@ -33,7 +36,9 @@ bool init_gpu () {
             0,
             alignment,
     };
-    mailbox_write_msg ((unsigned int) buffer, & request_fb);
+    printf ("Preparing framebuffer request...\r\n");
+    mailbox_write_msg ((unsigned int) buffer, & request_fb, 1);
+    printf ("Requesting framebuffer...\r\n");
     if (! mailbox_request ((unsigned int) buffer, PROPERTY_ARM_VC)) return false;
     
     fb = * ((ptr_t * ) (buffer + 5));
