@@ -39,14 +39,29 @@ struct cpu_context {
     unsigned long pc;
 };
 
+#define MAX_PROCESS_PAGES            16
+
+struct user_page {
+    unsigned long phys_addr;
+    unsigned long virt_addr;
+};
+
+struct mm_struct {
+    unsigned long pgd;
+    int user_pages_count;
+    struct user_page user_pages[MAX_PROCESS_PAGES];
+    int kernel_pages_count;
+    unsigned long kernel_pages[MAX_PROCESS_PAGES];
+};
+
 struct task_struct {
     struct cpu_context cpu_context;
     long state;
     long counter;
     long priority;
     long preempt_count;
-    ptr_t stack;
     ptr_t flags;
+    struct mm_struct mm;
 };
 
 extern void sched_init (void);
@@ -59,7 +74,7 @@ extern void preempt_disable (void);
 
 extern void preempt_enable (void);
 
-extern void switch_to (struct task_struct * next, int index);
+extern void switch_to (struct task_struct * next);
 
 extern void cpu_switch_to (struct task_struct * prev, struct task_struct * next);
 
@@ -68,8 +83,9 @@ extern void exit_process (void);
 extern void task_init (void);
 
 #define INIT_TASK \
-/*cpu_context*/    { {0,0,0,0,0,0,0,0,0,0,0,0,0}, \
-/* state etc */    0,0,1, 0 \
+/*cpu_context*/ { { 0,0,0,0,0,0,0,0,0,0,0,0,0}, \
+/* state etc */     0,0,15, 0, PF_KTHREAD, \
+/* mm */ { 0, 0, {{0}}, 0, {0}} \
 }
 
 #endif

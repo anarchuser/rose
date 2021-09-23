@@ -15,9 +15,9 @@
 #define PSR_MODE_EL3t    0x0000000c
 #define PSR_MODE_EL3h    0x0000000d
 
-int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack);
+int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg);
 
-int move_to_user_mode (ptr_t pc);
+int move_to_user_mode (ptr_t start, ptr_t size, ptr_t pc);
 
 struct pt_regs * task_pt_regs (struct task_struct * tsk);
 

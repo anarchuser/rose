@@ -7,6 +7,10 @@ extern void put32 (unsigned long, unsigned int);
 
 extern unsigned int get32 (unsigned long);
 
-extern int get_el (void);
+extern unsigned long get_el (void);
+
+extern void set_pgd (unsigned long pgd);
+
+extern unsigned long get_pgd ();
 
 #endif  /*_ROSE_C_BOOT_H */

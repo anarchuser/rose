@@ -1,15 +1,17 @@
 #include "kernel/mm.h"
 #include "kernel/sched.h"
-#include "common/printf.h"
 #include "kernel/fork.h"
 #include "kernel/entry.h"
 #include "common/utils.h"
 
-int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
+int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg) {
     preempt_disable ();
     struct task_struct * p;
     
-    p = (struct task_struct *) get_free_page ();
+    unsigned long page = allocate_kernel_page ();
+    p = (struct task_struct *) page;
+    struct pt_regs * childregs = task_pt_regs (p);
+    
     if (! p) {
         return - 1;
     }
@@ -25,8 +27,7 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
         struct pt_regs * cur_regs = task_pt_regs (current);
         * childregs = * cur_regs;
         childregs->regs[0] = 0;
-        childregs->sp = stack + PAGE_SIZE;
-        p->stack = stack;
+        copy_virt_memory (p);
     }
     p->flags = clone_flags;
     p->priority = current->priority;
@@ -38,22 +39,23 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
     p->cpu_context.sp = (ptr_t) childregs;
     int pid = nr_tasks ++;
     task[pid] = p;
+    
     preempt_enable ();
     return pid;
 }
 
 
-int move_to_user_mode (ptr_t pc) {
+int move_to_user_mode (ptr_t pc, ptr_t size, ptr_t pc) {
     struct pt_regs * regs = task_pt_regs (current);
-    memzero ((ptr_t) regs, sizeof (* regs));
-    regs->pc = pc;
     regs->pstate = PSR_MODE_EL0t;
-    ptr_t stack = get_free_page (); //allocate new user stack
-    if (! stack) {
+    regs->pc = pc;
+    regs->sp = 2 * PAGE_SIZE;
+    ptr_t code_page = allocate_user_page (current, 0);
+    if (code_page == 0) {
         return - 1;
     }
-    regs->sp = stack + PAGE_SIZE;
-    current->stack = stack;
+    memcpy (code_page, start, size);
+    set_pgd (current->mm.pgd);
     return 0;
 }
 

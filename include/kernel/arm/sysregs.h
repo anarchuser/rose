@@ -2,7 +2,7 @@
 #define _ROSE_K_A_SYSREGS_H
 
 // ***************************************
-// SCTLR_EL1, System Control Register (EL1), Page 2654 of AArch64-Reference-Manual.
+// SCTLR_EL1, System Control Register (EL1), Page 2025 of AArch64-Reference-Manual.
 // ***************************************
 
 #define SCTLR_RESERVED          (3 << 28) | (3 << 22) | (1 << 20) | (1 << 11)
@@ -45,5 +45,6 @@
 
 #define ESR_ELx_EC_SHIFT        26
 #define ESR_ELx_EC_SVC64        0x15
+#define ESR_ELx_EC_DABT_LOW        0x24
 
 #endif /*_ROSE_K_A_SYSREGS_H*/
