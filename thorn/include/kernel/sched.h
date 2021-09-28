@@ -2,6 +2,7 @@
 #define _ROSE_K_SCHED_H
 
 #include "common/stddef.h"
+#include "kernel/paging.h"
 
 #define THREAD_CPU_CONTEXT          0        // offset of cpu_context in task_struct
 
@@ -47,6 +48,7 @@ struct task_struct {
     long preempt_count;
     ptr_t stack;
     ptr_t flags;
+    struct mm_table * pgd;
 };
 
 extern void sched_init (void);

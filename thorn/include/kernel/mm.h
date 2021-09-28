@@ -19,7 +19,7 @@
 
 #ifndef __ASSEMBLER__
 
-extern char _start;
+extern ptr_t _start;
 #define KERNEL_START ((ptr_t) & _start)
 
 ptr_t get_free_page ();

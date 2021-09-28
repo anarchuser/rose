@@ -5,6 +5,9 @@
 #define false 0
 #define __bool_true_false_are_defined
 
+#ifndef __ASSEMBLER__
+
 typedef char bool;
 
+#endif
 #endif /*_ROSE_C_BOOL_H*/
