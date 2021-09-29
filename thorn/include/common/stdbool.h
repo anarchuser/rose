@@ -7,7 +7,7 @@
 
 #ifndef __ASSEMBLER__
 
-typedef char bool;
+typedef unsigned char bool;
 
 #endif
 #endif /*_ROSE_C_BOOL_H*/
