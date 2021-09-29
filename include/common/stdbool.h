@@ -8,5 +8,3 @@
 typedef char bool;
 
 #endif /*_ROSE_C_BOOL_H*/
-
-/* Copyright (C) 2020 Aaron Alef */
