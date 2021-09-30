@@ -2,7 +2,7 @@
 # | Merged from https://jsandler18.github.io/ and https://github.com/s-matyukevich/raspberry-pi-os
 
 # Cross-compiler
-ARMGNU ?= aarch64-linux-gnu
+ARMGNU ?= aarch64-none-elf
 
 # Options for C, Asembly, and the linker, respectively
 COPS   = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only
@@ -33,16 +33,16 @@ OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(S
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
 # Default target (invoked by `make` or `make build`). Produces 'chainloader.img' which can then be booted from
-build: clean chainloader.img
+build: clean kernel8.img
 
 # Build kernel executable and linkable file where we can extract the kernel from
-chainloader.elf: $(OBJECTS) $(SRC)/linker.ld
-	$(ARMGNU)-ld -T $(SRC)/linker.ld -o $(BUILD)/chainloader.elf $(OBJECTS)
+kernel8.elf: $(OBJECTS) $(SRC)/linker.ld
+	$(ARMGNU)-ld -T $(SRC)/linker.ld -o $(BUILD)/kernel8.elf $(OBJECTS)
 
 # Build actual kernel image
-chainloader.img: $(SRC)/linker.ld $(OBJECTS) chainloader.elf
+kernel8.img: $(SRC)/linker.ld $(OBJECTS) kernel8.elf
 	echo $(OBJECTS)
-	$(ARMGNU)-objcopy $(BUILD)/chainloader.elf -O binary chainloader.img
+	$(ARMGNU)-objcopy $(BUILD)/kernel8.elf -O binary kernel8.img
 
 # All kernel source targets
 $(BUILD)/$(SRC)/$(KERNEL)/%_c.o: $(SRC)/$(KERNEL)/%.c
@@ -73,10 +73,10 @@ DEP_FILES = $(OBJECTS:%.o=%.d)
 	-include $(DEP_FILES)
 
 # Mount boot partition of SD card onto set mount point to copy image onto it
-flash: chainloader.img
+flash: kernel8.img
 	mkdir -p $(MNT)
 	sudo mount $(BOOT_PART) $(MNT)
-	sudo cp chainloader.img $(MNT)/kernel8.img
+	sudo cp kernel8.img $(MNT)/kernel8.img
 	sudo cp $(SRC)/config.txt $(MNT)
 	sudo umount $(MNT)
 
