@@ -32,8 +32,11 @@ OBJECTS += $(patsubst $(SRC)/$(KERNEL)/%.S, $(BUILD)/$(SRC)/$(KERNEL)/%_S.o, $(A
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(SRC_COMMON))
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
+# Ensure make still works if someone creates a file named like follows:
+.PHONY: build clean cleanall emulate run
+
 # Default target (invoked by `make` or `make build`). Produces 'kernel8.img' which can then be booted from
-build: clean kernel8.img
+build: kernel8.img
 
 # Build kernel executable and linkable file where we can extract the kernel from
 kernel8.elf: $(OBJECTS) $(SRC)/linker.ld
@@ -68,6 +71,9 @@ $(BUILD)/$(SRC)/$(COMMON)/%_S.o: $(SRC)/$(COMMON)/%.S
 clean:
 	rm -rf $(BUILD) *.img
 
+cleanall: clean
+	$(MAKE) -C chainloader clean
+
 # Compile lists with the dependencies between objects
 DEP_FILES = $(OBJECTS:%.o=%.d)
 	-include $(DEP_FILES)
@@ -80,10 +86,19 @@ flash: kernel8.img
 	sudo cp $(SRC)/config.txt $(MNT)
 	sudo umount $(MNT)
 
-
 # Run on qemu
-run: kernel8.img
+emulate: kernel8.img
 	qemu-img resize kernel8.img -f raw 4294967296
 	qemu-system-aarch64 -cpu cortex-a72 -machine type=raspi3 -m 1024 -kernel kernel8.img -nographic -serial null -chardev stdio,id=uart1 -serial chardev:uart1 -monitor none
 
+# Future target to build and chainload OS
+run: kernel8.img
+	echo "Not yet implemented"
+	exit 1
 
+# Build chainloader
+buildcl:
+	$(MAKE) -C chainloader build
+
+flashcl:
+	$(MAKE) -C chainloader flash
