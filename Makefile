@@ -102,3 +102,6 @@ buildcl:
 
 flashcl:
 	$(MAKE) -C chainloader flash
+
+send: kernel8.img
+	$(MAKE) -C sender run
