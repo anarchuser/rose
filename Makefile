@@ -13,6 +13,10 @@ LOPS   = -ffreestanding -nostdlib
 MNT = build/mnt
 BOOT_PART = /dev/mmcblk0p1
 
+# Serial connection config
+BAUD_RATE = 115200
+SERIAL_PORT = /dev/ttyUSB0
+
 # Directories for built files, source files (kernel and common) and header files (include)
 BUILD   = build
 SRC     = src
@@ -104,4 +108,5 @@ flashcl:
 	$(MAKE) -C chainloader flash
 
 send: kernel8.img
-	$(MAKE) -C sender run
+	stty -F $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+	cat kernel8.img > $(SERIAL_PORT)
