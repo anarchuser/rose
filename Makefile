@@ -109,4 +109,5 @@ flashcl:
 
 send: kernel8.img
 	stty -F $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT)
 	cat kernel8.img > $(SERIAL_PORT)
