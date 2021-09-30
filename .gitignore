@@ -54,3 +54,5 @@ dkms.conf
 
 # Editor specific
 .idea/*
+.vscode/
+.DS_Store
