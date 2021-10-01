@@ -7,6 +7,7 @@
 #include "kernel/sched.h"
 #include "kernel/fork.h"
 #include "kernel/sys.h"
+#include "common/logging.h"
 
 void user_process1 (char * array) {
     char buf[2] = {0};
@@ -67,6 +68,8 @@ void kernel_main (int processor_id) {
         enable_interrupt_controller ();
         enable_irq ();
         task_init ();
+
+        LOG("Logging works");
     }
     
     while (processor_id != current_processor);
