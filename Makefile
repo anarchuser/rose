@@ -15,7 +15,7 @@ BOOT_PART = /dev/mmcblk0p1
 
 # Serial connection config
 BAUD_RATE = 115200
-SERIAL_PORT = /dev/ttyUSB0
+SERIAL_PORT = /dev/cu.usbserial-14330
 
 # Directories for built files, source files (kernel and common) and header files (include)
 BUILD   = build
@@ -108,6 +108,9 @@ flashcl:
 	$(MAKE) -C chainloader flash
 
 send: kernel8.img
-	stty -F $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT)
 	cat kernel8.img > $(SERIAL_PORT)
+
+flash-mac:
+	cp kernel8.img /Volumes/boot
