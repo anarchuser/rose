@@ -21,8 +21,11 @@ BOOT_PART = /dev/mmcblk0p1
 # Serial connection config
 BAUD_RATE = 115200
 SERIAL_PORT = $(SERIAL_PORT_$(HOST_OS))
-SERIAL_PORT_Linux  = /dev/$(shell ls /dev | grep ttyUSB    | head -n 1)
-SERIAL_PORT_Darwin = /dev/$(shell ls /dev | grep usbserial | head -n 1)
+SERIAL_PORT_ALT = $(SERIAL_PORT_ALT_$(HOST_OS))
+SERIAL_PORT_Linux      = /dev/$(shell ls /dev | grep ttyUSB    | head -n 1)
+SERIAL_PORT_ALT_Linux  = /dev/$(shell ls /dev | grep ttyUSB    | head -n 2 | tail -n 1)
+SERIAL_PORT_Darwin     = /dev/$(shell ls /dev | grep usbserial | head -n 1)
+SERIAL_PORT_ALT_Darwin = /dev/$(shell ls /dev | grep usbserial | head -n 2 | tail -n 1)
 
 # Directories for built files, source files (kernel and common) and header files (include)
 BUILD   = build
@@ -55,7 +58,6 @@ kernel8.elf: $(OBJECTS) $(SRC)/linker.ld
 
 # Build actual kernel image
 kernel8.img: $(SRC)/linker.ld $(OBJECTS) kernel8.elf
-	echo $(OBJECTS)
 	$(ARMGNU)-objcopy $(BUILD)/kernel8.elf -O binary kernel8.img
 
 # All kernel source targets
@@ -135,3 +137,5 @@ send: setup-serial-$(HOST_OS) kernel8.img
 	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT)
 	cat kernel8.img > $(SERIAL_PORT)
 
+screen:
+	screen $(SERIAL_PORT_ALT) $(BAUD_RATE)
