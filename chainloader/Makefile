@@ -1,6 +1,9 @@
 # | Makefile for the Rose project (github.com/anarchuser/rose)
 # | Merged from https://jsandler18.github.io/ and https://github.com/s-matyukevich/raspberry-pi-os
 
+# Resolve Mac / linux issues
+HOST_OS = $(shell uname -s)
+
 # Cross-compiler
 ARMGNU ?= aarch64-none-elf
 
@@ -32,17 +35,20 @@ OBJECTS += $(patsubst $(SRC)/$(KERNEL)/%.S, $(BUILD)/$(SRC)/$(KERNEL)/%_S.o, $(A
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(SRC_COMMON))
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
+# Ensure make still works if someone creates a file named like follows:
+.PHONY: build clean flash flash-Linux flash-Darwin
+
 # Default target (invoked by `make` or `make build`). Produces 'chainloader.img' which can then be booted from
-build: clean kernel8.img
+build: chainloader.img
 
 # Build kernel executable and linkable file where we can extract the kernel from
-kernel8.elf: $(OBJECTS) $(SRC)/linker.ld
-	$(ARMGNU)-ld -T $(SRC)/linker.ld -o $(BUILD)/kernel8.elf $(OBJECTS)
+chainloader.elf: $(OBJECTS) $(SRC)/linker.ld
+	$(ARMGNU)-ld -T $(SRC)/linker.ld -o $(BUILD)/chainloader.elf $(OBJECTS)
 
 # Build actual kernel image
-kernel8.img: $(SRC)/linker.ld $(OBJECTS) kernel8.elf
+chainloader.img: $(SRC)/linker.ld $(OBJECTS) chainloader.elf
 	echo $(OBJECTS)
-	$(ARMGNU)-objcopy $(BUILD)/kernel8.elf -O binary kernel8.img
+	$(ARMGNU)-objcopy $(BUILD)/chainloader.elf -O binary chainloader.img
 
 # All kernel source targets
 $(BUILD)/$(SRC)/$(KERNEL)/%_c.o: $(SRC)/$(KERNEL)/%.c
@@ -73,10 +79,15 @@ DEP_FILES = $(OBJECTS:%.o=%.d)
 	-include $(DEP_FILES)
 
 # Mount boot partition of SD card onto set mount point to copy image onto it
-flash: kernel8.img
+flash: flash-$(HOST_OS)
+
+flash-Linux: chainloader.img
 	mkdir -p $(MNT)
 	sudo mount $(BOOT_PART) $(MNT)
-	sudo cp kernel8.img $(MNT)/kernel8.img
+	sudo cp chainloader.img $(MNT)/kernel8.img
 	sudo cp $(SRC)/config.txt $(MNT)
 	sudo umount $(MNT)
 
+flash-Darwin: chainloader.img
+	cp chainloader.img /Volumes/boot/kernel8.img
+	sync

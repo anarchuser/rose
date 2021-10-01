@@ -41,7 +41,7 @@ OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(S
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
 # Ensure make still works if someone creates a file named like follows:
-.PHONY: build buildcl clean cleanall emulate run flash flashcl flash-Linux flash-Darwin send setup-serial-Linux setup-serial-Darwin
+.PHONY: build build-cl clean cleanall emulate run flash flash-cl flash-os flash-Linux flash-Darwin send setup-serial-Linux setup-serial-Darwin
 
 # Default target (invoked by `make` or `make build`). Produces 'kernel8.img' which can then be booted from
 build: kernel8.img
@@ -87,7 +87,12 @@ DEP_FILES = $(OBJECTS:%.o=%.d)
 	-include $(DEP_FILES)
 
 # Mount boot partition of SD card onto set mount point to copy image onto it
-flash: flash-$(HOST_OS)
+flash: flash-cl # Default whether flash loads kernel or chainloader
+
+flash-os: flash-$(HOST_OS)
+
+flash-cl:
+	$(MAKE) -C chainloader flash
 
 flash-Linux: kernel8.img
 	mkdir -p $(MNT)
@@ -111,11 +116,8 @@ run: kernel8.img
 	exit 1
 
 # Build chainloader
-buildcl:
+build-cl:
 	$(MAKE) -C chainloader build
-
-flashcl:
-	$(MAKE) -C chainloader flash
 
 # Send kernel size + kernel
 setup-serial-Linux:
