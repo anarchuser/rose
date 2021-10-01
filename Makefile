@@ -41,7 +41,7 @@ OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(S
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
 # Ensure make still works if someone creates a file named like follows:
-.PHONY: build buildcl clean cleanall emulate run flash flashcl flash-Linux flash-Darwin send send-Linux send-Darwin
+.PHONY: build buildcl clean cleanall emulate run flash flashcl flash-Linux flash-Darwin send setup-serial-Linux setup-serial-Darwin
 
 # Default target (invoked by `make` or `make build`). Produces 'kernel8.img' which can then be booted from
 build: kernel8.img
@@ -98,6 +98,7 @@ flash-Linux: kernel8.img
 
 flash-Darwin: kernel8.img
 	cp kernel8.img /Volumes/boot
+	sync
 
 # Run on qemu
 emulate: kernel8.img
@@ -117,14 +118,13 @@ flashcl:
 	$(MAKE) -C chainloader flash
 
 # Send kernel size + kernel
-send: send-$(HOST_OS)
-
-send-Linux: kernel8.img
+setup-serial-Linux:
 	stty -F $(SERIAL_PORT_$(HOST_OS)) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+
+setup-serial-Darwin:
+	stty -f $(SERIAL_PORT_$(HOST_OS)) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+
+send: setup-serial-$(HOST_OS) kernel8.img
 	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT_$(HOST_OS))
 	cat kernel8.img > $(SERIAL_PORT_$(HOST_OS))
 
-send-Darwin: kernel8.img
-	stty -f $(SERIAL_PORT_$(HOST_OS)) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
-	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT_$(HOST_OS))
-	cat kernel8.img > $(SERIAL_PORT_$(HOST_OS))
