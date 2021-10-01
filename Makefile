@@ -13,11 +13,14 @@ ASMOPS = -Iinclude
 LOPS   = -ffreestanding -nostdlib
 
 # Mount point and boot partition
-MNT = build/mnt
+MNT = $(MNT_$(HOST_OS))
+MNT_Linux  = build/mnt
+MNT_Darwin = /Volumes/boot
 BOOT_PART = /dev/mmcblk0p1
 
 # Serial connection config
 BAUD_RATE = 115200
+SERIAL_PORT = $(SERIAL_PORT_$(HOST_OS))
 SERIAL_PORT_Linux  = /dev/ttyUSB0
 SERIAL_PORT_Darwin = /dev/cu.usbserial-14330
 
@@ -102,8 +105,10 @@ flash-Linux: kernel8.img
 	sudo umount $(MNT)
 
 flash-Darwin: kernel8.img
-	cp kernel8.img /Volumes/boot
+	cp kernel8.img $(MNT)
+	cp $(SRC)/config.txt $(MNT)
 	sync
+	diskutil unmount $(MNT)
 
 # Run on qemu
 emulate: kernel8.img
@@ -121,12 +126,12 @@ build-cl:
 
 # Send kernel size + kernel
 setup-serial-Linux:
-	stty -F $(SERIAL_PORT_$(HOST_OS)) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+	stty -F $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
 setup-serial-Darwin:
-	stty -f $(SERIAL_PORT_$(HOST_OS)) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
 send: setup-serial-$(HOST_OS) kernel8.img
-	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT_$(HOST_OS))
-	cat kernel8.img > $(SERIAL_PORT_$(HOST_OS))
+	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT)
+	cat kernel8.img > $(SERIAL_PORT)
 

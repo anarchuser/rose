@@ -13,7 +13,9 @@ ASMOPS = -Iinclude
 LOPS   = -ffreestanding -nostdlib
 
 # Mount point and boot partition
-MNT = build/mnt
+MNT = $(MNT_$(HOST_OS))
+MNT_Linux  = build/mnt
+MNT_Darwin = /Volumes/boot
 BOOT_PART = /dev/mmcblk0p1
 
 # Directories for built files, source files (kernel and common) and header files (include)
@@ -89,5 +91,7 @@ flash-Linux: chainloader.img
 	sudo umount $(MNT)
 
 flash-Darwin: chainloader.img
-	cp chainloader.img /Volumes/boot/kernel8.img
+	cp chainloader.img $(MNT)/kernel8.img
+	cp $(SRC)/config.txt $(MNT)
 	sync
+	diskutil unmount $(MNT)
