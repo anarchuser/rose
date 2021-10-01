@@ -17,6 +17,7 @@ void kernel_main (void) {
     
     char * const start_adr = (char *) (0x40000000);
     char * kernel_adr = start_adr + sizeof (int);
+    char * start_adr = kernel_adr + 40000;
     
     for (int i = sizeof (int); i > 0;) { //4 is size of int
         start_adr[-- i] = uart_recv ();
@@ -24,14 +25,13 @@ void kernel_main (void) {
     printf ("\r\n");
     
     int length = * (int *) start_adr;
-    printf ("Load kernel of size %d\r\n", length);
+    printf ("Load kernel of size %d...", length);
     
     for (int i = 0; i < length; i ++) {
         kernel_adr[i] = uart_recv ();
     }
-    for (int i = 0; i < length + sizeof (int); i ++) {
-        if (i % 80 == 79) {printf ("\r\n");}
-        else if (i % 4 == 3) printf (" ");
-        print_hex (start_adr[i]);
-    }
+    printf ("Done\r\n");
+    
+    // Start kernel at `start_adr`
+    // ...
 }
