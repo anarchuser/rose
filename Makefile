@@ -134,7 +134,7 @@ setup-serial-Darwin:
 	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
 send: setup-serial-$(HOST_OS) kernel8.img
-	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT)
+	printf "0: %.8x" $(shell wc -c < kernel8.img) | xxd -re -g0 > $(SERIAL_PORT)
 	cat kernel8.img > $(SERIAL_PORT)
 
 screen:

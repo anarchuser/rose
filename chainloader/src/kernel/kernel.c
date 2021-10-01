@@ -1,35 +1,37 @@
 #include "kernel/mini_uart.h"
 #include "common/printf.h"
 
-void kernel_main(void) {
-	uart_init();
-	init_printf(0, putc);
-	uart_send_string("Hello, world!\r\n");
+void print_hex (unsigned char dec) {
+    char first = dec / 16;
+    char second = dec % 16;
+    first = (first > 9) ? 'A' + first - 10 : '0' + first;
+    second = (second > 9) ? 'A' + second - 10 : '0' + second;
+    printf ("%c%c ", first, second);
+}
 
-	const char* start_adr = (char *)(0x40000000);
-	char* kernel_adr = start_adr;
-
-	for (int i = 0; i < 4; i++) { //4 is size of int
-		char received = uart_recv();
-		*kernel_adr = received;
-		kernel_adr++;
-		printf("%p", kernel_adr);
-	}
-
-	// int img_length = *(int *)start_adr;
-	// printf("%d\n\r", img_length);
-
-	// kernel_adr = start_adr;
-
-	printf("%p", kernel_adr);
-
-	for (int i = 0; i < 20; i++) {
-		kernel_adr[i] = uart_recv();
-	}
-
-	for (int i = 0; i < 500; i++) {
-		printf("%d ", start_adr[i]);
-	}
-
-	uart_send_string((char *)start_adr);
+void kernel_main (void) {
+    uart_init ();
+    init_printf (0, putc);
+    uart_send_string ("\033[2J\033[0;0H");               // clear screen
+    uart_send_string ("Hello, world!\r\n");
+    
+    char * const start_adr = (char *) (0x40000000);
+    char * kernel_adr = start_adr + sizeof (int);
+    
+    for (int i = sizeof (int); i > 0;) { //4 is size of int
+        start_adr[-- i] = uart_recv ();
+    }
+    printf ("\r\n");
+    
+    int length = * (int *) start_adr;
+    printf ("Load kernel of size %d\r\n", length);
+    
+    for (int i = 0; i < length; i ++) {
+        kernel_adr[i] = uart_recv ();
+    }
+    for (int i = 0; i < length + sizeof (int); i ++) {
+        if (i % 80 == 79) {printf ("\r\n");}
+        else if (i % 4 == 3) printf (" ");
+        print_hex (start_adr[i]);
+    }
 }
