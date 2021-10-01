@@ -21,7 +21,7 @@ BOOT_PART = /dev/mmcblk0p1
 # Serial connection config
 BAUD_RATE = 115200
 SERIAL_PORT = $(SERIAL_PORT_$(HOST_OS))
-SERIAL_PORT_Linux  = /dev/ttyUSB0
+SERIAL_PORT_Linux  = /dev/$(shell ls /dev | grep ttyUSB    | head -n 1)
 SERIAL_PORT_Darwin = /dev/$(shell ls /dev | grep usbserial | head -n 1)
 
 # Directories for built files, source files (kernel and common) and header files (include)
