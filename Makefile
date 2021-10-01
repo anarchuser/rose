@@ -1,6 +1,9 @@
 # | Makefile for the Rose project (github.com/anarchuser/rose)
 # | Merged from https://jsandler18.github.io/ and https://github.com/s-matyukevich/raspberry-pi-os
 
+# Resolve Mac / linux issues
+HOST_OS = $(shell uname -s)
+
 # Cross-compiler
 ARMGNU ?= aarch64-none-elf
 
@@ -15,7 +18,8 @@ BOOT_PART = /dev/mmcblk0p1
 
 # Serial connection config
 BAUD_RATE = 115200
-SERIAL_PORT = /dev/cu.usbserial-14330
+SERIAL_PORT_Linux  = /dev/ttyUSB0
+SERIAL_PORT_Darwin = /dev/cu.usbserial-14330
 
 # Directories for built files, source files (kernel and common) and header files (include)
 BUILD   = build
@@ -37,7 +41,7 @@ OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(S
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
 # Ensure make still works if someone creates a file named like follows:
-.PHONY: build clean cleanall emulate run
+.PHONY: build buildcl clean cleanall emulate run flash flashcl flash-Linux flash-Darwin send send-Linux send-Darwin
 
 # Default target (invoked by `make` or `make build`). Produces 'kernel8.img' which can then be booted from
 build: kernel8.img
@@ -83,12 +87,17 @@ DEP_FILES = $(OBJECTS:%.o=%.d)
 	-include $(DEP_FILES)
 
 # Mount boot partition of SD card onto set mount point to copy image onto it
-flash: kernel8.img
+flash: flash-$(HOST_OS)
+
+flash-Linux: kernel8.img
 	mkdir -p $(MNT)
 	sudo mount $(BOOT_PART) $(MNT)
 	sudo cp kernel8.img $(MNT)
 	sudo cp $(SRC)/config.txt $(MNT)
 	sudo umount $(MNT)
+
+flash-Darwin: kernel8.img
+	cp kernel8.img /Volumes/boot
 
 # Run on qemu
 emulate: kernel8.img
@@ -107,10 +116,15 @@ buildcl:
 flashcl:
 	$(MAKE) -C chainloader flash
 
-send: kernel8.img
-	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
-	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT)
-	cat kernel8.img > $(SERIAL_PORT)
+# Send kernel size + kernel
+send: send-$(HOST_OS)
 
-flash-mac:
-	cp kernel8.img /Volumes/boot
+send-Linux: kernel8.img
+	stty -F $(SERIAL_PORT_$(HOST_OS)) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT_$(HOST_OS))
+	cat kernel8.img > $(SERIAL_PORT_$(HOST_OS))
+
+send-Darwin: kernel8.img
+	stty -f $(SERIAL_PORT_$(HOST_OS)) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
+	printf "0: %.8x" $(wc -c < kernel8.img) | xxd -r -g0 > $(SERIAL_PORT_$(HOST_OS))
+	cat kernel8.img > $(SERIAL_PORT_$(HOST_OS))
