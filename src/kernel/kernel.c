@@ -12,7 +12,7 @@
 void user_process1 (char * array) {
     char buf[2] = {0};
     while (1) {
-        for (int i = 0; i < 5; i ++) {
+        for (int i = 0; i < 5; i++) {
             buf[0] = array[i];
             call_sys_write (buf);
             delay (100000);
@@ -76,7 +76,7 @@ void kernel_main (int processor_id) {
     
     printf ("Hello, from processor %d\n\r", processor_id);
     
-    current_processor ++;
+    current_processor++;
     
     if (processor_id == 0) {
         while (current_processor != 4);
