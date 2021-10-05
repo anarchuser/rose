@@ -11,10 +11,9 @@ _start:
 
     // read core id, put slaves to sleep
     mrs     x1, mpidr_el1
-    and     x1, x1, #3
+    and     x1, x1, #0xFF
     cbz     x1, 2f
 1:  wfe
-    b       1b
-2:  mov     sp, #LOW_MEMORY
-    bl      kernel
-    b 1b
+2:  // set stack pointer and go to kernel
+    mov     sp, #LOW_MEMORY
+    b      kernel
