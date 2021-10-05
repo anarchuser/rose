@@ -5,12 +5,12 @@
 
 #include "kernel/mini_uart.h"
 #include "kernel/chainload.h"
-#include "kernel/mm.h"
-#include "common/printf.h"
-#include "common/utils.h"
 #include "kernel/peripherals/mini_uart.h"
 
-void print_hex (unsigned char dec);
+extern char _start;
+#define KERNEL_START ((ptr_t) & _start)
+
+//void print_hex (unsigned char dec);
 
 void receive_kernel (void);
 

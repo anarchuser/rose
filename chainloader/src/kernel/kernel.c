@@ -2,24 +2,16 @@
 
 void kernel () {
     uart_init ();
-    init_printf (0, putc);
-//    uart_send_string ("\033[2J\033[0;0H"); // clear screen
-    uart_send_string ("\r\n");
-    uart_send_string ("Booting "__FILE__"\r\n");
+    uart_send_string ("\033[2J\033[0;0H"); // clear screen
+    uart_send_string ("Booting chainloader...");
     
-    relocate ();
-    
-    printf ("Old receive: %p\r\nNew receive: %p\r\n", receive_kernel, receive_kernel + CHAINLOAD_OFFSET);
-    
-    (receive_kernel + CHAINLOAD_OFFSET) ();
-}
-
-void relocate () {
+    // Copy chainloader to offset
     char * const old = (char *) LOAD_ADDRESS;
-    char * const new = (char *) LOAD_ADDRESS + CHAINLOAD_OFFSET; // 0x80000 - 4096
-    printf ("Copying %d bytes to %p...", LOADER_SIZE, new);
+    char * const new = (char *) LOAD_ADDRESS + CHAINLOAD_OFFSET;
     for (unsigned int i = 0; i < LOADER_SIZE; i++) {
         new[i] = old[i];
     }
-    uart_send_string ("Done\r\n");
+    
+    // Receive and execute kernel from serial
+    (receive_kernel + CHAINLOAD_OFFSET) ();
 }
