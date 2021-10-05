@@ -1,24 +1,20 @@
 #include "kernel/mm.h"
+#include "common/utils.h"
+#include "kernel/load.h"
 
 .section ".text.boot"
 
-.
-globl _start
+.global _start
 _start:
-mrs x0, mpidr_el1
-and x0, x0,
-#0xFF        // Check processor id
-cbz x0, master        // Hang for all non-primary CPU
-b proc_hang
+    // store first 5 general purpose regs
+    bl      swap
 
-proc_hang:
-b proc_hang
-
-master:
-mov sp,
-#
-LOW_MEMORY
-        bl
-kernel_main
-        b
-proc_hang        // should never come here
+    // read core id, put slaves to sleep
+    mrs     x1, mpidr_el1
+    and     x1, x1, #3
+    cbz     x1, 2f
+1:  wfe
+    b       1b
+2:  mov     sp, #LOW_MEMORY
+    bl      kernel
+    b 1b
