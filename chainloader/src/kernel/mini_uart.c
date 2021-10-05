@@ -1,6 +1,4 @@
-#include "common/utils.h"
-#include "kernel/peripherals/mini_uart.h"
-#include "kernel/peripherals/gpio.h"
+#include "kernel/mini_uart.h"
 
 void uart_send (char c) {
     while (!((* (unsigned int *) AUX_MU_LSR_REG) & 0x20));
@@ -20,7 +18,6 @@ void uart_send_string (char * str) {
 
 void uart_init (void) {
     unsigned int selector;
-    int target = BAUD_RATE_REG (115200);
     
     selector = get32 (GPFSEL1);
     selector &= ~(7 << 12);
@@ -40,7 +37,7 @@ void uart_init (void) {
     put32 (AUX_MU_IER_REG, 0);
     put32 (AUX_MU_LCR_REG, 3);
     put32 (AUX_MU_MCR_REG, 0);
-    put32 (AUX_MU_BAUD_REG, target);
+    put32 (AUX_MU_BAUD_REG, BAUD_RATE);
     
     put32 (AUX_MU_CNTL_REG, 3);
 }

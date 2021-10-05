@@ -19,6 +19,7 @@ MNT_Darwin = /Volumes/boot
 BOOT_PART = /dev/mmcblk0p1
 
 CHAINLOAD_IMG = kernel8.img
+#CHAINLOAD_IMG = chainloader/chainloader.img
 
 # Serial connection config
 BAUD_RATE = 115200
