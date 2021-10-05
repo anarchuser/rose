@@ -1,42 +1,25 @@
-#include "kernel/mini_uart.h"
-#include "common/printf.h"
+#include "kernel/kernel.h"
 
-void print_hex (unsigned char dec) {
-    char first = dec / 16;
-    char second = dec % 16;
-    first = (first > 9) ? 'A' + first - 10 : '0' + first;
-    second = (second > 9) ? 'A' + second - 10 : '0' + second;
-    printf ("%c%c ", first, second);
-}
-
-void kernel_main (void) {
+void kernel () {
     uart_init ();
     init_printf (0, putc);
-    uart_send_string ("\033[2J\033[0;0H");               // clear screen
-    uart_send_string ("Hello, world!\r\n");
+//    uart_send_string ("\033[2J\033[0;0H"); // clear screen
+    uart_send_string ("\r\n");
+    uart_send_string ("Booting "__FILE__"\r\n");
     
-    char * const start_adr = (char *) (0x40000000);
-    char * kernel_adr = start_adr + sizeof (int);
+    relocate ();
     
-    for (int i = sizeof (int); i > 0;) { //4 is size of int
-        start_adr[--i] = uart_recv ();
+    printf ("Old receive: %p\r\nNew receive: %p\r\n", receive_kernel, receive_kernel + CHAINLOAD_OFFSET);
+    
+    (receive_kernel + CHAINLOAD_OFFSET) ();
+}
+
+void relocate () {
+    char * const old = (char *) LOAD_ADDRESS;
+    char * const new = (char *) LOAD_ADDRESS + CHAINLOAD_OFFSET; // 0x80000 - 4096
+    printf ("Copying %d bytes to %p...", LOADER_SIZE, new);
+    for (unsigned int i = 0; i < LOADER_SIZE; i++) {
+        new[i] = old[i];
     }
-    printf ("\r\n");
-    
-    int length = * (int *) start_adr;
-    printf ("Load kernel of size %d...", length);
-    
-    for (int i = 0; i < length; i++) {
-        kernel_adr[i] = uart_recv ();
-    }
-    printf ("Done\r\n");
-    
-    for (int i = 0; i < length; i++) {
-        print_hex (start_adr[i]);
-        if ((i % 4) == 0 && i) printf (" ");
-        if ((i % 16) == 0 && i) printf ("\r\n");
-    }
-    
-    // Start kernel at `start_adr`
-    // ...
+    uart_send_string ("Done\r\n");
 }

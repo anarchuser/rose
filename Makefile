@@ -18,6 +18,8 @@ MNT_Linux  = build/mnt
 MNT_Darwin = /Volumes/boot
 BOOT_PART = /dev/mmcblk0p1
 
+CHAINLOAD_IMG = kernel8.img
+
 # Serial connection config
 BAUD_RATE = 115200
 SERIAL_PORT = $(SERIAL_PORT_$(HOST_OS))
@@ -134,8 +136,8 @@ setup-serial-Darwin:
 	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
 send: setup-serial-$(HOST_OS) kernel8.img
-	printf "0: %.8x" $(shell wc -c < kernel8.img) | xxd -re -g0 > $(SERIAL_PORT)
-	cat kernel8.img > $(SERIAL_PORT)
+	printf "0: %.8x" $(shell wc -c < $(CHAINLOAD_IMG)) | xxd -re -g0 > $(SERIAL_PORT)
+	cat $(CHAINLOAD_IMG) > $(SERIAL_PORT)
 
 screen:
 	screen $(SERIAL_PORT_ALT) $(BAUD_RATE)

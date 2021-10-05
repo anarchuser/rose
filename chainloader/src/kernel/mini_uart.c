@@ -3,25 +3,17 @@
 #include "kernel/peripherals/gpio.h"
 
 void uart_send (char c) {
-    while (1) {
-        if (get32 (AUX_MU_LSR_REG) & 0x20) {
-            break;
-        }
-    }
-    put32 (AUX_MU_IO_REG, c);
+    while (!((* (unsigned int *) AUX_MU_LSR_REG) & 0x20));
+    * (unsigned int *) AUX_MU_IO_REG = c;
 }
 
 char uart_recv (void) {
-    while (1) {
-        if (get32 (AUX_MU_LSR_REG) & 0x01) {
-            break;
-        }
-    }
-    return (get32 (AUX_MU_IO_REG) & 0xFF);
+    while (!((* (unsigned int *) AUX_MU_LSR_REG) & 0x01));
+    return ((* (unsigned int *) AUX_MU_IO_REG) & 0xFF);
 }
 
 void uart_send_string (char * str) {
-    for (int i = 0; str[i] != '\0'; i ++) {
+    for (int i = 0; str[i] != '\0'; i++) {
         uart_send ((char) str[i]);
     }
 }
@@ -31,9 +23,9 @@ void uart_init (void) {
     int target = BAUD_RATE_REG (115200);
     
     selector = get32 (GPFSEL1);
-    selector &= ~ (7 << 12);
+    selector &= ~(7 << 12);
     selector |= 2 << 12;
-    selector &= ~ (7 << 15);
+    selector &= ~(7 << 15);
     selector |= 2 << 15;
     put32 (GPFSEL1, selector);
     
