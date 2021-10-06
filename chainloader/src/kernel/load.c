@@ -21,8 +21,7 @@ void receive_kernel (void) {
     /** IMPORTANT **/
     /// FROM HERE ONWARDS, CHAIN LOADER OVERWRITES ITSELF. NO FURTHER NORMAL FUNCTION CALLS POSSIBLE! ///
     for (int i = 0; i < length; i++) {
-        while (!((* (unsigned int *) AUX_MU_LSR_REG) & 0x01));
-        kernel_load_address[i] = (* (unsigned int *) AUX_MU_IO_REG) & 0xFF;
+        UART_RECEIVE(kernel_load_address[i]);
     }
     
     // Restore system registers
