@@ -19,7 +19,7 @@ char mini_uart_recv (void) {
 }
 
 void mini_uart_send_string (char * str) {
-    for (int i = 0; str[i] != '\0'; i ++) {
+    for (int i = 0; str[i] != '\0'; i++) {
         mini_uart_send ((char) str[i]);
     }
 }
@@ -29,18 +29,18 @@ void mini_uart_init (void) {
     static volatile bool init_done = false;
     
     if (init_progress) {
-        while (! init_done);
+        while (!init_done);
         return;
     }
     init_progress = true;
     
     unsigned int selector;
-    int target = BAUD_RATE_REG(115200);
+    int target = BAUD_RATE_REG (115200);
     
     selector = get32 (GPFSEL1);
-    selector &= ~ (7 << 12);
+    selector &= ~(7 << 12);
     selector |= 2 << 12;
-    selector &= ~ (7 << 15);
+    selector &= ~(7 << 15);
     selector |= 2 << 15;
     put32 (GPFSEL1, selector);
     
@@ -65,7 +65,19 @@ void mini_uart_init (void) {
 }
 
 void handle_mini_uart_irq (void) {
-    mini_uart_send (mini_uart_recv ());
+    char c_event = mini_uart_recv ();
+    switch (c_event) {
+        case 17:
+            mini_uart_send_string ("Received poweroff request; ignoring\r\n");
+            //poweroff;
+            break;
+        case 18:
+            mini_uart_send_string ("Received reboot request; ignoring\r\n");
+            //reboot;
+            break;
+        default:
+            mini_uart_send (c_event);
+    }
 }
 
 void mini_putc (void * p, char c) {
