@@ -46,7 +46,7 @@ OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(S
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
 # Ensure make still works if someone creates a file named like follows:
-.PHONY: build clean flash flash-Linux flash-Darwin emulate
+.PHONY: build clean flash flash-Linux flash-Darwin emulate reboot poweroff send resend
 
 # Default target (invoked by `make` or `make build`).
 build: $(IMAGE_NAME).img
@@ -104,6 +104,8 @@ flash-Darwin: $(IMAGE_NAME).img
 	cp $(SRC)/config.txt $(MNT)
 	sync
 	diskutil unmount $(MNT)
+
+resend: reboot send
 
 send: $(IMAGE_NAME).img
 	printf "0: %.8x" $(shell wc -c < $(IMAGE_NAME).img) | xxd -re -g0 > $(SERIAL_PORT)
