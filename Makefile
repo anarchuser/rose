@@ -25,10 +25,7 @@ SERIAL_PORT_ALT_Darwin = /dev/$(shell ls /dev | grep usbserial | head -n 1)
 BUILD_DEFAULT_TARGET = thorn
 
 # Ensure make still works if someone creates a file named like follows:
-.PHONY: all build clean cleanall flash flash-Linux flash-Darwin
-
-# Make everything. Default target
-all: cleanall buildall
+.PHONY: all build cleanall flash send reboot poweroff
 
 # Remove kernel and build directory
 clean:
@@ -77,6 +74,13 @@ send-thorn: setup-serial-$(HOST_OS)
 # Set up screen on alternate serial port
 screen:
 	screen $(SERIAL_PORT_ALT) $(BAUD_RATE)
+
+poweroff:
+	printf "0: %.2x" 17 | xxd -re -g0 > $(SERIAL_PORT)
+
+reboot:
+	printf "0: %.2x" 18 | xxd -re -g0 > $(SERIAL_PORT)
+
 
 # Emulate the corresponding kernel on qemu
 emulate: emulate-$(EMULATE_DEFAULT_TARGET)

@@ -1,7 +1,7 @@
 #ifndef _ROSE_K_P_POWER_H
 #define _ROSE_K_P_POWER_H
 
-#includ "kernel/peripheral/base.h"
+#include "kernel/peripherals/base.h"
 
 #define PM_BASE                     PBASE + 0x100000
 

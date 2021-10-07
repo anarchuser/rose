@@ -67,16 +67,12 @@ void mini_uart_init (void) {
 void handle_mini_uart_irq (void) {
     char c_event = mini_uart_recv ();
     switch (c_event) {
-        case 17:                // device control 1
-            mini_uart_send_string ("Received poweroff request...");
-            poweroff (true);    // power off, never return control here
-            mini_uart_send_string ("ignored\r\n");
-            break;
-        case 18:                // device control 2
-            mini_uart_send_string ("Received reboot request...");
-            reboot (true);      // reboot, never return control here
-            mini_uart_send_string ("ignored\r\n");
-            break;
+        case 17:    // device control 1
+            mini_uart_send_string ("Power off");
+            poweroff (40, true);                         // power off instantly, never return control here
+        case 18:    // device control 2
+            mini_uart_send_string ("Reboot");
+            reboot (40, true);                          // reboot instantly, never return control here
         default:
             mini_uart_send (c_event);
     }

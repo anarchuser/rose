@@ -1,15 +1,18 @@
 #include "kernel/power.h"
 
-void poweroff (bool block) {
+void poweroff (unsigned int timeout, bool block) {
 }
 
-void reboot (bool block) {
-    const int PM_RSTC = 0x2010001c;
-    const int PM_WDOG = 0x20100024;
-    const int PM_PASSWORD = 0x5a000000;
-    const int PM_RSTC_WRCFG_FULL_RESET = 0x00000020;
+void reboot (unsigned int timeout, bool block) {
+    unsigned int pm_rstc, pm_wdog;
     
-    put32 (PM_WDOG, PM_PASSWORD | 1); // timeout = 1/16th of a second? (whatever)
-    put32 (PM_RSTC, PM_PASSWORD | PM_RSTC_WRCFG_FULL_RESET);
+    /* Setup watchdog for reset */
+    pm_rstc = get32 (PM_RSTC);
+    // watchdog timer = timer clock / 16; need password (31:16) + value (11:0)
+    pm_wdog = PM_PASSWORD | (timeout & PM_WDOG_TIME_SET);
+    pm_rstc = PM_PASSWORD | (pm_rstc & PM_RSTC_WRCFG_CLR) | PM_RSTC_WRCFG_FULL_RESET;
+    put32 (PM_WDOG, pm_wdog);
+    put32 (PM_RSTC, pm_rstc);
+    
     while (block);
 }
