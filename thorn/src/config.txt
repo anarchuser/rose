@@ -1,1 +1,2 @@
 enable_uart=1
+dtparam=watchdog=on
