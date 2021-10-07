@@ -10,6 +10,7 @@ bool mailbox_request (unsigned int data_ptr, channel_t channel) {
     
     LOG ("Waiting for empty write buffer GPU...");
     while ((MBOX0 + MBOX_STATUS) & MBOX_WRITE_FULL);
+    
     LOG ("Writing to GPU...");
     put32 (MBOX0 + MBOX_WRITE, * msg_ptr);
     
@@ -31,8 +32,8 @@ bool mailbox_request (unsigned int data_ptr, channel_t channel) {
     mbox_property_t * property = (mbox_property_t * ) ((unsigned long) (* msg_ptr & ~0xFF));
     
     char * buffer[100];
-    sprinf (buffer, "Returning response code: operation %s",
-            (property->response == MBOX_SUCCESS) ? "succeeded" : "failed");
+    sprintf (buffer, "Returning response code: operation %s",
+             (property->response == MBOX_SUCCESS) ? "succeeded" : "failed");
     LOG (buffer);
     // Return the message's response code
     return property->response == MBOX_SUCCESS;
