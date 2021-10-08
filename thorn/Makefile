@@ -114,3 +114,4 @@ send: $(IMAGE_NAME).img
 emulate: $(IMAGE_NAME).img
 	qemu-img resize $(IMAGE_NAME).img -f raw 4294967296
 	qemu-system-aarch64 -cpu cortex-a72 -machine type=raspi3 -m 1024 -kernel $(IMAGE_NAME).img -nographic -serial null -chardev stdio,id=uart1 -serial chardev:uart1 -monitor none
+
