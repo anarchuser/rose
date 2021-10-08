@@ -19,7 +19,6 @@ LOPS   = -ffreestanding -nostdlib
 MNT = $(MNT_$(HOST_OS))
 MNT_Linux  = build/mnt
 MNT_Darwin = /Volumes/boot
-BOOT_PART = /dev/mmcblk0p1
 
 # Serial connection config
 BAUD_RATE = 115200
@@ -93,9 +92,9 @@ flash: flash-$(HOST_OS)
 
 flash-Linux: $(IMAGE_NAME).img
 	mkdir -p $(MNT)
-	sudo mount $(BOOT_PART) $(MNT)
-	sudo cp $(IMAGE_NAME).img $(MNT)/kernel8.img
-	sudo cp $(SRC)/config.txt $(MNT)
+	mount $(MNT)
+	cp $(IMAGE_NAME).img $(MNT)/kernel8.img
+	cp $(SRC)/config.txt $(MNT)
 	sync
 	sleep 1
 	sudo umount $(MNT)
