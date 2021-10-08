@@ -46,7 +46,7 @@ OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.c, $(BUILD)/$(SRC)/$(COMMON)/%_c.o, $(S
 OBJECTS += $(patsubst $(SRC)/$(COMMON)/%.S, $(BUILD)/$(SRC)/$(COMMON)/%_S.o, $(ASM_COMMON))
 
 # Ensure make still works if someone creates a file named like follows:
-.PHONY: build clean flash flash-Linux flash-Darwin emulate
+.PHONY: build clean flash flash-Linux flash-Darwin emulate reboot poweroff send resend
 
 # Default target (invoked by `make` or `make build`).
 build: $(IMAGE_NAME).img
@@ -105,6 +105,8 @@ flash-Darwin: $(IMAGE_NAME).img
 	sync
 	diskutil unmount $(MNT)
 
+resend: reboot send
+
 send: $(IMAGE_NAME).img
 	printf "0: %.8x" $(shell wc -c < $(IMAGE_NAME).img) | xxd -re -g0 > $(SERIAL_PORT)
 	cat $(IMAGE_NAME).img > $(SERIAL_PORT)
@@ -113,4 +115,10 @@ send: $(IMAGE_NAME).img
 emulate: $(IMAGE_NAME).img
 	qemu-img resize $(IMAGE_NAME).img -f raw 4294967296
 	qemu-system-aarch64 -cpu cortex-a72 -machine type=raspi3 -m 1024 -kernel $(IMAGE_NAME).img -nographic -serial null -chardev stdio,id=uart1 -serial chardev:uart1 -monitor none
+
+poweroff:
+	$(MAKE) -C .. poweroff
+
+reboot:
+	$(MAKE) -C .. reboot
 
