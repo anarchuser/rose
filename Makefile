@@ -7,7 +7,7 @@ HOST_OS = $(shell uname -s)
 # Mount point and boot partition
 FLASH_DEFAULT_TARGET = chainloader
 MNT = $(MNT_$(HOST_OS))
-MNT_Linux  = build/mnt
+MNT_Linux  = mnt
 MNT_Darwin = /Volumes/boot
 #BOOT_PART = /dev/mmcblk0p1
 
