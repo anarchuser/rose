@@ -96,6 +96,8 @@ flash-Linux: $(IMAGE_NAME).img
 	sudo mount $(BOOT_PART) $(MNT)
 	sudo cp $(IMAGE_NAME).img $(MNT)/kernel8.img
 	sudo cp $(SRC)/config.txt $(MNT)
+	sync
+	sleep 1
 	sudo umount $(MNT)
 
 flash-Darwin: $(IMAGE_NAME).img
