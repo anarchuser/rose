@@ -24,49 +24,73 @@ bool init_gpu () {
     colour_depth->buffer = (byte_t * ) & colour_depth_buffer;
 
 
-    int test_buffer[20] = {0};
-    test_buffer[0] = 80;
-    test_buffer[1] = 0;
-    test_buffer[2] = 0x00048003;
-    test_buffer[3] = 8;
-    test_buffer[4] = 0;
-    test_buffer[5] = 640;
-    test_buffer[6] = 480;
-    test_buffer[7] = 0x00048004;
-    test_buffer[8] = 8;
-    test_buffer[9] = 0;
-    test_buffer[10] = 640;
-    test_buffer[11] = 480;
-    test_buffer[12] = 0x00048005;
-    test_buffer[13] = 4;
-    test_buffer[14] = 0;
-    test_buffer[15] = 24;
-    test_buffer[16] = 0;
-
-    int_dump (sizeof(test_buffer), (unsigned int *) test_buffer);
+    mbox[0] = 80;
+    mbox[1] = 0;
+    mbox[2] = 0x00048003;
+    mbox[3] = 8;
+    mbox[4] = 0;
+    mbox[5] = 640;
+    mbox[6] = 480;
+    mbox[7] = 0x00048004;
+    mbox[8] = 8;
+    mbox[9] = 0;
+    mbox[10] = 640;
+    mbox[11] = 480;
+    mbox[12] = 0x00048005;
+    mbox[13] = 4;
+    mbox[14] = 0;
+    mbox[15] = 24;
+    mbox[16] = 0;
+    mbox[17] = 0;
+    mbox[18] = 0;
+    mbox[19] = 0;
     
-    for (int i = 0; i < 20; i++) {
-        printf("%d ", tag_buffer[i]);
+
+    int_dump (sizeof(mbox), (unsigned int *) mbox);
+    
+    channel_t ch = PROPERTY_ARM_VC;
+
+    // 28-bit address (MSB) and 4-bit value (LSB)
+    unsigned int r = ((unsigned int)((long) &mbox) &~ 0xF) | (ch & 0xF);
+
+    // Wait until we can write
+    // while (get32(MBOX_STATUS) & MBOX_FULL);
+    
+    // Write the address of our buffer to the mailbox with the channel appended
+    put32(MBOX_WRITE, r);
+
+    while (1) {
+        // Is there a reply?
+         while (get32(MBOX_STATUS) & MBOX_EMPTY);
+
+        // Is it a reply to our message?
+        if (r == get32(MBOX_READ)) return mbox[1]==MBOX_RESPONSE; // Is it successful?
+           
     }
 
-    printf ("Preparing screen configuration request...\r\n");
-    mailbox_write_msg (buffer, (mbox_tag_t *) tag_buffer, 3);
-    printf ("Sending screen configuration request...\r\n");
-    if (! mailbox_request ((unsigned int) test_buffer, PROPERTY_ARM_VC)) return false;
+
+    // for (int i = 0; i < 20; i++) {
+    //     printf("%d ", tag_buffer[i]);
+    // }
+
+    // printf ("Preparing screen configuration request...\r\n");
+    // mailbox_write_msg (buffer, (mbox_tag_t *) tag_buffer, 3);
+    // printf ("Sending screen configuration request...\r\n");
+    // if (! mailbox_request ((unsigned int) mbox, PROPERTY_ARM_VC)) return false;
     
-    byte_t alignment[] = {16};
-    volatile mbox_tag_t request_fb = {
-            GPU_REQUEST_FRAMEBUFFER,
-            8,
-            0,
-            alignment,
-    };
-    printf ("Preparing framebuffer request...\r\n");
-    mailbox_write_msg ((unsigned int) buffer, & request_fb, 1);
-    printf ("Requesting framebuffer...\r\n");
-    if (! mailbox_request ((unsigned int) buffer, PROPERTY_ARM_VC)) return false;
+    // byte_t alignment[] = {16};
+    // volatile mbox_tag_t request_fb = {
+    //         GPU_REQUEST_FRAMEBUFFER,
+    //         8,
+    //         0,
+    //         alignment,
+    // };
+    // printf ("Preparing framebuffer request...\r\n");
+    // mailbox_write_msg ((unsigned int) buffer, & request_fb, 1);
+    // printf ("Requesting framebuffer...\r\n");
+    // if (! mailbox_request ((unsigned int) buffer, PROPERTY_ARM_VC)) return false;
     
-    fb = * ((ptr_t * ) (buffer + 5));
+    // fb = * ((ptr_t * ) (buffer + 5));
     return true;
 }
 

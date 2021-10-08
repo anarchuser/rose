@@ -33,7 +33,7 @@ bool mailbox_request (unsigned int data_ptr, channel_t channel) {
     
     char * buffer[100];
     sprintf (buffer, "Returning response code: operation %s",
-             (property->response == MBOX_SUCCESS) ? "succeeded" : "failed");
+            (property->response == MBOX_SUCCESS) ? "succeeded" : "failed");
     LOG (buffer);
     // Return the message's response code
     return property->response == MBOX_SUCCESS;
