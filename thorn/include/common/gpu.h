@@ -22,7 +22,7 @@
 
 #define GPU_MAX_MSG_SIZE 64
 
-static volatile unsigned int __attribute__((aligned(16))) mbox[36];
+static volatile unsigned int __attribute__((aligned(16))) mbox[20];
 
 
 static volatile unsigned int buffer[GPU_MAX_MSG_SIZE] __attribute__((aligned(16)));
@@ -33,7 +33,6 @@ static ptr_t fb;
 bool init_gpu (void);
 
 ptr_t get_fb (void);
-
 
 
 #endif //_ROSE_C_GPU_H

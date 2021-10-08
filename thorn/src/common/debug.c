@@ -9,16 +9,19 @@ void print_hex (unsigned char dec) {
 }
 
 void hex_dump (unsigned int size, byte_t * array) {
-    for (int i = 0; i < size; i ++) {
-        print_hex (array[i]);
-        if (! ((i + 1) % 4)) printf (" ");
-        if (! ((i + 1) % 80)) printf ("\r\n");
+    for (int i = 0; i < size;) {
+        i += 4;
+        for (int j = 1; j <= 4; j++) {
+            print_hex (array[i - j]);
+        }
+        printf (" ");
+        if (!(i % 32)) printf ("\r\n");
     }
     printf ("\r\n");
 }
 
 void int_dump (unsigned int size, unsigned int * array) {
-    for (int i = 0; i < size / sizeof (int); i ++) {
+    for (int i = 0; i < size / sizeof (int); i++) {
         printf ("%d ", array[i]);
     }
     printf ("\r\n");
