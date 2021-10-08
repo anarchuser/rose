@@ -17,7 +17,7 @@ LOPS   = -ffreestanding -nostdlib
 
 # Mount point and boot partition
 MNT = $(MNT_$(HOST_OS))
-MNT_Linux  = build/mnt
+MNT_Linux  = ../mnt
 MNT_Darwin = /Volumes/boot
 
 # Serial connection config
