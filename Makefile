@@ -9,7 +9,7 @@ FLASH_DEFAULT_TARGET = chainloader
 MNT = $(MNT_$(HOST_OS))
 MNT_Linux  = build/mnt
 MNT_Darwin = /Volumes/boot
-BOOT_PART = /dev/mmcblk0p1
+#BOOT_PART = /dev/mmcblk0p1
 
 # Serial connection config
 SEND_DEFAULT_TARGET = thorn
