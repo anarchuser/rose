@@ -2,7 +2,8 @@
 *.d
 
 # Build folder
-build/
+*/build/*
+mnt/
 
 # Object files
 *.o
