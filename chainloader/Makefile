@@ -97,7 +97,7 @@ flash-Linux: $(IMAGE_NAME).img
 	cp $(SRC)/config.txt $(MNT)
 	sync
 	sleep 1
-	sudo umount $(MNT)
+	umount $(MNT)
 
 flash-Darwin: $(IMAGE_NAME).img
 	cp $(IMAGE_NAME).img $(MNT)/kernel8.img
