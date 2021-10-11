@@ -63,6 +63,7 @@ setup-serial-Linux:
 	stty -F $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
 setup-serial-Darwin:
+	cat -v $(SERIAL_PORT) &
 	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
 resend: reboot send
