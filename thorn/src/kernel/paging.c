@@ -6,7 +6,7 @@ struct mm_table * get_page_table (unsigned short upper_attributes, unsigned shor
         struct mm_descriptor * desc = page->descriptor + i * sizeof (unsigned long);
         desc->valid = 0;
         desc->block = ! is_block;
-        desc->lower_attributes = lower_attributes & 0x3FF;
+        desc->lower_attributes = lower_attributes;
         desc->address = 0;
         desc->upper_attributes = upper_attributes;
     }

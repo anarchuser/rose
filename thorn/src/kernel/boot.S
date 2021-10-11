@@ -9,7 +9,7 @@ _start:
 	mrs	x0, mpidr_el1
 	and	x0, x0,#0xFF		// Check processor id
 	cbz	x0, init_bss		// Hang for all non-primary CPU
-	
+
 	wfe
 
 	b	master
@@ -20,6 +20,13 @@ init_bss:
 	sub	x1, x1, x0
 	bl	memzero
 
+	bl move_to_el1
+	bl init_mmu
+
+	mov x1, #1
+	msr sctlr_el1, x1
+
+	/*
 	sev
 
 	mov 	x0, #0
@@ -33,6 +40,7 @@ init_bss:
 
 	mov	x1, #0xf0
 	str	x0, [x1]
+	*/
 
 move_to_el1:
 	ldr	x0, =SCTLR_VALUE_MMU_DISABLED

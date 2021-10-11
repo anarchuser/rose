@@ -3,7 +3,12 @@
 
 #define NULL 0
 
-#define ptr_t unsigned long
+#ifndef __ASSEMBLER__
+
+typedef unsigned long ptr_t;
+typedef unsigned char byte_t;
+
+#endif
 
 #define byte_t unsigned char
 

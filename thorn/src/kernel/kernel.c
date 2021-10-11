@@ -95,19 +95,19 @@ void kernel_main (int processor_id) {
     
     if (processor_id == 0) {
         while (current_processor != 3);
-        
-        draw ();
+        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
+        if (res < 0) {
+            printf ("error while starting kernel process");
+            return;
+        }
 
-//        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
-//        if (res < 0) {
-//            printf ("error while starting kernel process");
-//            return;
-//        }
-//
-//        while (1) {
-//            schedule ();
-//        }
-        LOG("DONE PRINTING");
+       while (1) {
+           schedule ();
+       }
+    }
+    if (processor_id == 1) {
+        while (current_processor != 3);
+        draw();
     }
     
     while (1);

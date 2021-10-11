@@ -15,3 +15,15 @@ ptr_t get_free_page () {
 void free_page (ptr_t p) {
     mem_map[(p - LOW_MEMORY) / PAGE_SIZE] = 0;
 }
+
+// void memzero (ptr_t src, ptr_t n) {
+//     if (n == 0) return;
+//     *(byte_t *) src = 0;
+//     memzero(src + 1, n - 1);
+// }
+
+// void memcpy (ptr_t des, ptr_t src, ptr_t n) {
+//     if (n == 0) return;
+//     *(byte_t *) des = (byte_t *) src;
+//     memcpy(des + 1, src + 1, n - 1);
+// }

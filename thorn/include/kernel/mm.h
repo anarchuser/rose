@@ -27,6 +27,7 @@ ptr_t get_free_page ();
 void free_page (ptr_t p);
 
 void memzero (ptr_t src, ptr_t n);
+void memcpy (ptr_t des, ptr_t src, ptr_t n);
 
 #endif
 
