@@ -12,6 +12,11 @@
 #include "common/rainbow.h"
 
 void user_process1 (char * array) {
+    if (* array == '1') {
+        printf("%d\r\n", *(char *)0x0000010010001000);
+        printf("%d\r\n", *(char *)0xffff000001000000);
+    }
+
     char buf[2] = {0};
     while (1) {
         for (int i = 0; i < 5; i++) {
@@ -38,7 +43,7 @@ void user_process () {
     }
     stack = call_sys_malloc ();
     if (stack < 0) {
-        printf ("Error while allocating stack for process 1\n\r");
+        printf ("Error while allocating stack for process 2\n\r");
         return;
     }
     err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "abcd", stack);
@@ -46,11 +51,22 @@ void user_process () {
         printf ("Error while cloning process 2\n\r");
         return;
     }
+    stack = call_sys_malloc ();
+    if (stack < 0) {
+        printf ("Error while allocating stack for process 3\n\r");
+        return;
+    }
+    err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "+-*/", stack);
+    if (err < 0) {
+        printf ("Error while cloning process 3\n\r");
+        return;
+    }
     call_sys_exit ();
 }
 
 void kernel_process () {
     printf ("Kernel process started. EL %d\r\n", get_el ());
+    printf("%d\r\n", *(char *)0x0000000000001234);
     int err = move_to_user_mode ((unsigned long) & user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -92,7 +108,7 @@ void kernel_main (int processor_id) {
     printf ("Hello, from processor %d\n\r", processor_id);
     
     current_processor++;
-    
+
     if (processor_id == 0) {
         while (current_processor != 3);
         int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);

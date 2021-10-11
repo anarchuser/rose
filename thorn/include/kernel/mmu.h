@@ -1,8 +1,6 @@
 #ifndef _MMU_H
 #define _MMU_H
 
-#include "kernel/paging.h"
-
 #define KERNEL_SPACE
 #define USER_SPACE
 
@@ -18,10 +16,15 @@
 #define RAM                     8
 #define One_GB                  0x40000000
 
-#ifndef __ASSEMBLY__
+#ifndef __ASSEMBLER__
+
+#include "kernel/paging.h"
+#include "common/printf.h"
+#include "kernel/sched.h"
 
 void init_mmu(void);
 void write_pgd(mm_table);
+void data_abort(ptr_t far, ptr_t esr);
 
 #endif
 #endif

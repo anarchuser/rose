@@ -23,10 +23,11 @@ init_bss:
 	bl move_to_el1
 	bl init_mmu
 
+
 	mov x1, #1
 	msr sctlr_el1, x1
-
-	/*
+	
+/*
 	sev
 
 	mov 	x0, #0
