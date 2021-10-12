@@ -1,22 +1,38 @@
-#include "kernel/mini_uart.h"
+#include "common/logging.h"
 #include "common/printf.h"
 #include "common/utils.h"
+<<<<<<< HEAD
 #include "common/gpu.h"
 #include "kernel/mm.h"
 #include "kernel/timer.h"
-#include "kernel/irq.h"
-#include "kernel/sched.h"
+=======
 #include "kernel/fork.h"
+>>>>>>> 436bff3 (WIP: try to generate different mmu data aborts)
+#include "kernel/irq.h"
+#include "kernel/mini_uart.h"
+#include "kernel/mm.h"
+#include "kernel/sched.h"
 #include "kernel/sys.h"
+<<<<<<< HEAD
 #include "common/logging.h"
 #include "common/rainbow.h"
+=======
+#include "kernel/timer.h"
+>>>>>>> 436bff3 (WIP: try to generate different mmu data aborts)
 
 void user_process1 (char * array) {
     if (* array == '1') {
-        printf("%d\r\n", *(char *)0x0000010010001000);
-        printf("%d\r\n", *(char *)0xffff000001000000);
+        LOG ("EL0: Before data abort");
+        printf ("Printing aborting data: %d\r\n", * (char *) 0x000000001234abcd);
+        printf ("Printing aborting data: %d\r\n", * (char *) 0xffff00001234abcd);
+//        printf ("Printing aborting data: %d\r\n", * (char *) 0x0000000600000000); // produces invalid_el0_64 error
+//        printf ("Printing aborting data: %d\r\n", * (char *) 0x0000000800000000); // crashes raspberry
+        printf ("Printing aborting data: %d\r\n", * (char *) 0x123400000000abcd);
+        printf ("Printing aborting data: %d\r\n", * (char *) 0x000012340000abcd);
+        printf ("Printing aborting data: %d\r\n", * (char *) 0xffff12340000abcd);
+        LOG("EL0: After data abort");
     }
-
+    
     char buf[2] = {0};
     while (1) {
         for (int i = 0; i < 5; i++) {
@@ -36,7 +52,8 @@ void user_process () {
         printf ("Error while allocating stack for process 1\n\r");
         return;
     }
-    int err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "12345", stack);
+    int err = call_sys_clone ((unsigned long) & user_process1,
+                              (unsigned long) "12345", stack);
     if (err < 0) {
         printf ("Error while cloning process 1\n\r");
         return;
@@ -46,7 +63,8 @@ void user_process () {
         printf ("Error while allocating stack for process 2\n\r");
         return;
     }
-    err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "abcd", stack);
+    err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "abcd",
+                          stack);
     if (err < 0) {
         printf ("Error while cloning process 2\n\r");
         return;
@@ -56,7 +74,8 @@ void user_process () {
         printf ("Error while allocating stack for process 3\n\r");
         return;
     }
-    err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "+-*/", stack);
+    err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "+-*/",
+                          stack);
     if (err < 0) {
         printf ("Error while cloning process 3\n\r");
         return;
@@ -66,13 +85,12 @@ void user_process () {
 
 void kernel_process () {
     printf ("Kernel process started. EL %d\r\n", get_el ());
-    printf("%d\r\n", *(char *)0x0000000000001234);
+    
     int err = move_to_user_mode ((unsigned long) & user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
     }
 }
-
 
 void kernel_main (int processor_id) {
     
@@ -85,7 +103,7 @@ void kernel_main (int processor_id) {
         timer_init ();
         enable_interrupt_controller ();
         enable_irq ();
-//        task_init ();
+        task_init ();
         
         LOG("Logging works");
         
@@ -108,7 +126,7 @@ void kernel_main (int processor_id) {
     printf ("Hello, from processor %d\n\r", processor_id);
     
     current_processor++;
-
+    
     if (processor_id == 0) {
         while (current_processor != 3);
         int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
