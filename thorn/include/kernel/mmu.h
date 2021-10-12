@@ -5,7 +5,7 @@
 #define USER_SPACE
 
 #define PGD_SIZE
-#define PGD_INDEX 
+#define PGD_INDEX
 
 #define MT_DEVICE_nGnRnE        0x0
 #define MT_NORMAL_NC            0x1
@@ -22,9 +22,13 @@
 #include "common/printf.h"
 #include "kernel/sched.h"
 
-void init_mmu(void);
-void write_pgd(mm_table);
-void data_abort(ptr_t far, ptr_t esr);
+void init_mmu (void);
+
+void write_pgd (mm_table);
+
+void data_abort_el0 (ptr_t far, ptr_t esr);
+
+void data_abort_el1 (ptr_t far, ptr_t esr);
 
 #endif
 #endif
