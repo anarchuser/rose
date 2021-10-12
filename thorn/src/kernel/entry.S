@@ -162,7 +162,9 @@ el0_sync:
 	cmp	x24, #ESR_ELx_EC_SVC64								// SVC in 64-bit state
 	b.eq	el0_svc
 	cmp x24, #ESR_ELx_EC_DABT_LOW
-	b.eq 	data_abort
+	b.eq 	el0_da
+	cmp x24, #ESR_ELx_EC_DABT_SAME
+	b.eq 	el1_da
 	handle_invalid_entry 0, SYNC_ERROR
 
 sc_nr	.req	x25															// number of system calls
@@ -191,7 +193,17 @@ el0_da:
 	bl enable_irq
 	mrs x0, far_el1
 	mrs x1, esr_el1
-	bl data_abort
+	bl data_abort_el0
+    bl disable_irq
+    eret
+    
+el1_da:
+	bl enable_irq
+	mrs x0, far_el1
+	mrs x1, esr_el1
+	bl data_abort_el1
+    bl disable_irq
+    eret
 
 .globl ret_from_fork
 ret_from_fork:
