@@ -8,6 +8,19 @@
 //    printf ("%c%c ", first, second);
 //}
 
+void little_endian(unsigned int * value) {
+    unsigned char * byte = value;
+    if (! * byte) return;
+
+    unsigned char temp = byte[0];
+    byte[0] = byte[3];
+    byte[3] = temp;
+    
+    temp = byte[1];
+    byte[1] = byte[2];
+    byte[2] = temp;
+}
+
 void receive_kernel (void) {
     char * const kernel_load_address = (char *) LOAD_ADDRESS;
     char * const kernel_size_address = kernel_load_address - sizeof (int);
