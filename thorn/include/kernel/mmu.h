@@ -18,9 +18,11 @@
 
 #ifndef __ASSEMBLER__
 
+#include "kernel/mini_uart.h"
 #include "kernel/paging.h"
 #include "common/printf.h"
 #include "kernel/sched.h"
+#include "common/logging.h"
 
 void init_mmu (void);
 

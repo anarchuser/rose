@@ -21,11 +21,6 @@ init_bss:
 	bl	memzero
 
 	bl move_to_el1
-	bl init_mmu
-
-
-	mov x1, #1
-	msr sctlr_el1, x1
 	
 /*
 	sev
@@ -59,6 +54,11 @@ move_to_el1:
 	eret
 
 master:
+	bl init_mmu
+
+	mov x1, #1
+	msr sctlr_el1, x1
+
 	mrs	x0, mpidr_el1
 	and	x0, x0, #0xFF
 	mov	x1, #SECTION_SIZE

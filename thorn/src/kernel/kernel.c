@@ -23,6 +23,8 @@
 void user_process1 (char * array) {
     if (* array == '1') {
         LOG ("EL0: Before data abort");
+        printf("%p\r\n", get_free_page());
+
         printf ("Printing aborting data: %d\r\n", * (char *) 0x000000001234abcd);
         printf ("Printing aborting data: %d\r\n", * (char *) 0x00f0000200000000);
 
@@ -36,13 +38,13 @@ void user_process1 (char * array) {
     }
     
     char buf[2] = {0};
-    while (1) {
+    // while (1) {
         for (int i = 0; i < 5; i++) {
             buf[0] = array[i];
             call_sys_write (buf);
             delay (100000);
         }
-    }
+    // }
 }
 
 void user_process () {
