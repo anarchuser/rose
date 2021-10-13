@@ -32,7 +32,7 @@ static void * stdout_putp;
 
 static void uli2a (unsigned long int num, unsigned int base, int uc, char * bf) {
     int n = 0;
-    unsigned int d = 1;
+    unsigned long int d = 1;
     while (num / d >= base)
         d *= base;
     while (d != 0) {
@@ -216,14 +216,10 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                     putf (putp, '0');
                     putf (putp, 'x');
 #ifdef  PRINTF_LONG_SUPPORT
-                    if (lng) {
-                        uli2a (va_arg(va, unsigned long int), 16, (ch == 'P'), bf);
-                    } else
+                    uli2a (va_arg(va, unsigned long int), 16, (ch == 'P'), bf);
+#else
+                    ui2a (va_arg (va, unsigned int), 16, (ch == 'P'), bf);
 #endif
-                    {
-                        ui2a (va_arg (va,
-                                      unsigned int), 16, (ch == 'P'), bf);
-                    }
                     putchw (putp, putf, w, lz, bf);
                     break;
                 case '%' :

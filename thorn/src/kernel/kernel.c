@@ -24,12 +24,14 @@ void user_process1 (char * array) {
     if (* array == '1') {
         LOG ("EL0: Before data abort");
         printf ("Printing aborting data: %d\r\n", * (char *) 0x000000001234abcd);
-        printf ("Printing aborting data: %d\r\n", * (char *) 0xffff00001234abcd);
-//        printf ("Printing aborting data: %d\r\n", * (char *) 0x0000000600000000); // produces invalid_el0_64 error
-//        printf ("Printing aborting data: %d\r\n", * (char *) 0x0000000800000000); // crashes raspberry
-        printf ("Printing aborting data: %d\r\n", * (char *) 0x123400000000abcd);
-        printf ("Printing aborting data: %d\r\n", * (char *) 0x000012340000abcd);
-        printf ("Printing aborting data: %d\r\n", * (char *) 0xffff12340000abcd);
+        printf ("Printing aborting data: %d\r\n", * (char *) 0x00f0000200000000);
+
+        // printf ("Printing aborting data: %d\r\n", * (char *) 0xffff00001234abcd);
+        // printf ("Printing aborting data: %d\r\n", * (char *) 0x0000000600000000); // produces invalid_el0_64 error
+        // printf ("Printing aborting data: %d\r\n", * (char *) 0x0000000800000000); // crashes raspberry
+        // printf ("Printing aborting data: %d\r\n", * (char *) 0x123400000000abcd);
+        // printf ("Printing aborting data: %d\r\n", * (char *) 0x000012340000abcd);
+        // printf ("Printing aborting data: %d\r\n", * (char *) 0xffff12340000abcd);
         LOG("EL0: After data abort");
     }
     
