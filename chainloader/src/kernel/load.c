@@ -9,7 +9,7 @@
 //}
 
 void little_endian(unsigned int * value) {
-    unsigned char * byte = value;
+    unsigned char * byte = (unsigned char *) value;
     if (! * byte) return;
 
     unsigned char temp = byte[0];
