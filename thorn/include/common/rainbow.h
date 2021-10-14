@@ -3,7 +3,7 @@
 
 #include "common/gpu.h"
 
-static color const RAINBOW[] = {
+static color_t const RAINBOW[] = {
         {0xff, 0x00, 0xff, 0},
         {0xc0, 0x00, 0xff, 0},
         {0x80, 0x00, 0xff, 0},

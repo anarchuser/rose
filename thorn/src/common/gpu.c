@@ -16,7 +16,7 @@ bool init_gpu () {
         gpu_msg_buffer[0] = (4 * ++c);// Write message size at the beginning of the buffer
 
         // If reading physical screen dimension fails exit function
-        if (!mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC))
+        if (! mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC))
             return false;
     }
     {                           // Second message: request frame buffer
@@ -64,11 +64,11 @@ bool init_gpu () {
         gpu_msg_buffer[0] = (4 * ++c);// Write message size at the beginning of the buffer
 
         // If message failed exit
-        if (!mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC))
+        if (! mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC))
             return false;
 
         // Since message succeeded, update frame buffer and its size
-        fb_info.fb      = (color *) (long) (gpu_msg_buffer[index_framebuffer] & VC_SDRAM_OFFSET);
+        fb_info.fb      = (color_t *) (long) (gpu_msg_buffer[index_framebuffer] & VC_SDRAM_OFFSET);
         fb_info.fb_size = gpu_msg_buffer[index_fb_size];
     }
     {                           // Third message: read pitch (in bytes per line)
@@ -87,7 +87,7 @@ bool init_gpu () {
         gpu_msg_buffer[0] = (4 * ++c);// Write message size at the beginning of the buffer
 
         // If message failed exit
-        if (!mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC))
+        if (! mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC))
             return false;
 
         // Else write pitch appropriately
@@ -96,7 +96,7 @@ bool init_gpu () {
     return true;
 }
 
-color * get_fb () {
+color_t * get_fb () {
     return fb_info.fb;
 }
 

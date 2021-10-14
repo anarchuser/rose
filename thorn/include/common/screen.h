@@ -1,21 +1,10 @@
 #ifndef _ROSE_C_SCREEN_H
 #define _ROSE_C_SCREEN_H
+#include "common/font.h"
+#include "common/gpu.h"
 
-#include "common/printf.h"
+void printc(char c);
 
-#define HEIGHT 79
-#define WIDTH  317
+void drawpx (unsigned int x, unsigned int y, color_t color);
 
-static char screen[HEIGHT * WIDTH];
-
-void clear_screen ();
-
-void draw_border ();
-
-void draw_screen ();
-
-char get_pixel (int x, int y);
-
-char set_pixel (int x, int y, char c);
-
-#endif//_ROSE_C_SCREEN_H
+#endif //_ROSE_C_SCREEN_H
