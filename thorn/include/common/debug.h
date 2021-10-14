@@ -9,7 +9,7 @@
 
 void print_hex (unsigned char dec);
 
-void byte_dump (byte_t * array);
+void hex_dump (byte_t * array);
 
 void int_dump (unsigned int * array);
 

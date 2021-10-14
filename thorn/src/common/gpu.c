@@ -6,15 +6,17 @@ bool init_gpu () {
         mbox[++c] = 0;                      // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
         
         mbox[++c] = 0x00040003;             // Tag to get physical display width / height
-        mbox[++c] = 8;                      // Size of value buffer
+        mbox[++c] = 0;                      // Size of value buffer
         mbox[++c] = 0;                      // Response & value buffer size written will be written here
-        mbox[++c] = GPU_SCREEN_WIDTH;       // Get physical screen width    |  Overwritten by actual width
-        mbox[++c] = GPU_SCREEN_HEIGHT;      // Get physical screen height   |  Overwritten by actual height
+        mbox[++c] = 0;                      // Get physical screen width    |  Overwritten by actual width
+        mbox[++c] = 0;                      // Get physical screen height   |  Overwritten by actual height
         
-        mbox[0] = 4 * c;                    // Write message size at the beginning of the buffer
+        mbox[0] = 4 * ++c;                    // Write message size at the beginning of the buffer
+        
+        // If reading physical screen dimension fails exit function
+        if (!mailbox_request (mbox, PROPERTY_ARM_VC)) return false;
     }
     
-    byte_t index_framebuffer;
     {
         int c = 0;                          // Message size; increment while we write
         mbox[++c] = 0;                      // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
@@ -34,7 +36,7 @@ bool init_gpu () {
         mbox[++c] = 8;                      // Size of value buffer
         mbox[++c] = 0;                      // Response & value buffer size will be written here
         mbox[++c] = 16;                     // Buffer alignment             |  Overwritten by pointer to framebuffer
-        index_framebuffer = c;
+        byte_t index_framebuffer = c;
         mbox[++c] = 0;                      // Unused - will be overwritten |  Overwritten by size of framebuffer
         
         mbox[++c] = 0;                      // End tag
@@ -42,44 +44,13 @@ bool init_gpu () {
         mbox[++c] = 0;                      // Padding
         
         mbox[0] = 4 * c;                    // Write message size at the beginning of the buffer
-    }
-    
-    int_dump ((unsigned int *) mbox);
-    hex_dump ((unsigned int *) mbox);
-    
-    // 28-bit address (MSB) and 4-bit value (LSB)
-    unsigned int outgoing = ((unsigned int) ((long) mbox) & ~0xF) | (PROPERTY_ARM_VC & 0xF);
-    
-    // Wait until we can write
-    while (get32 (MBOX0 + MBOX_STATUS) & MBOX_FULL);
-    
-    // Write the address of our buffer to the mailbox with the channel appended
-    put32 (MBOX0 + MBOX_WRITE, outgoing);
-    
-    unsigned int incoming;
-    while (1) {
-        // Is there a reply?
-        while (get32 (MBOX0 + MBOX_STATUS) & MBOX_EMPTY);
         
-        incoming = get32 (MBOX0 + MBOX_READ);
+        // If message failed exit
+        if (!mailbox_request (mbox, PROPERTY_ARM_VC)) return false;
         
-        // Is it a reply to our message?
-        if (outgoing == incoming) {
-            int_dump ((unsigned int *) mbox);
-            hex_dump ((unsigned int *) mbox);
-            
-            if (mbox[1] != MBOX_SUCCESS) {
-                return false;
-            }
-            break;
-        }
+        // Since message succeeded, update the frame buffer
+        fb = (color * ) (mbox[index_framebuffer] & VC_SDRAM_OFFSET);
     }
-    
-    int_dump ((unsigned int *) mbox);
-    hex_dump ((unsigned int *) mbox);
-    
-    fb = (color * ) (
-    long) (mbox[index_framebuffer] & VC_SDRAM_OFFSET);
     return true;
 }
 
