@@ -12,8 +12,11 @@
 // Reference:
 // https://jsandler18.github.io/extra/prop-channel.html
 
-#define GPU_SCREEN_WIDTH    1920
-#define GPU_SCREEN_HEIGHT   1080
+// Uncomment to override physical / virtual screen size with the values defined below
+//#define GPU_OVERRIDE_PHYSICAL_SCREEN
+
+#define GPU_SCREEN_WIDTH    1920                // Width used if Override is enabled
+#define GPU_SCREEN_HEIGHT   1080                // Height used if Override is enabled
 
 #define GPU_VIRTUAL_WIDTH   GPU_SCREEN_WIDTH
 #define GPU_VIRTUAL_HEIGHT  GPU_SCREEN_HEIGHT

@@ -20,12 +20,26 @@ bool init_gpu () {
     {
         int c = 0;                          // Message size; increment while we write
         mbox[++c] = 0;                      // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
+
+#ifdef GPU_OVERRIDE_PHYSICAL_SCREEN
+        mbox[++c] = 0x00048003;             // Tag to set virtual display width / height
+        mbox[++c] = 8;                      // Size of value buffer
+        mbox[++c] = 0;                      // Response & value buffer size written will be written here
+        mbox[++c] = GPU_SCREEN_WIDTH;       // Set virtual screen width     |  Overwritten by actual virtual width
+        mbox[++c] = GPU_SCREEN_HEIGHT;      // Set virtual screen height    |  Overwritten by actual virtual height
         
         mbox[++c] = 0x00048004;             // Tag to set virtual display width / height
         mbox[++c] = 8;                      // Size of value buffer
         mbox[++c] = 0;                      // Response & value buffer size written will be written here
-        mbox[++c];//GPU_SCREEN_WIDTH;       // Set virtual screen width     |  Overwritten by actual virtual width
-        mbox[++c];//GPU_SCREEN_HEIGHT;      // Set virtual screen height    |  Overwritten by actual virtual height
+        mbox[++c] = GPU_VIRTUAL_WIDTH;      // Set virtual screen width     |  Overwritten by actual virtual width
+        mbox[++c] = GPU_VIRTUAL_HEIGHT;     // Set virtual screen height    |  Overwritten by actual virtual height
+#else
+        mbox[++c] = 0x00048004;             // Tag to set virtual display width / height
+        mbox[++c] = 8;                      // Size of value buffer
+        mbox[++c] = 0;                      // Response & value buffer size written will be written here
+        mbox[++c];//GPU_SCREEN_WIDTH;       // Keep virtual screen width    |  Overwritten by actual virtual width
+        mbox[++c];//GPU_SCREEN_HEIGHT;      // Keep virtual screen height   |  Overwritten by actual virtual height
+#endif
         
         mbox[++c] = 0x00048005;             // Tag to set pixel depth
         mbox[++c] = 4;                      // Size of value buffer
@@ -43,7 +57,7 @@ bool init_gpu () {
         mbox[++c] = 0;                      // Padding
         mbox[++c] = 0;                      // Padding
         
-        mbox[0] = 4 * c;                    // Write message size at the beginning of the buffer
+        mbox[0] = 4 * ++c;                    // Write message size at the beginning of the buffer
         
         // If message failed exit
         if (!mailbox_request (mbox, PROPERTY_ARM_VC)) return false;
@@ -58,6 +72,7 @@ void draw () {
     printf ("\n");
     
     color rainbow[] = {
+            {0xff, 0x00, 0xff, 0},
             {0x80, 0x00, 0xff, 0},
             {0x00, 0x00, 0xff, 0},
             {0x00, 0x80, 0xff, 0},
@@ -68,8 +83,7 @@ void draw () {
             {0xff, 0xff, 0x00, 0},
             {0xff, 0x80, 0x00, 0},
             {0xff, 0x00, 0x00, 0},
-            {0xff, 0x00, 0x80, 0},
-            {0xff, 0x00, 0xff, 0}
+            {0xff, 0x00, 0x80, 0}
     };
     
     int rb_size = sizeof (rainbow) / sizeof (color);
