@@ -21,7 +21,7 @@ void hex_dump (byte_t * array) {
 }
 
 void int_dump (unsigned int * array) {
-    for (int i = 0; i < * array; i++) {
+    for (int i = 0; i < * array / 4; i++) {
         printf ("%d ", array[i]);
     }
     printf ("\r\n");
