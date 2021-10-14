@@ -106,8 +106,8 @@ void kernel_main (int processor_id) {
 //        while (1) {
 //            schedule ();
 //        }
+        LOG("DONE PRINTING");
     }
     
-    LOG("DONE PRINTING");
     while (1);
 }

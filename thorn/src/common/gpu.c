@@ -48,12 +48,12 @@ bool init_gpu () {
     mbox[1] = 0;
     mbox[2] = 0x00048003;
     mbox[3] = 8;
-    mbox[4] = 0;
+    mbox[4] = 8;
     mbox[5] = 1920;
     mbox[6] = 1080;
     mbox[7] = 0x00048004;
     mbox[8] = 8;
-    mbox[9] = 0;
+    mbox[9] = 8;
     mbox[10] = 640;
     mbox[11] = 480;
     mbox[12] = 0x00048005;
@@ -174,26 +174,29 @@ void draw () {
     color yellow = {0, 0xff, 0xFF, 0xFF};
     color cyan = {0xff, 0xff, 0, 0xff};
     
-    fb[0] = red;
-    fb[1] = yellow;
-    fb[16] = blue;
-    fb[17] = cyan;
+    char index[] = {0, 1, 16, 17};
+    
+    byte_t c[] = {0xff, 0xff, 0xff, 0};
+    color colour = * (color *) c;
+    unsigned int c_int = * (unsigned int *) c;
+    while (1) {
+        for (int i = 0; i < 4; i++) {
+            c_int = c_int ? 0 : 0xFFFFFF;
+            fb[index[i]] = colour;
+        }
+        delay (30000);
 
-//    for (int i = 0; i < 1024;) {
-//        fb[i] = black;
-//        fb[()] = red;
-//        delay (100000);
-//        printf ("\r%d    ", i);
-//        printf ("\ri: %d;   %p     ", i, * (unsigned int *) & c);
-//    }
-
-//    while (1) {
-//        for (int i = 0; i < 1024; i++) {
-//            ((unsigned int *) fb)[i] = c++;
-//            printf ("\r%p", c);
-//            delay (100);
+//        for (int i = 0; i < 4; i++) {
+//            for (int ci = 0; ci < 3; ci++) {
+//                for (int ind = 0; ind < 256; ind++) {
+//                    c[ci] = ind;
+//                    c[(ci + 1) % 3] = 255 - ind;
+//                    fb[index[i]] = * (color *) c;
+//                    delay (100);
+//                }
+//            }
 //        }
-//    }
+    }
 }
 
 color * get_fb () {
