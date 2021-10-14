@@ -20,13 +20,6 @@
 
 #define GPU_COLOUR_DEPTH   32
 
-#define GPU_MAX_MSG_SIZE 64
-
-static volatile unsigned int __attribute__((aligned(16))) mbox[24];
-
-
-static volatile unsigned int buffer[GPU_MAX_MSG_SIZE] __attribute__((aligned(16)));
-
 typedef struct {
     byte_t blue;
     byte_t green;
@@ -34,12 +27,11 @@ typedef struct {
     byte_t alpha;
 } color;
 
-extern unsigned int const _vgapal[];
-extern color const * vgapal;
-
+static volatile unsigned int __attribute__((aligned(16))) mbox[2048];
 
 // framebuffer
 static color * fb;
+
 
 bool init_gpu (void);
 
