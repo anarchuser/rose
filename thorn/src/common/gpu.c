@@ -1,38 +1,48 @@
 #include "common/gpu.h"
 
 bool init_gpu () {
-    int c = 0;
-    mbox[++c] = 0;                      // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
+    {                                       // First message: read physical dimensions
+        int c = 0;                          // Message size; increment while we write
+        mbox[++c] = 0;                      // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
+        
+        mbox[++c] = 0x00040003;             // Tag to get physical display width / height
+        mbox[++c] = 8;                      // Size of value buffer
+        mbox[++c] = 0;                      // Response & value buffer size written will be written here
+        mbox[++c] = GPU_SCREEN_WIDTH;       // Get physical screen width    |  Overwritten by actual width
+        mbox[++c] = GPU_SCREEN_HEIGHT;      // Get physical screen height   |  Overwritten by actual height
+        
+        mbox[0] = 4 * c;                    // Write message size at the beginning of the buffer
+    }
     
-    mbox[++c] = 0x00048003;             // Tag to set physical display width / height
-    mbox[++c] = 8;                      // Size of value buffer
-    mbox[++c] = 0;                      // Response & value buffer size written will be written here
-    mbox[++c] = GPU_SCREEN_WIDTH;       // Set physical screen width    |  Overwritten by actual width
-    mbox[++c] = GPU_SCREEN_HEIGHT;      // Set physical screen height   |  Overwritten by actual height
-    
-    mbox[++c] = 0x00048004;             // Tag to set virtual display width / height
-    mbox[++c] = 8;                      // Size of value buffer
-    mbox[++c] = 0;                      // Response & value buffer size written will be written here
-    mbox[++c] = GPU_VIRTUAL_WIDTH;      // Set virtual screen width     |  Overwritten by actual virtual width
-    mbox[++c] = GPU_VIRTUAL_HEIGHT;     // Set virtual screen height    |  Overwritten by actual virtual height
-    
-    mbox[++c] = 0x00048005;             // Tag to set pixel depth
-    mbox[++c] = 4;                      // Size of value buffer
-    mbox[++c] = 0;                      // Response & value buffer size written will be written here
-    mbox[++c] = GPU_COLOUR_DEPTH;       // Set colour depth             |  Overwritten by actual colour depth
-    
-    mbox[++c] = 0x00040001;             // Tag to allocate framebuffer
-    mbox[++c] = 8;                      // Size of value buffer
-    mbox[++c] = 0;                      // Response & value buffer size will be written here
-    mbox[++c] = 16;                     // Buffer alignment             |  Overwritten by pointer to framebuffer
-    mbox[++c] = 0;                      // Unused - will be overwritten |  Overwritten by size of framebuffer
-    
-    mbox[++c] = 0;                      // End tag
-    mbox[++c] = 0;                      // Padding
-    mbox[++c] = 0;                      // Padding
-    
-    mbox[0] = 4 * c;                    // Write message size at the beginning of the buffer
-    
+    byte_t index_framebuffer;
+    {
+        int c = 0;                          // Message size; increment while we write
+        mbox[++c] = 0;                      // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
+        
+        mbox[++c] = 0x00048004;             // Tag to set virtual display width / height
+        mbox[++c] = 8;                      // Size of value buffer
+        mbox[++c] = 0;                      // Response & value buffer size written will be written here
+        mbox[++c];//GPU_SCREEN_WIDTH;       // Set virtual screen width     |  Overwritten by actual virtual width
+        mbox[++c];//GPU_SCREEN_HEIGHT;      // Set virtual screen height    |  Overwritten by actual virtual height
+        
+        mbox[++c] = 0x00048005;             // Tag to set pixel depth
+        mbox[++c] = 4;                      // Size of value buffer
+        mbox[++c] = 0;                      // Response & value buffer size written will be written here
+        mbox[++c] = GPU_COLOUR_DEPTH;       // Set colour depth             |  Overwritten by actual colour depth
+        
+        mbox[++c] = 0x00040001;             // Tag to allocate framebuffer
+        mbox[++c] = 8;                      // Size of value buffer
+        mbox[++c] = 0;                      // Response & value buffer size will be written here
+        mbox[++c] = 16;                     // Buffer alignment             |  Overwritten by pointer to framebuffer
+        index_framebuffer = c;
+        mbox[++c] = 0;                      // Unused - will be overwritten |  Overwritten by size of framebuffer
+        
+        mbox[++c] = 0;                      // End tag
+        mbox[++c] = 0;                      // Padding
+        mbox[++c] = 0;                      // Padding
+        
+        mbox[0] = 4 * c;                    // Write message size at the beginning of the buffer
+    }
     
     int_dump ((unsigned int *) mbox);
     hex_dump ((unsigned int *) mbox);
@@ -69,7 +79,7 @@ bool init_gpu () {
     hex_dump ((unsigned int *) mbox);
     
     fb = (color * ) (
-    long) (mbox[19] & 0x3FFFFFFF);
+    long) (mbox[index_framebuffer] & VC_SDRAM_OFFSET);
     return true;
 }
 

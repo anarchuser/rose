@@ -12,13 +12,15 @@
 // Reference:
 // https://jsandler18.github.io/extra/prop-channel.html
 
-#define GPU_SCREEN_WIDTH   1920
-#define GPU_SCREEN_HEIGHT  1080
+#define GPU_SCREEN_WIDTH    1920
+#define GPU_SCREEN_HEIGHT   1080
 
-#define GPU_VIRTUAL_WIDTH  GPU_SCREEN_WIDTH
-#define GPU_VIRTUAL_HEIGHT GPU_SCREEN_HEIGHT
+#define GPU_VIRTUAL_WIDTH   GPU_SCREEN_WIDTH
+#define GPU_VIRTUAL_HEIGHT  GPU_SCREEN_HEIGHT
 
-#define GPU_COLOUR_DEPTH   32
+#define GPU_COLOUR_DEPTH    32
+
+#define VC_SDRAM_OFFSET     0x3FFFFFFF
 
 typedef struct {
     byte_t blue;
