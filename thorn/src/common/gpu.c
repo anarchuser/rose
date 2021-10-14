@@ -102,13 +102,24 @@ void draw () {
     };
     
     int rb_size = sizeof (rainbow) / sizeof (color);
-    int divisor = GPU_SCREEN_WIDTH / rb_size;
+    int divisor;
     
     while (1) {
         for (int offset = 0; offset < rb_size; offset++) {
-            for (int x = 0; x < GPU_SCREEN_WIDTH - GPU_SCREEN_WIDTH % rb_size; x++) {
+            divisor = GPU_SCREEN_WIDTH / rb_size;
+            for (int x = 0; x < GPU_SCREEN_WIDTH - GPU_SCREEN_WIDTH % divisor; x++) {
                 for (int y = 0; y < GPU_SCREEN_HEIGHT; y++) {
-                    fb[y * GPU_SCREEN_WIDTH + x] = rainbow[(x / divisor + offset) % rb_size];
+                    fb[y * GPU_SCREEN_WIDTH + x].red ^= rainbow[(x / divisor + offset) % rb_size].red;
+                    fb[y * GPU_SCREEN_WIDTH + x].green ^= rainbow[(x / divisor + offset) % rb_size].green;
+                    fb[y * GPU_SCREEN_WIDTH + x].blue ^= rainbow[(x / divisor + offset) % rb_size].blue;
+                }
+            }
+            divisor = GPU_SCREEN_HEIGHT / rb_size;
+            for (int y = 0; y < GPU_SCREEN_HEIGHT - GPU_SCREEN_HEIGHT % divisor; y++) {
+                for (int x = 0; x < GPU_SCREEN_WIDTH; x++) {
+                    fb[y * GPU_SCREEN_WIDTH + x].red ^= rainbow[(y / divisor + offset) % rb_size].red;
+                    fb[y * GPU_SCREEN_WIDTH + x].green ^= rainbow[(y / divisor + offset) % rb_size].green;
+                    fb[y * GPU_SCREEN_WIDTH + x].blue ^= rainbow[(y / divisor + offset) % rb_size].blue;
                 }
             }
         }
