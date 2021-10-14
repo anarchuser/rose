@@ -86,7 +86,7 @@ bool init_gpu () {
         // If message failed exit
         if (!mailbox_request (mbox, PROPERTY_ARM_VC)) return false;
         if (mbox[index_pitch]) {printf ("\r\nGot pitch: %d\r\n", mbox[index_pitch]);}
-        else {printf ("\r\nPitch received as 0\r\n");}
+        else {printf ("\r\nPitch is 0?!\r\n");}
     }
     
     return true;

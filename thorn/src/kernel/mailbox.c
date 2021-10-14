@@ -4,6 +4,7 @@ bool mailbox_request (unsigned int data_ptr, channel_t channel) {
     unsigned int * buffer = (unsigned int *) (long) data_ptr;
     
     if (DUMP_BUFFER) {
+        LOG ("Dumping message buffer before sending:");
         int_dump ((byte_t *) buffer);
         hex_dump ((unsigned int *) (long) buffer);
     }
@@ -28,6 +29,7 @@ bool mailbox_request (unsigned int data_ptr, channel_t channel) {
         if (outgoing == incoming) {
             if (buffer[1] != MBOX_SUCCESS) {
                 if (DUMP_BUFFER) {
+                    LOG ("Dumping failed message buffer:");
                     int_dump ((byte_t *) buffer);
                     hex_dump ((unsigned int *) buffer);
                 }
@@ -39,6 +41,7 @@ bool mailbox_request (unsigned int data_ptr, channel_t channel) {
     }
     
     if (DUMP_BUFFER) {
+        LOG ("Dumping successful message buffer:");
         int_dump ((byte_t *) buffer);
         hex_dump ((unsigned int *) buffer);
     }
