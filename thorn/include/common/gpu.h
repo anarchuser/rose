@@ -13,16 +13,16 @@
 // https://jsandler18.github.io/extra/prop-channel.html
 
 #define GPU_SCREEN_WIDTH   1920
-#define GPU_SCREEN_HEIGHT  1280
+#define GPU_SCREEN_HEIGHT  1080
 
-#define GPU_VIRTUAL_WIDTH  1920
-#define GPU_VIRTUAL_HEIGHT 1280
+#define GPU_VIRTUAL_WIDTH  GPU_SCREEN_WIDTH
+#define GPU_VIRTUAL_HEIGHT GPU_SCREEN_HEIGHT
 
-#define GPU_COLOUR_DEPTH   24
+#define GPU_COLOUR_DEPTH   32
 
 #define GPU_MAX_MSG_SIZE 64
 
-static volatile unsigned int __attribute__((aligned(16))) mbox[20];
+static volatile unsigned int __attribute__((aligned(16))) mbox[24];
 
 
 static volatile unsigned int buffer[GPU_MAX_MSG_SIZE] __attribute__((aligned(16)));

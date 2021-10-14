@@ -44,26 +44,30 @@ bool init_gpu () {
 //    colour_depth->response = 0;
 //    colour_depth->buffer = (byte_t * ) & colour_depth_buffer;
     
-    mbox[0] = 80;
+    mbox[0] = 96;
     mbox[1] = 0;
     mbox[2] = 0x00048003;
     mbox[3] = 8;
     mbox[4] = 8;
-    mbox[5] = 1920;
-    mbox[6] = 1080;
+    mbox[5] = GPU_SCREEN_WIDTH;
+    mbox[6] = GPU_SCREEN_HEIGHT;
     mbox[7] = 0x00048004;
     mbox[8] = 8;
     mbox[9] = 8;
-    mbox[10] = 640;
-    mbox[11] = 480;
+    mbox[10] = GPU_VIRTUAL_WIDTH;
+    mbox[11] = GPU_VIRTUAL_HEIGHT;
     mbox[12] = 0x00048005;
     mbox[13] = 4;
     mbox[14] = 0;
-    mbox[15] = 32;
-    mbox[16] = 0;
-    mbox[17] = 0;
+    mbox[15] = GPU_COLOUR_DEPTH;
+    mbox[16] = 0x00040001;
+    mbox[17] = 8;
     mbox[18] = 0;
-    mbox[19] = 0;
+    mbox[19] = 16;
+    mbox[20] = 0;
+    mbox[21] = 0;
+    mbox[22] = 0;
+    mbox[23] = 0;
     
     
     int_dump ((unsigned int *) mbox);
@@ -97,48 +101,12 @@ bool init_gpu () {
         }
     }
     
-    mbox[0] = 32;
-    mbox[1] = 0;
-    mbox[2] = 0x00040001;
-    mbox[3] = 8;
-    mbox[4] = 0;
-    mbox[5] = 16;
-    mbox[6] = 0;
-    mbox[7] = 0;
     
     int_dump ((unsigned int *) mbox);
     hex_dump ((unsigned int *) mbox);
     
-    // 28-bit address (MSB) and 4-bit value (LSB)
-    outgoing = ((unsigned int) ((long) mbox) & ~0xF) | (PROPERTY_ARM_VC & 0xF);
-    
-    // Wait until we can write
-    while (get32 (MBOX0 + MBOX_STATUS) & MBOX_FULL);
-    
-    // Write the address of our buffer to the mailbox with the channel appended
-    put32 (MBOX0 + MBOX_WRITE, outgoing);
-    
-    while (1) {
-        // Is there a reply?
-        while (get32 (MBOX0 + MBOX_STATUS) & MBOX_EMPTY);
-        
-        incoming = get32 (MBOX0 + MBOX_READ);
-        
-        // Is it a reply to our message?
-        if (outgoing == incoming) {
-            int_dump ((unsigned int *) mbox);
-            hex_dump ((unsigned int *) mbox);
-            
-            if (mbox[1] != MBOX_SUCCESS) {
-                return false;
-            }
-            break;
-        }
-    }
-    
-    
     fb = (color * ) (
-    long) (mbox[5] & 0x3FFFFFFF);
+    long) (mbox[19] & 0x3FFFFFFF);
     return true;
     
     // for (int i = 0; i < 20; i++) {
@@ -167,35 +135,26 @@ bool init_gpu () {
 
 void draw () {
     printf ("\n");
-    color black = {0, 0, 0, 0xFF};
-    color red = {0, 0, 0xFF, 0xFF};
-    color blue = {0xff, 0, 0, 0xFF};
-    color green = {0, 0xff, 0, 0xFF};
-    color yellow = {0, 0xff, 0xFF, 0xFF};
-    color cyan = {0xff, 0xff, 0, 0xff};
     
-    char index[] = {0, 1, 16, 17};
+    color rainbow[] = {
+            {0x80, 0x00, 0xff, 0},
+            {0x00, 0x00, 0xff, 0},
+            {0x00, 0x80, 0xff, 0},
+            {0x00, 0xff, 0xff, 0},
+            {0x00, 0xff, 0x80, 0},
+            {0x00, 0xff, 0x00, 0},
+            {0x80, 0xff, 0x00, 0},
+            {0xff, 0xff, 0x00, 0},
+            {0xff, 0x80, 0x00, 0},
+            {0xff, 0x00, 0x00, 0},
+            {0xff, 0x00, 0x80, 0}
+    };
     
-    byte_t c[] = {0xff, 0xff, 0xff, 0};
-    color colour = * (color *) c;
-    unsigned int c_int = * (unsigned int *) c;
-    while (1) {
-        for (int i = 0; i < 4; i++) {
-            c_int = c_int ? 0 : 0xFFFFFF;
-            fb[index[i]] = colour;
+    color c = {0, 0, 0, 0};
+    for (int x = 0; x < GPU_SCREEN_WIDTH; x++) {
+        for (int y = 0; y < GPU_SCREEN_HEIGHT; y++) {
+            fb[y * GPU_SCREEN_WIDTH + x] = rainbow[x / (GPU_SCREEN_WIDTH / (sizeof (rainbow) / sizeof (color)))];
         }
-        delay (30000);
-
-//        for (int i = 0; i < 4; i++) {
-//            for (int ci = 0; ci < 3; ci++) {
-//                for (int ind = 0; ind < 256; ind++) {
-//                    c[ci] = ind;
-//                    c[(ci + 1) % 3] = 255 - ind;
-//                    fb[index[i]] = * (color *) c;
-//                    delay (100);
-//                }
-//            }
-//        }
     }
 }
 
