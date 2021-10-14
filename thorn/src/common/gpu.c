@@ -11,7 +11,9 @@ bool init_gpu () {
         mbox[++c] = 0;                      // Get physical screen width    |  Overwritten by actual width
         mbox[++c] = 0;                      // Get physical screen height   |  Overwritten by actual height
         
-        mbox[0] = 4 * ++c;                    // Write message size at the beginning of the buffer
+        mbox[++c] = 0;                      // End tag
+        
+        mbox[0] = (4 * ++c);                // Write message size at the beginning of the buffer
         
         // If reading physical screen dimension fails exit function
         if (!mailbox_request (mbox, PROPERTY_ARM_VC)) return false;
@@ -56,8 +58,9 @@ bool init_gpu () {
         mbox[++c] = 0;                      // End tag
         mbox[++c] = 0;                      // Padding
         mbox[++c] = 0;                      // Padding
+        mbox[++c] = 0;                      // Padding
         
-        mbox[0] = 4 * ++c;                    // Write message size at the beginning of the buffer
+        mbox[0] = (4 * ++c);                // Write message size at the beginning of the buffer
         
         // If message failed exit
         if (!mailbox_request (mbox, PROPERTY_ARM_VC)) return false;
@@ -65,6 +68,27 @@ bool init_gpu () {
         // Since message succeeded, update the frame buffer
         fb = (color * ) (mbox[index_framebuffer] & VC_SDRAM_OFFSET);
     }
+    {                                       // Third message: read pitch (in bytes per line)
+        int c = 0;                          // Message size; increment while we write
+        mbox[++c] = 0;                      // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
+        
+        mbox[++c] = 0x00040008;             // Tag to get pitch
+        mbox[++c] = 0;                      // Size of value buffer
+        mbox[++c] = 0;                      // Response & value buffer size written will be written here
+        mbox[++c] = 0;                      // Pitch will be written here
+        int index_pitch = c;
+        
+        mbox[++c] = 0;                      // End tag
+        mbox[++c] = 0;                      // Padding
+        
+        mbox[0] = (4 * ++c);                // Write message size at the beginning of the buffer
+        
+        // If message failed exit
+        if (!mailbox_request (mbox, PROPERTY_ARM_VC)) return false;
+        if (mbox[index_pitch]) {printf ("\r\nGot pitch: %d\r\n", mbox[index_pitch]);}
+        else {printf ("\r\nPitch received as 0\r\n");}
+    }
+    
     return true;
 }
 
