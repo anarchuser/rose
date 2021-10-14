@@ -27,12 +27,25 @@ static volatile unsigned int __attribute__((aligned(16))) mbox[20];
 
 static volatile unsigned int buffer[GPU_MAX_MSG_SIZE] __attribute__((aligned(16)));
 
+typedef struct {
+    byte_t blue;
+    byte_t green;
+    byte_t red;
+    byte_t alpha;
+} color;
+
+extern unsigned int const _vgapal[];
+extern color const * vgapal;
+
+
 // framebuffer
-static ptr_t fb;
+static color * fb;
 
 bool init_gpu (void);
 
-ptr_t get_fb (void);
+void draw (void);
+
+color * get_fb (void);
 
 
 #endif //_ROSE_C_GPU_H

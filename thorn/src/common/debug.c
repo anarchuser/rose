@@ -8,8 +8,8 @@ void print_hex (unsigned char dec) {
     printf ("%c%c ", fst, snd);
 }
 
-void hex_dump (unsigned int size, byte_t * array) {
-    for (int i = 0; i < size;) {
+void hex_dump (byte_t * array) {
+    for (int i = 0; i < * (unsigned int *) array;) {
         i += 4;
         for (int j = 1; j <= 4; j++) {
             print_hex (array[i - j]);
@@ -20,8 +20,8 @@ void hex_dump (unsigned int size, byte_t * array) {
     printf ("\r\n");
 }
 
-void int_dump (unsigned int size, unsigned int * array) {
-    for (int i = 0; i < size / sizeof (int); i++) {
+void int_dump (unsigned int * array) {
+    for (int i = 0; i < * array; i++) {
         printf ("%d ", array[i]);
     }
     printf ("\r\n");

@@ -9,8 +9,8 @@
 
 void print_hex (unsigned char dec);
 
-void byte_dump (unsigned int size, byte_t * array);
+void byte_dump (byte_t * array);
 
-void int_dump (unsigned int size, unsigned int * array);
+void int_dump (unsigned int * array);
 
 #endif //_ROSE_C_DEBUG_H

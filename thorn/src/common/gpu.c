@@ -1,5 +1,26 @@
 #include "common/gpu.h"
 
+unsigned int const _vgapal[] = {
+        0x000000,
+        0x0000AA,
+        0x00AA00,
+        0x00AAAA,
+        0xAA0000,
+        0xAA00AA,
+        0xAA5500,
+        0xAAAAAA,
+        0x555555,
+        0x5555FF,
+        0x55FF55,
+        0x55FFFF,
+        0xFF5555,
+        0xFF55FF,
+        0xFFFF55,
+        0xFFFFFF
+};
+
+color const * vgapal = (color * ) & _vgapal;
+
 bool init_gpu () {
 //    unsigned int tag_buffer[24];
 //    mbox_tag_t * screen_size = (mbox_tag_t *) tag_buffer;
@@ -23,14 +44,13 @@ bool init_gpu () {
 //    colour_depth->response = 0;
 //    colour_depth->buffer = (byte_t * ) & colour_depth_buffer;
     
-    /*
     mbox[0] = 80;
     mbox[1] = 0;
     mbox[2] = 0x00048003;
     mbox[3] = 8;
     mbox[4] = 0;
-    mbox[5] = 640;
-    mbox[6] = 480;
+    mbox[5] = 1920;
+    mbox[6] = 1080;
     mbox[7] = 0x00048004;
     mbox[8] = 8;
     mbox[9] = 0;
@@ -39,15 +59,15 @@ bool init_gpu () {
     mbox[12] = 0x00048005;
     mbox[13] = 4;
     mbox[14] = 0;
-    mbox[15] = 24;
+    mbox[15] = 32;
     mbox[16] = 0;
     mbox[17] = 0;
     mbox[18] = 0;
     mbox[19] = 0;
     
     
-    int_dump (sizeof (mbox), (unsigned int *) mbox);
-    hex_dump (sizeof (mbox), (unsigned int *) mbox);
+    int_dump ((unsigned int *) mbox);
+    hex_dump ((unsigned int *) mbox);
     
     // 28-bit address (MSB) and 4-bit value (LSB)
     unsigned int outgoing = ((unsigned int) ((long) mbox) & ~0xF) | (PROPERTY_ARM_VC & 0xF);
@@ -67,8 +87,8 @@ bool init_gpu () {
         
         // Is it a reply to our message?
         if (outgoing == incoming) {
-            int_dump (sizeof (mbox), (unsigned int *) mbox);
-            hex_dump (sizeof (mbox), (unsigned int *) mbox);
+            int_dump ((unsigned int *) mbox);
+            hex_dump ((unsigned int *) mbox);
             
             if (mbox[1] != MBOX_SUCCESS) {
                 return false;
@@ -76,7 +96,6 @@ bool init_gpu () {
             break;
         }
     }
-    */
     
     mbox[0] = 32;
     mbox[1] = 0;
@@ -87,11 +106,11 @@ bool init_gpu () {
     mbox[6] = 0;
     mbox[7] = 0;
     
-    int_dump (sizeof (mbox), (unsigned int *) mbox);
-    hex_dump (sizeof (mbox), (unsigned int *) mbox);
+    int_dump ((unsigned int *) mbox);
+    hex_dump ((unsigned int *) mbox);
     
     // 28-bit address (MSB) and 4-bit value (LSB)
-    unsigned int outgoing = ((unsigned int) ((long) mbox) & ~0xF) | (PROPERTY_ARM_VC & 0xF);
+    outgoing = ((unsigned int) ((long) mbox) & ~0xF) | (PROPERTY_ARM_VC & 0xF);
     
     // Wait until we can write
     while (get32 (MBOX0 + MBOX_STATUS) & MBOX_FULL);
@@ -103,12 +122,12 @@ bool init_gpu () {
         // Is there a reply?
         while (get32 (MBOX0 + MBOX_STATUS) & MBOX_EMPTY);
         
-        unsigned int incoming = get32 (MBOX0 + MBOX_READ);
+        incoming = get32 (MBOX0 + MBOX_READ);
         
         // Is it a reply to our message?
         if (outgoing == incoming) {
-            int_dump (sizeof (mbox), (unsigned int *) mbox);
-            hex_dump (sizeof (mbox), (unsigned int *) mbox);
+            int_dump ((unsigned int *) mbox);
+            hex_dump ((unsigned int *) mbox);
             
             if (mbox[1] != MBOX_SUCCESS) {
                 return false;
@@ -118,7 +137,8 @@ bool init_gpu () {
     }
     
     
-    fb = * (ptr_t * ) (mbox + 5 * 4);
+    fb = (color * ) (
+    long) (mbox[5] & 0x3FFFFFFF);
     return true;
     
     // for (int i = 0; i < 20; i++) {
@@ -145,6 +165,37 @@ bool init_gpu () {
     // fb = * ((ptr_t * ) (buffer + 20));
 }
 
-ptr_t get_fb () {
+void draw () {
+    printf ("\n");
+    color black = {0, 0, 0, 0xFF};
+    color red = {0, 0, 0xFF, 0xFF};
+    color blue = {0xff, 0, 0, 0xFF};
+    color green = {0, 0xff, 0, 0xFF};
+    color yellow = {0, 0xff, 0xFF, 0xFF};
+    color cyan = {0xff, 0xff, 0, 0xff};
+    
+    fb[0] = red;
+    fb[1] = yellow;
+    fb[16] = blue;
+    fb[17] = cyan;
+
+//    for (int i = 0; i < 1024;) {
+//        fb[i] = black;
+//        fb[()] = red;
+//        delay (100000);
+//        printf ("\r%d    ", i);
+//        printf ("\ri: %d;   %p     ", i, * (unsigned int *) & c);
+//    }
+
+//    while (1) {
+//        for (int i = 0; i < 1024; i++) {
+//            ((unsigned int *) fb)[i] = c++;
+//            printf ("\r%p", c);
+//            delay (100);
+//        }
+//    }
+}
+
+color * get_fb () {
     return fb;
 }

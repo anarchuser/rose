@@ -33,7 +33,7 @@ bool mailbox_request (unsigned int data_ptr, channel_t channel) {
     
     char * buffer[100];
     sprintf (buffer, "Returning response code: operation %s",
-            (property->response == MBOX_SUCCESS) ? "succeeded" : "failed");
+             (property->response == MBOX_SUCCESS) ? "succeeded" : "failed");
     LOG (buffer);
     // Return the message's response code
     return property->response == MBOX_SUCCESS;
@@ -51,8 +51,6 @@ unsigned int mailbox_write_msg (unsigned int message[], mbox_tag_t * tags, int t
     
     // write struct size to message:
     msg->struct_size = struct_size;
-    
-    int_dump (struct_size, (unsigned int *) msg);
     
     // return number of bytes written, for reference
     return struct_size;
