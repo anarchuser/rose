@@ -78,7 +78,7 @@ void kernel_main (int processor_id) {
         if (!gpu_status) {
             printf ("Error while initialising Framebuffer\r\n");
         } else {
-            unsigned long fb = get_fb ();
+            color * fb = get_fb ();
             if (!fb) {
                 printf ("Error: Invalid Framebuffer received\r\n");
             } else {
