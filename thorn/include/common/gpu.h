@@ -32,15 +32,23 @@ typedef struct {
     byte_t alpha;
 } color;
 
-static volatile unsigned int __attribute__((aligned(16))) mbox[2048];
+typedef struct {
+    color * fb;
+    unsigned int fb_size;
+    short virtual_width;
+    short virtual_height;
+    short pitch;
+    short colour_depth;
+} fb_info_t;
 
-// framebuffer
-static color * fb;
+static volatile unsigned int __attribute__((aligned(16))) gpu_msg_buffer[128];
 
+static fb_info_t fb_info;
 
 bool init_gpu (void);
 
 color * get_fb (void);
 
+fb_info_t const * get_fb_info (void);
 
 #endif //_ROSE_C_GPU_H
