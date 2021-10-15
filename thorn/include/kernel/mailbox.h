@@ -10,7 +10,7 @@
 #include "common/debug.h"
 #include "common/logging.h"
 
-#define DUMP_BUFFER true
+#define DUMP_BUFFER false
 
 // Documentation:
 // https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface

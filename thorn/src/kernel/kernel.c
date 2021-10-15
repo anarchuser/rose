@@ -9,6 +9,7 @@
 #include "kernel/fork.h"
 #include "kernel/sys.h"
 #include "common/logging.h"
+#include "common/rainbow.h"
 
 void user_process1 (char * array) {
     char buf[2] = {0};

@@ -40,8 +40,6 @@ static color * fb;
 
 bool init_gpu (void);
 
-void draw (void);
-
 color * get_fb (void);
 
 

@@ -92,61 +92,6 @@ bool init_gpu () {
     return true;
 }
 
-void draw () {
-    printf ("\n");
-    
-    color rainbow[] = {
-            {0xff, 0x00, 0xff, 0},
-            {0xc0, 0x00, 0xff, 0},
-            {0x80, 0x00, 0xff, 0},
-            {0x40, 0x00, 0xff, 0},
-            {0x00, 0x00, 0xff, 0},
-            {0x00, 0x40, 0xff, 0},
-            {0x00, 0x80, 0xff, 0},
-            {0x00, 0xc0, 0xff, 0},
-            {0x00, 0xff, 0xff, 0},
-            {0x00, 0xff, 0xc0, 0},
-            {0x00, 0xff, 0x80, 0},
-            {0x00, 0xff, 0x40, 0},
-            {0x00, 0xff, 0x00, 0},
-            {0x40, 0xff, 0x00, 0},
-            {0x80, 0xff, 0x00, 0},
-            {0xc0, 0xff, 0x00, 0},
-            {0xff, 0xff, 0x00, 0},
-            {0xff, 0xc0, 0x00, 0},
-            {0xff, 0x80, 0x00, 0},
-            {0xff, 0x40, 0x00, 0},
-            {0xff, 0x00, 0x00, 0},
-            {0xff, 0x00, 0x40, 0},
-            {0xff, 0x00, 0x80, 0},
-            {0xff, 0x00, 0xc0, 0}
-    };
-    
-    int rb_size = sizeof (rainbow) / sizeof (color);
-    int divisor;
-    
-    while (1) {
-        for (int offset = 0; offset < rb_size; offset++) {
-            divisor = GPU_SCREEN_WIDTH / rb_size;
-            for (int x = 0; x < GPU_SCREEN_WIDTH - GPU_SCREEN_WIDTH % divisor; x++) {
-                for (int y = 0; y < GPU_SCREEN_HEIGHT; y++) {
-                    fb[y * GPU_SCREEN_WIDTH + x].red ^= rainbow[(x / divisor + offset) % rb_size].red;
-                    fb[y * GPU_SCREEN_WIDTH + x].green ^= rainbow[(x / divisor + offset) % rb_size].green;
-                    fb[y * GPU_SCREEN_WIDTH + x].blue ^= rainbow[(x / divisor + offset) % rb_size].blue;
-                }
-            }
-            divisor = GPU_SCREEN_HEIGHT / rb_size;
-            for (int y = 0; y < GPU_SCREEN_HEIGHT - GPU_SCREEN_HEIGHT % divisor; y++) {
-                for (int x = 0; x < GPU_SCREEN_WIDTH; x++) {
-                    fb[y * GPU_SCREEN_WIDTH + x].red ^= rainbow[(y / divisor + offset) % rb_size].red;
-                    fb[y * GPU_SCREEN_WIDTH + x].green ^= rainbow[(y / divisor + offset) % rb_size].green;
-                    fb[y * GPU_SCREEN_WIDTH + x].blue ^= rainbow[(y / divisor + offset) % rb_size].blue;
-                }
-            }
-        }
-    }
-}
-
 color * get_fb () {
     return fb;
 }
