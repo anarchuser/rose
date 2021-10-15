@@ -10,6 +10,7 @@
 #include "kernel/sys.h"
 #include "common/logging.h"
 #include "common/rainbow.h"
+#include "common/temperature.h"
 
 void user_process1 (char * array) {
     char buf[2] = {0};
@@ -58,7 +59,7 @@ void kernel_process () {
 }
 
 
-void kernel_main (int processor_id) {
+_Noreturn void kernel_main (int processor_id) {
     
     static volatile unsigned int current_processor = 0;
     
@@ -69,10 +70,10 @@ void kernel_main (int processor_id) {
         timer_init ();
         enable_interrupt_controller ();
         enable_irq ();
-//        task_init ();
-        
+        task_init ();
         LOG("Logging works");
         
+        // Display
         printf ("Initialising Framebuffer...\r\n");
         int gpu_status = init_gpu ();
         if (!gpu_status) {
@@ -85,6 +86,10 @@ void kernel_main (int processor_id) {
                 printf ("Received framebuffer: %p\r\n", fb);
             }
         }
+        
+        // Temperature
+        printf ("Initialising temperature %s. Max temperature set to %d °C.\r\n",
+                init_temperature () ? "succeeded" : "failed", get_max_temperature () / 1000);
     }
     
     while (processor_id != current_processor);
@@ -108,6 +113,15 @@ void kernel_main (int processor_id) {
 //            schedule ();
 //        }
         LOG("DONE PRINTING");
+    }
+    
+    // Use processor 1 for checking temperature
+    if (processor_id == 1) {
+        while (current_processor != 3);
+        while (1) {
+            regulate_temperature ();
+            delay (TEMPERATURE_CHECK_DELAY);
+        }
     }
     
     while (1);
