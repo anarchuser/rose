@@ -6,7 +6,7 @@ bool init_temperature () {
         temperature_request[++c] = 0;                       // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
         
         temperature_request[++c] = 0x0003000a;              // Tag to get maximum temperature
-        temperature_request[++c] = 4;                       // Size of value buffer
+        temperature_request[++c] = 8;                       // Size of value buffer
         temperature_request[++c] = 0;                       // Response & value buffer size written will be written here
         temperature_request[++c] = 0;                       // Temperature (device?) ID, should stay 0
         temperature_request[++c] = 0;                       // Will be overwritten by maximum temperature
@@ -43,7 +43,7 @@ int get_temperature () {
         temperature_request[++c] = 0;                       // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
         
         temperature_request[++c] = 0x00030006;              // Tag to get current temperature
-        temperature_request[++c] = 0;                       // Size of value buffer
+        temperature_request[++c] = 8;                       // Size of value buffer
         temperature_request[++c] = 4;                       // Response & value buffer size written will be written here
         temperature_request[++c] = 0;                       // Temperature (device?) ID, should stay 0
         temperature_request[++c] = 0;                       // Will be overwritten by current temperature
