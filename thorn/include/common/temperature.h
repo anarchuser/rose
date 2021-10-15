@@ -3,14 +3,14 @@
 
 #include "common/stdbool.h"
 #include "kernel/mailbox.h"
+#include "kernel/peripherals/gpio.h"
 
-// Pin 32 / GPIO 12 (PWM0)
-#define GPIO_FAN 32
+#define GPIO_FAN 18
 
 // Temperature the system tries to keep. Turns off cooling if it falls below.
 // NOTE: The pi hits a 'soft' limit at 70 °C, reducing clock frequency.
 //       This value is defined in the config.txt and defaults to 60 °C if not set
-#define TEMPERATURE_SHOULD  (45 * 1000)
+#define TEMPERATURE_SHOULD  (50 * 1000)
 #define TEMPERATURE_MAX     (80 * 1000)
 
 #define TEMPERATURE_CHECK_DELAY 20000000
@@ -30,5 +30,7 @@ void regulate_temperature (void);
 int get_max_temperature (void);
 
 int get_temperature (void);
+
+void set_fan (bool enable);
 
 #endif //_ROSE_C_TEMPERATURE_H
