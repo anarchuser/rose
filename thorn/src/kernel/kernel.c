@@ -1,6 +1,7 @@
 #include "kernel/mini_uart.h"
 #include "common/printf.h"
 #include "common/utils.h"
+#include "common/gpu.h"
 #include "kernel/mm.h"
 #include "kernel/timer.h"
 #include "kernel/irq.h"
@@ -8,6 +9,7 @@
 #include "kernel/fork.h"
 #include "kernel/sys.h"
 #include "common/logging.h"
+#include "common/rainbow.h"
 
 void user_process1 (char * array) {
     char buf[2] = {0};
@@ -58,18 +60,31 @@ void kernel_process () {
 
 void kernel_main (int processor_id) {
     
-    static unsigned int current_processor = 0;
+    static volatile unsigned int current_processor = 0;
     
-    if (processor_id == current_processor) {
+    if (processor_id == 0) {
         uart_init ();
         init_printf (0, putc);
         irq_vector_init ();
         timer_init ();
         enable_interrupt_controller ();
         enable_irq ();
-        task_init ();
-
+//        task_init ();
+        
         LOG("Logging works");
+        
+        printf ("Initialising Framebuffer...\r\n");
+        int gpu_status = init_gpu ();
+        if (!gpu_status) {
+            printf ("Error while initialising Framebuffer\r\n");
+        } else {
+            color * fb = get_fb ();
+            if (!fb) {
+                printf ("Error: Invalid Framebuffer received\r\n");
+            } else {
+                printf ("Received framebuffer: %p\r\n", fb);
+            }
+        }
     }
     
     while (processor_id != current_processor);
@@ -79,15 +94,21 @@ void kernel_main (int processor_id) {
     current_processor++;
     
     if (processor_id == 0) {
-        while (current_processor != 4);
-        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
-        if (res < 0) {
-            printf ("error while starting kernel process");
-            return;
-        }
+        while (current_processor != 3);
         
-        while (1) {
-            schedule ();
-        }
+        draw ();
+
+//        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
+//        if (res < 0) {
+//            printf ("error while starting kernel process");
+//            return;
+//        }
+//
+//        while (1) {
+//            schedule ();
+//        }
+        LOG("DONE PRINTING");
     }
+    
+    while (1);
 }

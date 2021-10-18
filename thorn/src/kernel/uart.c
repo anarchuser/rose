@@ -56,6 +56,7 @@ void _uart_init (void) {
     // Enable Receive, Transmit, and UART_ itself
     put32 (UART_CR, (1 << 9) | (1 << 8) | (1 << 0));
     
+    _uart_send_string ("\033[2J\033[H");
     _uart_send_string ("Initialised standard UART\r\n");
     
     init_done = true;

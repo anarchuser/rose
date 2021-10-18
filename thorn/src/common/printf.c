@@ -158,7 +158,7 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                     else
 #endif
                     ui2a (va_arg (va,
-                    unsigned int),10, 0, bf);
+                                  unsigned int), 10, 0, bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 }
@@ -169,7 +169,7 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                     else
 #endif
                     i2a (va_arg (va,
-                    int),bf);
+                                 int), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 }
@@ -181,16 +181,16 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                     else
 #endif
                     ui2a (va_arg (va,
-                    unsigned int),16, (ch == 'X'), bf);
+                                  unsigned int), 16, (ch == 'X'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 case 'c' :
                     putf (putp, (char) (va_arg (va,
-                    int)));
+                                                int)));
                     break;
                 case 's' :
                     putchw (putp, putf, w, 0, va_arg (va,
-                    char*));
+                                                      char*));
                     break;
                 case 'p':
                 case 'P':
@@ -202,7 +202,7 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                     else
 #endif
                     ui2a (va_arg (va,
-                    unsigned int),16, (ch == 'P'), bf);
+                                  unsigned int), 16, (ch == 'P'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 case '%' :

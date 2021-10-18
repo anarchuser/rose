@@ -59,6 +59,7 @@ void mini_uart_init (void) {
     
     put32 (AUX_MU_CNTL_REG, 3);
     
+    mini_uart_send_string ("\033[2J\033[H");
     mini_uart_send_string ("Initialised mini UART\r\n");
     
     init_done = true;
