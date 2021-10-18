@@ -26,7 +26,7 @@
 
 void init_mmu (void);
 
-void write_pgd (mm_table);
+void write_pgd (mm_table_t *);
 
 void data_abort_el0 (ptr_t far, ptr_t esr);
 

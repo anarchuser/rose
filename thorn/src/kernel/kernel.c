@@ -7,6 +7,7 @@
 #include "kernel/irq.h"
 #include "kernel/mini_uart.h"
 #include "kernel/mm.h"
+#include "kernel/mmu.h"
 #include "kernel/sched.h"
 #include "kernel/sys.h"
 #include "common/logging.h"
@@ -16,11 +17,11 @@
 void user_process1 (char * array) {
     if (* array == '1') {
         LOG ("EL0: Before data abort");
-        printf("%p\r\n", get_free_page());
-
+        printf ("%p\r\n", get_free_page ());
+        
         printf ("Printing aborting data: %d\r\n", * (char *) 0x000000001234abcd);
         printf ("Printing aborting data: %d\r\n", * (char *) 0x00f0000200000000);
-
+        
         // printf ("Printing aborting data: %d\r\n", * (char *) 0xffff00001234abcd);
         // printf ("Printing aborting data: %d\r\n", * (char *) 0x0000000600000000); // produces invalid_el0_64 error
         // printf ("Printing aborting data: %d\r\n", * (char *) 0x0000000800000000); // crashes raspberry
@@ -32,11 +33,11 @@ void user_process1 (char * array) {
     
     char buf[2] = {0};
     // while (1) {
-        for (int i = 0; i < 5; i++) {
-            buf[0] = array[i];
-            call_sys_write (buf);
-            delay (100000);
-        }
+    for (int i = 0; i < 5; i++) {
+        buf[0] = array[i];
+        call_sys_write (buf);
+        delay (100000);
+    }
     // }
 }
 
@@ -94,7 +95,6 @@ void kernel_main (int processor_id) {
     static volatile unsigned int current_processor = 0;
     
     if (processor_id == 0) {
-        
         uart_init ();
         init_printf (0, putc);
         irq_vector_init ();
@@ -102,19 +102,19 @@ void kernel_main (int processor_id) {
         enable_interrupt_controller ();
         enable_irq ();
         task_init ();
-
+        
         printf ("Hello, from processor %d\n\r", processor_id);
-
         
         LOG("Logging works");
-
-	    init_mmu();
+        
+        init_mmu ();
         LOG("Initialised MMU");
-	    asm("mov x1, #1");
-	    asm("msr sctlr_el1, x1");
+        asm("mov x1, #1");
+        asm("msr sctlr_el1, x1");
+        printf ("After mmu enable");
         while (!((* (unsigned int *) AUX_MU_LSR_REG) & 0x20));
         * (unsigned int *) AUX_MU_IO_REG = '#';
-
+        
         printf ("Initialising Framebuffer...\r\n");
         int gpu_status = init_gpu ();
         if (!gpu_status) {
@@ -143,14 +143,14 @@ void kernel_main (int processor_id) {
             printf ("error while starting kernel process");
             return;
         }
-
-       while (1) {
-           schedule ();
-       }
+        
+        while (1) {
+            schedule ();
+        }
     }
     if (processor_id == 1) {
         while (current_processor != 3);
-        draw();
+        draw ();
     }
     
     while (1);

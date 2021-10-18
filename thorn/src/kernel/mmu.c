@@ -16,7 +16,7 @@ void init_mmu (void) {
         pud->descriptors[i].valid = 1;
     }
     LOG("After init page tables");
-    write_pgd ((ptr_t) pgd);
+    write_pgd (pgd);
     LOG ("After writing pgd to registers");
 }
 
