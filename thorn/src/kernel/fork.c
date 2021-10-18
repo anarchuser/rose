@@ -8,16 +8,16 @@
 int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
     preempt_disable ();
     struct task_struct * p;
-    
+
     p = (struct task_struct *) get_free_page ();
     if (! p) {
         return - 1;
     }
-    
+
     struct pt_regs * childregs = task_pt_regs (p);
     memzero ((ptr_t) childregs, sizeof (struct pt_regs));
     memzero ((ptr_t) & p->cpu_context, sizeof (struct cpu_context));
-    
+
     if (clone_flags & PF_KTHREAD) {
         p->cpu_context.x19 = fn;
         p->cpu_context.x20 = arg;
@@ -33,7 +33,7 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
     p->state = TASK_RUNNING;
     p->counter = p->priority;
     p->preempt_count = 1; //disable preemtion until schedule_tail
-    
+
     p->cpu_context.pc = (ptr_t) ret_from_fork;
     p->cpu_context.sp = (ptr_t) childregs;
     int pid = nr_tasks ++;
