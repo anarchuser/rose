@@ -26,16 +26,17 @@ void mini_uart_send_string (char * str) {
 
 void mini_uart_init (void) {
     static volatile bool init_progress = false;
-    static volatile bool init_done = false;
+    static volatile bool init_done     = false;
 
     if (init_progress) {
-        while (!init_done);
+        while (!init_done)
+            ;
         return;
     }
     init_progress = true;
 
     unsigned int selector;
-    int target = BAUD_RATE_REG (115200);
+    int          target = BAUD_RATE_REG (115200);
 
     selector = get32 (GPFSEL1);
     selector &= ~(7 << 12);
@@ -68,12 +69,12 @@ void mini_uart_init (void) {
 void handle_mini_uart_irq (void) {
     char c_event = mini_uart_recv ();
     switch (c_event) {
-        case 17:    // device control 1
+        case 17:// device control 1
             mini_uart_send_string ("Power off");
-            poweroff (40, true);                         // power off instantly, never return control here
-        case 18:    // device control 2
+            poweroff (40, true);// power off instantly, never return control here
+        case 18:                // device control 2
             mini_uart_send_string ("Reboot");
-            reboot (40, true);                          // reboot instantly, never return control here
+            reboot (40, true);// reboot instantly, never return control here
         default:
             mini_uart_send (c_event);
     }

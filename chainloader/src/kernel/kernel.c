@@ -2,7 +2,7 @@
 
 void kernel () {
     uart_init ();
-    uart_send_string ("\033[2J\033[0;0H"); // clear screen
+    uart_send_string ("\033[2J\033[0;0H");// clear screen
     uart_send_string ("Booting chainloader...");
 
     // Copy chainloader to offset

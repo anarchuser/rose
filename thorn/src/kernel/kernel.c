@@ -1,15 +1,15 @@
-#include "kernel/mini_uart.h"
-#include "common/printf.h"
-#include "common/utils.h"
 #include "common/gpu.h"
-#include "kernel/mm.h"
-#include "kernel/timer.h"
-#include "kernel/irq.h"
-#include "kernel/sched.h"
-#include "kernel/fork.h"
-#include "kernel/sys.h"
 #include "common/logging.h"
+#include "common/printf.h"
 #include "common/rainbow.h"
+#include "common/utils.h"
+#include "kernel/fork.h"
+#include "kernel/irq.h"
+#include "kernel/mini_uart.h"
+#include "kernel/mm.h"
+#include "kernel/sched.h"
+#include "kernel/sys.h"
+#include "kernel/timer.h"
 
 void user_process1 (char * array) {
     char buf[2] = {0};
@@ -31,7 +31,7 @@ void user_process () {
         printf ("Error while allocating stack for process 1\n\r");
         return;
     }
-    int err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "12345", stack);
+    int err = call_sys_clone ((unsigned long) &user_process1, (unsigned long) "12345", stack);
     if (err < 0) {
         printf ("Error while cloning process 1\n\r");
         return;
@@ -41,7 +41,7 @@ void user_process () {
         printf ("Error while allocating stack for process 1\n\r");
         return;
     }
-    err = call_sys_clone ((unsigned long) & user_process1, (unsigned long) "abcd", stack);
+    err = call_sys_clone ((unsigned long) &user_process1, (unsigned long) "abcd", stack);
     if (err < 0) {
         printf ("Error while cloning process 2\n\r");
         return;
@@ -51,7 +51,7 @@ void user_process () {
 
 void kernel_process () {
     printf ("Kernel process started. EL %d\r\n", get_el ());
-    int err = move_to_user_mode ((unsigned long) & user_process);
+    int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
     }
@@ -69,9 +69,9 @@ void kernel_main (int processor_id) {
         timer_init ();
         enable_interrupt_controller ();
         enable_irq ();
-//        task_init ();
+        //        task_init ();
 
-        LOG("Logging works");
+        LOG ("Logging works");
 
         printf ("Initialising Framebuffer...\r\n");
         int gpu_status = init_gpu ();
@@ -87,28 +87,31 @@ void kernel_main (int processor_id) {
         }
     }
 
-    while (processor_id != current_processor);
+    while (processor_id != current_processor)
+        ;
 
     printf ("Hello, from processor %d\n\r", processor_id);
 
     current_processor++;
 
     if (processor_id == 0) {
-        while (current_processor != 3);
+        while (current_processor != 3)
+            ;
 
         draw ();
 
-//        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
-//        if (res < 0) {
-//            printf ("error while starting kernel process");
-//            return;
-//        }
-//
-//        while (1) {
-//            schedule ();
-//        }
-        LOG("DONE PRINTING");
+        //        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
+        //        if (res < 0) {
+        //            printf ("error while starting kernel process");
+        //            return;
+        //        }
+        //
+        //        while (1) {
+        //            schedule ();
+        //        }
+        LOG ("DONE PRINTING");
     }
 
-    while (1);
+    while (1)
+        ;
 }

@@ -14,5 +14,6 @@ void reboot (unsigned int timeout, bool block) {
     put32 (PM_WDOG, pm_wdog);
     put32 (PM_RSTC, pm_rstc);
 
-    while (block);
+    while (block)
+        ;
 }

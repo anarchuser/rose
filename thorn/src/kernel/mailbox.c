@@ -13,7 +13,8 @@ bool mailbox_request (volatile unsigned int * data_ptr, channel_t channel) {
     unsigned int outgoing = ((unsigned int) ((long) data_ptr) & ~0xF) | (channel & 0xF);
 
     // Wait until we can write
-    while (get32 (MBOX0 + MBOX_STATUS) & MBOX_FULL);
+    while (get32 (MBOX0 + MBOX_STATUS) & MBOX_FULL)
+        ;
 
     // Write the address of our buffer to the mailbox with the channel appended
     put32 (MBOX0 + MBOX_WRITE, outgoing);
@@ -21,7 +22,8 @@ bool mailbox_request (volatile unsigned int * data_ptr, channel_t channel) {
     unsigned int incoming;
     while (1) {
         // Is there a reply?
-        while (get32 (MBOX0 + MBOX_STATUS) & MBOX_EMPTY);
+        while (get32 (MBOX0 + MBOX_STATUS) & MBOX_EMPTY)
+            ;
 
         incoming = get32 (MBOX0 + MBOX_READ);
 
