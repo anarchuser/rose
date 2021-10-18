@@ -57,34 +57,38 @@ void kernel_process () {
     }
 }
 
+void kernel_init (void) {
+    uart_init ();
+    init_printf (0, putc);
+    irq_vector_init ();
+    timer_init ();
+    enable_interrupt_controller ();
+    enable_irq ();
+    task_init ();
+
+    printf ("Initialising Framebuffer...\r\n");
+    int gpu_status = init_gpu ();
+    if (!gpu_status) {
+        printf ("Error while initialising Framebuffer\r\n");
+    } else {
+        color * fb = get_fb ();
+        if (!fb) {
+            printf ("Error: Invalid Framebuffer received\r\n");
+        } else {
+            printf ("Received framebuffer: %p\r\n", fb);
+        }
+    }
+
+    LOG("Initialisation done");
+}
+
 
 void kernel_main (int processor_id) {
 
     static volatile unsigned int current_processor = 0;
 
     if (processor_id == 0) {
-        uart_init ();
-        init_printf (0, putc);
-        irq_vector_init ();
-        timer_init ();
-        enable_interrupt_controller ();
-        enable_irq ();
-        //        task_init ();
-
-        LOG ("Logging works");
-
-        printf ("Initialising Framebuffer...\r\n");
-        int gpu_status = init_gpu ();
-        if (!gpu_status) {
-            printf ("Error while initialising Framebuffer\r\n");
-        } else {
-            color * fb = get_fb ();
-            if (!fb) {
-                printf ("Error: Invalid Framebuffer received\r\n");
-            } else {
-                printf ("Received framebuffer: %p\r\n", fb);
-            }
-        }
+        kernel_init ();
     }
 
     while (processor_id != current_processor)
@@ -93,25 +97,27 @@ void kernel_main (int processor_id) {
     printf ("Hello, from processor %d\n\r", processor_id);
 
     current_processor++;
-
-    if (processor_id == 0) {
-        while (current_processor != 3)
-            ;
-
-        draw ();
-
-        //        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
-        //        if (res < 0) {
-        //            printf ("error while starting kernel process");
-        //            return;
-        //        }
-        //
-        //        while (1) {
-        //            schedule ();
-        //        }
-        LOG ("DONE PRINTING");
+    while (current_processor != 3)
+    ;
+    switch (processor_id) {
+        case 0: {
+            int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
+            if (res < 0) {
+                printf ("error while starting kernel process");
+                return;
+            }
+            while (1) {
+                schedule ();
+            }
+        }
+        case 1:
+            draw ();
+            break;
+        case 2:
+        case 3:
+        default:
+            printf ("Undefined behaviour on processor %d\r\n", processor_id);
+            while (1);
     }
-
-    while (1)
-        ;
+    printf ("Processor %d going out of scope\r\n", processor_id);
 }
