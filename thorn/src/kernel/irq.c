@@ -43,6 +43,9 @@ void show_invalid_entry_message (int type, ptr_t esr, ptr_t address) {
 }
 
 void enable_interrupt_controller () {
+#ifdef _ROSE_K_MINI_UART_H
+    assign_target (ENABLE_AUX_INT, 1);
+#endif
     assign_target (SYSTEM_TIMER_IRQ_1, 0);
     put32 (ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1
 #ifdef _ROSE_K_MINI_UART_H
@@ -50,6 +53,7 @@ void enable_interrupt_controller () {
 #endif
     );
     enable_interrupt (SYSTEM_TIMER_IRQ_1);
+    enable_interrupt (ENABLE_AUX_INT);
 }
 
 void handle_irq (void) {

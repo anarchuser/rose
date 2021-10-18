@@ -2,20 +2,17 @@
 
 void init_mmu (void) {
 
-    struct mm_descriptor * pgd = get_free_page ();
-    struct mm_descriptor * pud = get_page_table (0, MAIR_VALUE, true);
+    mm_table_t * pgd = get_page_table (0, MAIR_VALUE, false);
+    mm_table_t * pud = get_page_table (0, MAIR_VALUE, true);
 
-    uart_init ();
-    init_printf (0, putc);
     printf("pgd: %p\r\n", pgd);
     printf("pud: %p\r\n", pud);
 
-    pgd->address = (ptr_t) pud;
-    pgd->valid = 1;
-    pgd->block = 0;
+    // PUD is 4kb-aligned, therefore effectively only the address is written
+    pgd[0] |= (ptr_t) pud;
     
     for (int i = 0; i < RAM; i++) {
-        pud[i].address = One_GB * i;
+        pud[i].address = _1GB * i;
         pud[i].valid = 1;
     }
     LOG("After init page tables");

@@ -1,24 +1,17 @@
 #include "common/logging.h"
 #include "common/printf.h"
 #include "common/utils.h"
-<<<<<<< HEAD
 #include "common/gpu.h"
-#include "kernel/mm.h"
 #include "kernel/timer.h"
-=======
 #include "kernel/fork.h"
->>>>>>> 436bff3 (WIP: try to generate different mmu data aborts)
 #include "kernel/irq.h"
 #include "kernel/mini_uart.h"
 #include "kernel/mm.h"
 #include "kernel/sched.h"
 #include "kernel/sys.h"
-<<<<<<< HEAD
 #include "common/logging.h"
 #include "common/rainbow.h"
-=======
 #include "kernel/timer.h"
->>>>>>> 436bff3 (WIP: try to generate different mmu data aborts)
 
 void user_process1 (char * array) {
     if (* array == '1') {
@@ -101,6 +94,7 @@ void kernel_main (int processor_id) {
     static volatile unsigned int current_processor = 0;
     
     if (processor_id == 0) {
+        
         uart_init ();
         init_printf (0, putc);
         irq_vector_init ();
@@ -108,9 +102,19 @@ void kernel_main (int processor_id) {
         enable_interrupt_controller ();
         enable_irq ();
         task_init ();
+
+        printf ("Hello, from processor %d\n\r", processor_id);
+
         
         LOG("Logging works");
-        
+
+	    init_mmu();
+        LOG("Initialised MMU");
+	    asm("mov x1, #1");
+	    asm("msr sctlr_el1, x1");
+        while (!((* (unsigned int *) AUX_MU_LSR_REG) & 0x20));
+        * (unsigned int *) AUX_MU_IO_REG = '#';
+
         printf ("Initialising Framebuffer...\r\n");
         int gpu_status = init_gpu ();
         if (!gpu_status) {
@@ -126,6 +130,7 @@ void kernel_main (int processor_id) {
     }
     
     while (processor_id != current_processor);
+    while (1);
     
     printf ("Hello, from processor %d\n\r", processor_id);
     

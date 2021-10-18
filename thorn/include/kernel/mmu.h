@@ -14,7 +14,7 @@
 #define MAIR_VALUE              (MT_DEVICE_nGnRnE_FLAGS << (8 * MT_DEVICE_nGnRnE)) | (MT_NORMAL_NC_FLAGS << (8 * MT_NORMAL_NC))
 
 #define RAM                     8
-#define One_GB                  0x40000000
+#define _1GB                    0x40000000
 
 #ifndef __ASSEMBLER__
 
