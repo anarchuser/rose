@@ -48,7 +48,7 @@ struct task_struct {
     long preempt_count;
     ptr_t stack;
     ptr_t flags;
-    struct mm_table * pgd;
+    mm_table_t * pgd;
 };
 
 extern void sched_init (void);

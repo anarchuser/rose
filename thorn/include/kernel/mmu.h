@@ -13,7 +13,7 @@
 #define MT_NORMAL_NC_FLAGS      0x44
 #define MAIR_VALUE              (MT_DEVICE_nGnRnE_FLAGS << (8 * MT_DEVICE_nGnRnE)) | (MT_NORMAL_NC_FLAGS << (8 * MT_NORMAL_NC))
 
-#define RAM                     8
+#define RAM_IN_GB               8
 #define _1GB                    0x40000000
 
 #ifndef __ASSEMBLER__
