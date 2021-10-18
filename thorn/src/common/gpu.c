@@ -78,7 +78,7 @@ bool init_gpu () {
         gpu_msg_buffer[++c] = 0;                     // Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
         
         gpu_msg_buffer[++c] = 0x00040008;            // Tag to get pitch
-        gpu_msg_buffer[++c] = 0;                     // Size of value buffer
+        gpu_msg_buffer[++c] = 4;                     // Size of value buffer
         gpu_msg_buffer[++c] = 0;                     // Response & value buffer size written will be written here
         gpu_msg_buffer[++c] = 0;                     // Pitch will be written here
         int index_pitch = c;
@@ -92,13 +92,7 @@ bool init_gpu () {
         if (!mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC)) return false;
         
         // Else write pitch appropriately
-        int pitch = gpu_msg_buffer;
-        if (pitch) {
-            printf ("\r\nGot pitch: %d\r\n", pitch);
-        } else {
-            printf ("\r\nPitch is 0?!\r\n");
-        }
-        fb_info.pitch = pitch;
+        fb_info.pitch = gpu_msg_buffer;
     }
     return true;
 }

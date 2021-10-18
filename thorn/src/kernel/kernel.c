@@ -70,7 +70,7 @@ _Noreturn void kernel_main (int processor_id) {
         timer_init ();
         enable_interrupt_controller ();
         enable_irq ();
-        task_init ();
+//        task_init ();
         LOG("Logging works");
         
         // Display
