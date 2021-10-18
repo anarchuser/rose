@@ -7,4 +7,4 @@
 
 #define byte_t unsigned char
 
-#endif //_ROSE_C_STDDEF_H
+#endif//_ROSE_C_STDDEF_H

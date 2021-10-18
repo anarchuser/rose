@@ -1,9 +1,9 @@
-#include "kernel/fork.h"
+#include "kernel/sys.h"
 #include "common/printf.h"
 #include "common/utils.h"
-#include "kernel/sched.h"
+#include "kernel/fork.h"
 #include "kernel/mm.h"
-#include "kernel/sys.h"
+#include "kernel/sched.h"
 
 void sys_write (char * buf) {
     printf (buf);

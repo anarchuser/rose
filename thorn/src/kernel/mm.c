@@ -1,6 +1,8 @@
 #include "kernel/mm.h"
 
-static unsigned short mem_map[PAGING_PAGES] = {0,};
+static unsigned short mem_map[PAGING_PAGES] = {
+        0,
+};
 
 ptr_t get_free_page () {
     for (int i = 0; i < PAGING_PAGES; i++) {

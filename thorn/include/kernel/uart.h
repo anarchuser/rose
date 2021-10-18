@@ -2,10 +2,10 @@
 #ifndef _ROSE_K_UART_H
 #define _ROSE_K_UART_H
 
-#include "kernel/peripherals/uart.h"
-#include "kernel/peripherals/gpio.h"
-#include "common/utils.h"
 #include "common/stdbool.h"
+#include "common/utils.h"
+#include "kernel/peripherals/gpio.h"
+#include "kernel/peripherals/uart.h"
 
 void _uart_init (void);
 
@@ -25,5 +25,5 @@ void _putc (void * p, char c);
 
 #define putc _putc
 
-#endif  /*_ROSE_K_UART_H*/
-#endif  /*_ROSE_K_MINI_UART_H */
+#endif /*_ROSE_K_UART_H*/
+#endif /*_ROSE_K_MINI_UART_H */

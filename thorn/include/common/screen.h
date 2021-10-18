@@ -4,7 +4,7 @@
 #include "common/printf.h"
 
 #define HEIGHT 79
-#define WIDTH  317
+#define WIDTH 317
 
 static char screen[HEIGHT * WIDTH];
 
@@ -18,4 +18,4 @@ char get_pixel (int x, int y);
 
 char set_pixel (int x, int y, char c);
 
-#endif //_ROSE_C_SCREEN_H
+#endif//_ROSE_C_SCREEN_H
