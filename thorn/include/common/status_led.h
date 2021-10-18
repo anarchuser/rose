@@ -5,13 +5,18 @@
 #include "common/stdbool.h"
 
 // Following https://github.com/mathlizee/Rasperry-Pi-3
-#define PIN_NUMBER 130
+
+enum {
+    STATUS_LED = 42,
+    POWER_LED = 130
+};
 
 static volatile unsigned int __attribute__((aligned(16))) led_msg_buffer[32];
 
-bool get_led (void);
-void set_led (bool status);
-bool toggle_led (void); 
+
+bool get_led (int pin);
+void set_led (bool status, int pin);
+bool toggle_led (int pin); 
 
 
 #endif //_ROSE_C_STATUS_LED_H
