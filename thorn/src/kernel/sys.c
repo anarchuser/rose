@@ -15,8 +15,8 @@ int sys_clone (ptr_t stack) {
 
 ptr_t sys_malloc () {
     ptr_t addr = get_free_page ();
-    if (! addr) {
-        return - 1;
+    if (!addr) {
+        return -1;
     }
     return addr;
 }

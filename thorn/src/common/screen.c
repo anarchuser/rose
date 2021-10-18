@@ -1,14 +1,14 @@
 #include "common/screen.h"
 
 void clear_screen () {
-    for (int i = 0; i < HEIGHT; i ++) {
+    for (int i = 0; i < HEIGHT; i++) {
         printf ("\n");
     }
 }
 
 void draw_border () {
-    for (int y = 0; y < HEIGHT; y ++) {
-        for (int x = 0; x < WIDTH; x ++) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             char c;
             if (y == 0 || y == HEIGHT - 1) {
                 if (x == 0 || x == WIDTH - 1) {
@@ -30,8 +30,8 @@ void draw_border () {
 }
 
 void draw_screen () {
-    for (int y = 0; y < HEIGHT; y ++) {
-        for (int x = 0; x < WIDTH; x ++) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             printf ("%c", get_pixel (x, y));
         }
         printf ("\r\n");

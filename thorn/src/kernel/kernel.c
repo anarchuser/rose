@@ -59,9 +59,9 @@ void kernel_process () {
 
 
 void kernel_main (int processor_id) {
-
+    
     static volatile unsigned int current_processor = 0;
-
+    
     if (processor_id == 0) {
         uart_init ();
         init_printf (0, putc);
@@ -70,9 +70,9 @@ void kernel_main (int processor_id) {
         enable_interrupt_controller ();
         enable_irq ();
 //        task_init ();
-
+        
         LOG("Logging works");
-
+        
         printf ("Initialising Framebuffer...\r\n");
         int gpu_status = init_gpu ();
         if (!gpu_status) {
@@ -86,16 +86,16 @@ void kernel_main (int processor_id) {
             }
         }
     }
-
+    
     while (processor_id != current_processor);
-
+    
     printf ("Hello, from processor %d\n\r", processor_id);
-
+    
     current_processor++;
-
+    
     if (processor_id == 0) {
         while (current_processor != 3);
-
+        
         draw ();
 
 //        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
@@ -109,6 +109,6 @@ void kernel_main (int processor_id) {
 //        }
         LOG("DONE PRINTING");
     }
-
+    
     while (1);
 }

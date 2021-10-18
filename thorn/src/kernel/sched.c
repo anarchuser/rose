@@ -11,11 +11,11 @@ struct task_struct * task[NR_TASKS] = {& (init_task),};
 int nr_tasks = 1;
 
 void preempt_disable (void) {
-    current->preempt_count ++;
+    current->preempt_count++;
 }
 
 void preempt_enable (void) {
-    current->preempt_count --;
+    current->preempt_count--;
 }
 
 
@@ -24,9 +24,9 @@ void _schedule (void) {
     int next, c;
     struct task_struct * p;
     while (1) {
-        c = - 1;
+        c = -1;
         next = 0;
-        for (int i = 0; i < NR_TASKS; i ++) {
+        for (int i = 0; i < NR_TASKS; i++) {
             p = task[i];
             if (p && p->state == TASK_RUNNING && p->counter > c) {
                 c = p->counter;
@@ -36,7 +36,7 @@ void _schedule (void) {
         if (c) {
             break;
         }
-        for (int i = 0; i < NR_TASKS; i ++) {
+        for (int i = 0; i < NR_TASKS; i++) {
             p = task[i];
             if (p) {
                 p->counter = (p->counter >> 1) + p->priority;
@@ -67,7 +67,7 @@ void schedule_tail (void) {
 }
 
 void timer_tick () {
-    -- current->counter;
+    --current->counter;
     if (current->counter > 0 || current->preempt_count > 0) {
         return;
     }
@@ -79,7 +79,7 @@ void timer_tick () {
 
 void exit_process () {
     preempt_disable ();
-    for (int i = 0; i < NR_TASKS; i ++) {
+    for (int i = 0; i < NR_TASKS; i++) {
         if (task[i] == current) {
             task[i]->state = TASK_ZOMBIE;
             break;

@@ -15,7 +15,9 @@ static volatile unsigned int __attribute__((aligned(16))) led_msg_buffer[32];
 
 
 bool get_led (int pin);
+
 void set_led (bool status, int pin);
+
 bool toggle_led (int pin);
 
 

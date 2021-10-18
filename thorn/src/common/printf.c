@@ -68,8 +68,8 @@ static void ui2a (unsigned int num, unsigned int base, int uc, char * bf) {
         num %= d;
         d /= base;
         if (n || dgt > 0 || d == 0) {
-            * bf ++ = dgt + (dgt < 10 ? '0' : (uc ? 'A' : 'a') - 10);
-            ++ n;
+            * bf++ = dgt + (dgt < 10 ? '0' : (uc ? 'A' : 'a') - 10);
+            ++n;
         }
     }
     * bf = 0;
@@ -77,8 +77,8 @@ static void ui2a (unsigned int num, unsigned int base, int uc, char * bf) {
 
 static void i2a (int num, char * bf) {
     if (num < 0) {
-        num = - num;
-        * bf ++ = '-';
+        num = -num;
+        * bf++ = '-';
     }
     ui2a (num, 10, 0, bf);
 }
@@ -90,7 +90,7 @@ static int a2d (char ch) {
         return ch - 'a' + 10;
     } else if (ch >= 'A' && ch <= 'F') {
         return ch - 'A' + 10;
-    } else {return - 1;}
+    } else {return -1;}
 }
 
 static char a2i (char ch, char ** src, int base, int * nump) {
@@ -100,7 +100,7 @@ static char a2i (char ch, char ** src, int base, int * nump) {
     while ((digit = a2d (ch)) >= 0) {
         if (digit > base) break;
         num = num * base + digit;
-        ch = * p ++;
+        ch = * p++;
     }
     * src = p;
     * nump = num;
@@ -111,21 +111,21 @@ static void putchw (void * putp, putcf putf, int n, char z, char * bf) {
     char fc = z ? '0' : ' ';
     char ch;
     char * p = bf;
-    while (* p ++ && n > 0)
-        n --;
-    while (n -- > 0)
+    while (* p++ && n > 0)
+        n--;
+    while (n-- > 0)
         putf (putp, fc);
-    while ((ch = * bf ++))
+    while ((ch = * bf++))
         putf (putp, ch);
 }
 
 void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
     char bf[12];
-
+    
     char ch;
-
-
-    while ((ch = * (fmt ++))) {
+    
+    
+    while ((ch = * (fmt++))) {
         if (ch != '%') {
             putf (putp, ch);
         } else {
@@ -134,9 +134,9 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
             char lng=0;
 #endif
             int w = 0;
-            ch = * (fmt ++);
+            ch = * (fmt++);
             if (ch == '0') {
-                ch = * (fmt ++);
+                ch = * (fmt++);
                 lz = 1;
             }
             if (ch >= '0' && ch <= '9') {
@@ -229,7 +229,7 @@ void tfp_printf (char * fmt, ...) {
 }
 
 static void putcp (void * p, char c) {
-    * (* ((char **) p)) ++ = c;
+    * (* ((char **) p))++ = c;
 }
 
 

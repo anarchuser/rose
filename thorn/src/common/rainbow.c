@@ -4,10 +4,10 @@ void draw () {
     unsigned int const RB_SIZE = sizeof (RAINBOW) / sizeof (color);
     unsigned int const X_DIVISOR = GPU_SCREEN_WIDTH / RB_SIZE;
     unsigned int const Y_DIVISOR = GPU_SCREEN_HEIGHT / RB_SIZE;
-
+    
     unsigned int * rainbow_i = (unsigned int *) RAINBOW;
     unsigned int * fb_i = (unsigned int *) get_fb ();
-
+    
     while (1) {
         for (int offset = 0; offset < RB_SIZE; offset++) {
             for (int x = 0; x < GPU_SCREEN_WIDTH - GPU_SCREEN_WIDTH % X_DIVISOR; x++) {

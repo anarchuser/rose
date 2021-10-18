@@ -5,17 +5,17 @@ const char * entry_error_messages[] = {
         "IRQ_INVALID_EL1t",
         "FIQ_INVALID_EL1t",
         "ERROR_INVALID_EL1T",
-
+        
         "SYNC_INVALID_EL1h",
         "IRQ_INVALID_EL1h",
         "FIQ_INVALID_EL1h",
         "ERROR_INVALID_EL1h",
-
+        
         "SYNC_INVALID_EL0_64",
         "IRQ_INVALID_EL0_64",
         "FIQ_INVALID_EL0_64",
         "ERROR_INVALID_EL0_64",
-
+        
         "SYNC_INVALID_EL0_32",
         "IRQ_INVALID_EL0_32",
         "FIQ_INVALID_EL0_32",
@@ -45,8 +45,8 @@ void show_invalid_entry_message (int type, ptr_t esr, ptr_t address) {
 void enable_interrupt_controller () {
     assign_target (SYSTEM_TIMER_IRQ_1, 0);
     put32 (ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1
-#ifdef _ROSE_K_MINI_UART_H
-            | ENABLE_AUX_INT
+                          #ifdef _ROSE_K_MINI_UART_H
+                          | ENABLE_AUX_INT
 #endif
     );
     enable_interrupt (SYSTEM_TIMER_IRQ_1);
@@ -61,10 +61,10 @@ void handle_irq (void) {
     }
 
 #ifdef _ROSE_K_MINI_UART_H
-    unsigned int irq2 = get32(AUX_IRQ_REG);
+    unsigned int irq2 = get32 (AUX_IRQ_REG);
     if (irq2 & MINI_UART_IRQ) {
-        put32(GICC_EOIR, irq_ack_reg);
-        handle_mini_uart_irq();
+        put32 (GICC_EOIR, irq_ack_reg);
+        handle_mini_uart_irq ();
     }
 
 #endif
