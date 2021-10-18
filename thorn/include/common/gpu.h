@@ -15,10 +15,10 @@
 // Uncomment to override physical / virtual screen size with the values defined below
 #define GPU_OVERRIDE_PHYSICAL_SCREEN
 
-#define GPU_SCREEN_WIDTH 1920 // Width used if Override is enabled
+#define GPU_SCREEN_WIDTH  1920// Width used if Override is enabled
 #define GPU_SCREEN_HEIGHT 1080// Height used if Override is enabled
 
-#define GPU_VIRTUAL_WIDTH GPU_SCREEN_WIDTH
+#define GPU_VIRTUAL_WIDTH  GPU_SCREEN_WIDTH
 #define GPU_VIRTUAL_HEIGHT GPU_SCREEN_HEIGHT
 
 #define GPU_COLOUR_DEPTH 32
@@ -33,12 +33,12 @@ typedef struct {
 } color;
 
 typedef struct {
-    color * fb;
+    color *      fb;
     unsigned int fb_size;
-    short virtual_width;
-    short virtual_height;
-    short pitch;
-    short colour_depth;
+    short        virtual_width;
+    short        virtual_height;
+    short        pitch;
+    short        colour_depth;
 } fb_info_t;
 
 static volatile unsigned int __attribute__ ((aligned (16))) gpu_msg_buffer[128];

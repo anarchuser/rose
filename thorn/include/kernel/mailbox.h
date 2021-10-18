@@ -30,8 +30,8 @@ typedef enum {
 
 
 typedef struct {
-    unsigned int data : 28;// most significant bits contain shared memory address
-    channel_t channel : 4; // least four significant bits contain channel
+    unsigned int data    : 28;// most significant bits contain shared memory address
+    channel_t    channel : 4; // least four significant bits contain channel
 } mbox_message_t;
 
 // Send message and check responses

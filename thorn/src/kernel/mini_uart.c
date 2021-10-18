@@ -36,7 +36,7 @@ void mini_uart_init (void) {
     init_progress = true;
 
     unsigned int selector;
-    int target = BAUD_RATE_REG (115200);
+    int          target = BAUD_RATE_REG (115200);
 
     selector = get32 (GPFSEL1);
     selector &= ~(7 << 12);

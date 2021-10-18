@@ -5,9 +5,9 @@
 #include "kernel/irq.h"
 #include "kernel/mm.h"
 
-static struct task_struct init_task = INIT_TASK;
-struct task_struct * current        = &(init_task);
-struct task_struct * task[NR_TASKS] = {
+static struct task_struct init_task      = INIT_TASK;
+struct task_struct *      current        = &(init_task);
+struct task_struct *      task[NR_TASKS] = {
         &(init_task),
 };
 int nr_tasks = 1;
@@ -23,7 +23,7 @@ void preempt_enable (void) {
 
 void _schedule (void) {
     preempt_disable ();
-    int next, c;
+    int                  next, c;
     struct task_struct * p;
     while (1) {
         c    = -1;

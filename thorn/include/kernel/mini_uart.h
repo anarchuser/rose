@@ -21,9 +21,9 @@ void handle_mini_uart_irq (void);
 // This function is required by printf function
 void mini_putc (void * p, char c);
 
-#define uart_init mini_uart_init
-#define uart_recv mini_uart_recv
-#define uart_send mini_uart_send
+#define uart_init        mini_uart_init
+#define uart_recv        mini_uart_recv
+#define uart_send        mini_uart_send
 #define uart_send_string mini_uart_send_string
 
 #define putc mini_putc

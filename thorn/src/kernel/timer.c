@@ -4,7 +4,7 @@
 #include "kernel/sched.h"
 
 const unsigned int interval = 200000;
-unsigned int curVal         = 0;
+unsigned int       curVal   = 0;
 
 void timer_init (void) {
     curVal = get32 (TIMER_CLO);

@@ -4,7 +4,7 @@
 #include "common/printf.h"
 
 #define HEIGHT 79
-#define WIDTH 317
+#define WIDTH  317
 
 static char screen[HEIGHT * WIDTH];
 

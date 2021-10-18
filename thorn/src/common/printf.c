@@ -23,14 +23,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 typedef void (*putcf) (void *, char);
 
-static putcf stdout_putf;
+static putcf  stdout_putf;
 static void * stdout_putp;
 
 
 #ifdef PRINTF_LONG_SUPPORT
 
 static void uli2a (unsigned long int num, unsigned int base, int uc, char * bf) {
-    int n          = 0;
+    int          n = 0;
     unsigned int d = 1;
     while (num / d >= base)
         d *= base;
@@ -57,7 +57,7 @@ static void li2a (long num, char * bf) {
 #endif
 
 static void ui2a (unsigned int num, unsigned int base, int uc, char * bf) {
-    int n          = 0;
+    int          n = 0;
     unsigned int d = 1;
     while (num / d >= base)
         d *= base;
@@ -94,9 +94,9 @@ static int a2d (char ch) {
 }
 
 static char a2i (char ch, char ** src, int base, int * nump) {
-    char * p = *src;
-    int num  = 0;
-    int digit;
+    char * p   = *src;
+    int    num = 0;
+    int    digit;
     while ((digit = a2d (ch)) >= 0) {
         if (digit > base)
             break;
@@ -109,8 +109,8 @@ static char a2i (char ch, char ** src, int base, int * nump) {
 }
 
 static void putchw (void * putp, putcf putf, int n, char z, char * bf) {
-    char fc = z ? '0' : ' ';
-    char ch;
+    char   fc = z ? '0' : ' ';
+    char   ch;
     char * p = bf;
     while (*p++ && n > 0)
         n--;
