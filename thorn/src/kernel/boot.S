@@ -20,11 +20,7 @@ init_bss:
 	sub	x1, x1, x0
 	bl	memzero
 
-	sev
-
-	mov 	x0, #0
-	adr	x0, move_to_el1
-
+    adr x0, move_to_el1
 	mov	x1, #0xe0
 	str	x0, [x1]
 
@@ -33,6 +29,8 @@ init_bss:
 
 	mov	x1, #0xf0
 	str	x0, [x1]
+
+	sev
 
 move_to_el1:
 	ldr	x0, =SCTLR_VALUE_MMU_DISABLED

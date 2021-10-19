@@ -95,14 +95,11 @@ void kernel_main (int processor_id) {
         kernel_init ();
     }
 
-    while (processor_id != current_processor)
-        ;
-
-    printf ("Hello, from processor %d\n\r", processor_id);
-
+    // Synchronisation to prevent concurrent print
+    while (processor_id != current_processor) {}
+    printf ("Hello, from processor %d in EL %d\n\r", processor_id, get_el ());
     current_processor++;
-    while (current_processor != 3)
-        ;
+
     switch (processor_id) {
         case 0: {
             int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
@@ -124,8 +121,6 @@ void kernel_main (int processor_id) {
         case 3:
         default:
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
-            while (1)
-                ;
     }
     printf ("Processor %d going out of scope\r\n", processor_id);
 }
