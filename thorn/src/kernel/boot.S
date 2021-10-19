@@ -15,22 +15,22 @@ _start:
 	b	master
 
 init_bss:
-	adr	x0, bss_begin
-	adr	x1, bss_end
-	sub	x1, x1, x0
-	bl	memzero
+    adr	x0, bss_begin
+    adr	x1, bss_end
+    sub	x1, x1, x0
+    bl	memzero
 
     adr x0, move_to_el1
-	mov	x1, #0xe0
-	str	x0, [x1]
+    mov	x1, #0xe0
+    str	x0, [x1]
 
-	mov	x1, #0xe8
-	str	x0, [x1]
+    mov	x1, #0xe8
+    str	x0, [x1]
 
-	mov	x1, #0xf0
-	str	x0, [x1]
+    mov	x1, #0xf0
+    str	x0, [x1]
 
-	sev
+    sev
 
 move_to_el1:
 	ldr	x0, =SCTLR_VALUE_MMU_DISABLED

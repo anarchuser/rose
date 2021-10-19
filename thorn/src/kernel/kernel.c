@@ -51,7 +51,7 @@ void user_process () {
 }
 
 void kernel_process () {
-    // printf ("Kernel process started. EL %d\r\n", get_el ());
+    printf ("Kernel process started. EL %d\r\n", get_el ());
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -69,10 +69,10 @@ void kernel_init (void) {
 
     printf ("Initialising Framebuffer...\r\n");
     int gpu_status = init_gpu ();
-    if (! gpu_status) {
+    if (!gpu_status) {
         printf ("Error while initialising Framebuffer\r\n");
     } else {
-        if (! get_fb ()) {
+        if (!get_fb ()) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
             font_set_normal ();
