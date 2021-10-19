@@ -34,8 +34,6 @@ init_bss:
 	mov	x1, #0xf0
 	str	x0, [x1]
 
-//init_fpu:
-
 move_to_el1:
 	ldr	x0, =SCTLR_VALUE_MMU_DISABLED
 	msr	sctlr_el1, x0
