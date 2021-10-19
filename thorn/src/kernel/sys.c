@@ -1,9 +1,9 @@
-#include "kernel/fork.h"
+#include "kernel/sys.h"
 #include "common/printf.h"
 #include "common/utils.h"
-#include "kernel/sched.h"
+#include "kernel/fork.h"
 #include "kernel/mm.h"
-#include "kernel/sys.h"
+#include "kernel/sched.h"
 
 void sys_write (char * buf) {
     printf (buf);
@@ -16,7 +16,7 @@ int sys_clone (ptr_t stack) {
 ptr_t sys_malloc () {
     ptr_t addr = get_free_page ();
     if (! addr) {
-        return - 1;
+        return -1;
     }
     return addr;
 }

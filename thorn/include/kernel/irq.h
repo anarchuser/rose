@@ -1,13 +1,13 @@
-#ifndef    _ROSE_K_IRQ_H
-#define    _ROSE_K_IRQ_H
+#ifndef _ROSE_K_IRQ_H
+#define _ROSE_K_IRQ_H
 
-#include "common/utils.h"
 #include "common/printf.h"
 #include "common/stddef.h"
-#include "kernel/timer.h"
+#include "common/utils.h"
+#include "kernel/arm/sysregs.h"
 #include "kernel/entry.h"
 #include "kernel/peripherals/irq.h"
-#include "kernel/arm/sysregs.h"
+#include "kernel/timer.h"
 
 #include "kernel/mini_uart.h"
 
@@ -21,4 +21,4 @@ void enable_irq (void);
 
 void disable_irq (void);
 
-#endif  /*_ROSE_K_IRQ_H */
+#endif /*_ROSE_K_IRQ_H */
