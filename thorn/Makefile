@@ -11,7 +11,7 @@ HOST_OS = $(shell uname -s)
 IMAGE_NAME = $(shell basename `pwd`)
 
 # Options for C, Asembly, and the linker, respectively
-COPS   = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude #-mgeneral-regs-only
+COPS   = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude
 ASMOPS = -Iinclude
 LOPS   = -ffreestanding -nostdlib
 
