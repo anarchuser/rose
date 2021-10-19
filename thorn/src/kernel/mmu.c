@@ -1,23 +1,27 @@
 #include "kernel/mmu.h"
 
-void init_mmu (void) {
+bool init_mmu (void) {
 
-    mm_table_t * pgd = get_page_table (0, MAIR_VALUE, false);
-    mm_table_t * pud = get_page_table (0, MAIR_VALUE, true);
+    //    mm_table_t * pgd = get_page_table (0, MAIR_VALUE, false);
+    //    mm_table_t * pud = get_page_table (0, MAIR_VALUE, true);
+    mm_table_t * pgd = get_page_table (0, 0, false);
+    mm_table_t * pud = get_page_table (0, 0, true);
 
     printf ("pgd: %p\r\n", pgd);
     printf ("pud: %p\r\n", pud);
 
-    // PUD is 4kb-aligned, therefore least significant 12 zeroes are truncated
-    pgd->descriptors[0].address = (ptr_t) pud >> 12;
+    // Write PUD address as first entry into PGD
+    if (! put_address (&pgd->descriptors[0], pud))
+        return false;
 
-    for (int i = 0; i < RAM_IN_GB; i++) {
-        pud->descriptors[i].address = (_1GB * i) >> 12;
-        pud->descriptors[i].valid   = 1;
+    for (long i = 0; i < RAM_IN_GB; i++) {
+        if (! put_address (&pud->descriptors[i], (mm_table_t *) (_1GB * i)))
+            return false;
     }
     LOG ("After init page tables");
     write_pgd (pgd);
     LOG ("After writing pgd to registers");
+    return true;
 }
 
 void data_abort_el0 (ptr_t far, ptr_t esr) {

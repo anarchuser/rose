@@ -19,6 +19,7 @@ typedef struct {
 } mm_table_t;
 
 mm_table_t * get_page_table (unsigned short upper_attributes, unsigned short lower_attributes, bool is_block);
+bool         put_address (mm_descriptor_t * dest, mm_table_t * address);
 
 #endif
 #endif//_ROSE_K_PAGING_H

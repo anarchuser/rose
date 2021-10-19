@@ -24,7 +24,7 @@
 #include "kernel/paging.h"
 #include "kernel/sched.h"
 
-void init_mmu (void);
+bool init_mmu (void);
 
 void write_pgd (mm_table_t *);
 

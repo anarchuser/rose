@@ -105,15 +105,21 @@ void kernel_main (int processor_id) {
 
         LOG ("Logging works");
 
-        init_mmu ();
+        if (! init_mmu ()) {
+            LOG ("Initialisation of the MMU failed");
+            while (1) {}
+        }
         LOG ("Initialised MMU");
         asm("mov x1, #1");
         asm("msr sctlr_el1, x1");
-        printf ("After mmu enable");
-        while (! ((*(unsigned int *) AUX_MU_LSR_REG) & 0x20))
-            ;
+
+        // Try to print a single character without invoking function calls
+        while (! ((*(unsigned int *) AUX_MU_LSR_REG) & 0x20)) {}
         *(unsigned int *) AUX_MU_IO_REG = '#';
 
+        printf ("After mmu enable");
+
+        // Display
         printf ("Initialising Framebuffer...\r\n");
         int gpu_status = init_gpu ();
         if (! gpu_status) {
@@ -128,16 +134,14 @@ void kernel_main (int processor_id) {
         }
     }
 
-    while (processor_id != current_processor)
-        ;
+    while (processor_id != current_processor) {}
 
     printf ("Hello, from processor %d\n\r", processor_id);
 
     current_processor++;
 
     if (processor_id == 0) {
-        while (current_processor != 3)
-            ;
+        while (current_processor != 3) {}
 
         int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
         if (res < 0) {
@@ -150,11 +154,9 @@ void kernel_main (int processor_id) {
         }
     }
     if (processor_id == 1) {
-        while (current_processor != 3)
-            ;
+        while (current_processor != 3) {}
         draw ();
     }
 
-    while (1)
-        ;
+    while (1) {}
 }
