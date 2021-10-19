@@ -20,8 +20,6 @@ init_bss:
 	sub	x1, x1, x0
 	bl	memzero
 
-	bl move_to_el1
-	
 /*
 	sev
 
