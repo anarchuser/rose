@@ -34,6 +34,8 @@ init_bss:
 	mov	x1, #0xf0
 	str	x0, [x1]
 
+//init_fpu:
+
 move_to_el1:
 	ldr	x0, =SCTLR_VALUE_MMU_DISABLED
 	msr	sctlr_el1, x0
@@ -50,6 +52,10 @@ move_to_el1:
 	eret
 
 master:
+    // Enable FPU (Floating-Point Unit) and SIMD (Single Instruction Multiple Data)
+    mov x0, #3 << 20
+    msr cpacr_el1, x0
+
 	mrs	x0, mpidr_el1
 	and	x0, x0, #0xFF
 	mov	x1, #SECTION_SIZE
