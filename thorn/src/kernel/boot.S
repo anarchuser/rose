@@ -27,10 +27,10 @@ init_bss:
 
 	mov 	x0, #0
 	adr	x0, move_to_el1
-	
+
 	mov	x1, #0xe0
 	str	x0, [x1]
-	
+
 	mov	x1, #0xe8
 	str	x0, [x1]
 
@@ -60,7 +60,7 @@ master:
 	mul	x1, x1, x0
 	add	x1, x1, #LOW_MEMORY
 	mov	sp, x1
-	
+
 	bl	kernel_main
 	b 	proc_hang		// should never come here
 

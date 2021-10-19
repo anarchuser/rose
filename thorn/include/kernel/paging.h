@@ -7,11 +7,11 @@
 #include "kernel/mm.h"
 
 typedef struct {
-    unsigned short upper_attributes: 16;
-    ptr_t address: 26;                      // Actual address, 4 kB aligned (hence 12 LSB are ignored)
-    unsigned short lower_attributes: 10;
-    bool block: 1;                          // address is table     | address is page or segment
-    bool valid: 1;                          // address is valid     | MMU issues fault
+    unsigned short upper_attributes : 16;
+    ptr_t          address          : 26;// Actual address, 4 kB aligned (hence 12 LSB are ignored)
+    unsigned short lower_attributes : 10;
+    bool           block            : 1;// address is table     | address is page or segment
+    bool           valid            : 1;// address is valid     | MMU issues fault
 } mm_descriptor_t;
 
 typedef struct {
@@ -21,4 +21,4 @@ typedef struct {
 mm_table_t * get_page_table (unsigned short upper_attributes, unsigned short lower_attributes, bool is_block);
 
 #endif
-#endif //_ROSE_K_PAGING_H
+#endif//_ROSE_K_PAGING_H

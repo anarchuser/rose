@@ -4,25 +4,25 @@
 #include "common/stddef.h"
 #include "kernel/paging.h"
 
-#define THREAD_CPU_CONTEXT          0        // offset of cpu_context in task_struct
+#define THREAD_CPU_CONTEXT 0// offset of cpu_context in task_struct
 
 #ifndef __ASSEMBLER__
 
-#define THREAD_SIZE                 4096
+#define THREAD_SIZE 4096
 
-#define NR_TASKS                    64
+#define NR_TASKS 64
 
 #define FIRST_TASK task[0]
-#define LAST_TASK task[NR_TASKS-1]
+#define LAST_TASK  task[NR_TASKS - 1]
 
-#define TASK_RUNNING                0
-#define TASK_ZOMBIE                 1
+#define TASK_RUNNING 0
+#define TASK_ZOMBIE  1
 
-#define PF_KTHREAD                  0x00000002
+#define PF_KTHREAD 0x00000002
 
 extern struct task_struct * current;
 extern struct task_struct * task[NR_TASKS];
-extern int nr_tasks;
+extern int                  nr_tasks;
 
 struct cpu_context {
     unsigned long x19;
@@ -42,13 +42,13 @@ struct cpu_context {
 
 struct task_struct {
     struct cpu_context cpu_context;
-    long state;
-    long counter;
-    long priority;
-    long preempt_count;
-    ptr_t stack;
-    ptr_t flags;
-    mm_table_t * pgd;
+    long               state;
+    long               counter;
+    long               priority;
+    long               preempt_count;
+    ptr_t              stack;
+    ptr_t              flags;
+    mm_table_t *       pgd;
 };
 
 extern void sched_init (void);
@@ -69,10 +69,11 @@ extern void exit_process (void);
 
 extern void task_init (void);
 
-#define INIT_TASK \
-/*cpu_context*/    { {0,0,0,0,0,0,0,0,0,0,0,0,0}, \
-/* state etc */    0,0,1, 0 \
-}
+#define INIT_TASK                                \
+    /*cpu_context*/ {                            \
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, \
+                /* state etc */ 0, 0, 1, 0       \
+    }
 
 #endif
 #endif

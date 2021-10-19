@@ -44,19 +44,19 @@
 	mrs	x22, elr_el1
 	mrs	x23, spsr_el1
 
-	stp	x30, x21, [sp, #16 * 15] 
+	stp	x30, x21, [sp, #16 * 15]
 	stp	x22, x23, [sp, #16 * 16]
 	.endm
 
 	.macro	kernel_exit, el
 	ldp	x22, x23, [sp, #16 * 16]
-	ldp	x30, x21, [sp, #16 * 15] 
+	ldp	x30, x21, [sp, #16 * 15]
 
 	.if	\el == 0
 	msr	sp_el0, x21
 	.endif /* \el == 0 */
 
-	msr	elr_el1, x22			
+	msr	elr_el1, x22
 	msr	spsr_el1, x23
 
 
@@ -75,7 +75,7 @@
 	ldp	x24, x25, [sp, #16 * 12]
 	ldp	x26, x27, [sp, #16 * 13]
 	ldp	x28, x29, [sp, #16 * 14]
-	add	sp, sp, #S_FRAME_SIZE		
+	add	sp, sp, #S_FRAME_SIZE
 	eret
 	.endm
 
@@ -84,7 +84,7 @@
  * Exception vectors.
  */
 .align	11
-.globl vectors 
+.globl vectors
 vectors:
 	ventry	sync_invalid_el1t			// Synchronous EL1t
 	ventry	irq_invalid_el1t			// IRQ EL1t
@@ -146,14 +146,14 @@ error_invalid_el0_32:
 	handle_invalid_entry  0, ERROR_INVALID_EL0_32
 
 el1_irq:
-	kernel_entry 1 
+	kernel_entry 1
 	bl	handle_irq
-	kernel_exit 1 
+	kernel_exit 1
 
 el0_irq:
-	kernel_entry 0 
+	kernel_entry 0
 	bl	handle_irq
-	kernel_exit 0 
+	kernel_exit 0
 
 el0_sync:
 	kernel_entry 0
@@ -185,7 +185,7 @@ el0_svc:
 ni_sys:
 	handle_invalid_entry 0, SYSCALL_ERROR
 ret_from_syscall:
-	bl	disable_irq				
+	bl	disable_irq
 	str	x0, [sp, #S_X0]												// returned x0
 	kernel_exit 0
 
@@ -212,8 +212,8 @@ ret_from_fork:
 	mov	x0, x20
 	blr	x19
 ret_to_user:
-	bl disable_irq				
-	kernel_exit 0 
+	bl disable_irq
+	kernel_exit 0
 
 .globl err_hang
 err_hang: b err_hang
