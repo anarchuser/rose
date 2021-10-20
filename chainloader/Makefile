@@ -108,7 +108,7 @@ flash-Darwin: $(IMAGE_NAME).img
 resend: reboot send
 
 send: $(IMAGE_NAME).img
-	printf "0: %.8x" $(shell wc -c < $(IMAGE_NAME).img) | xxd -re -g0 > $(SERIAL_PORT)
+	printf "0: %.8x" $(shell wc -c < $(IMAGE_NAME).img) | xxd -r -g0 > $(SERIAL_PORT)
 	cat $(IMAGE_NAME).img > $(SERIAL_PORT)
 
 # Run on qemu
