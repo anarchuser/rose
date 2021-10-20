@@ -25,16 +25,14 @@ SERIAL_PORT_ALT_Darwin = /dev/$(shell ls /dev | grep usbserial | head -n 1)
 BUILD_DEFAULT_TARGET = thorn
 
 # Ensure make still works if someone creates a file named like follows:
-.PHONY: all build cleanall flash resend send reboot poweroff
+.PHONY: all build clean flash resend send reboot poweroff
 
 # Make everything. Default target
-all: cleanall buildall
+all: clean buildall
 
 # Remove kernel and build directory
 clean:
 	rm -rf $(BUILD) *.img
-
-cleanall: clean
 	$(MAKE) -C chainloader clean
 	$(MAKE) -C thorn clean
 

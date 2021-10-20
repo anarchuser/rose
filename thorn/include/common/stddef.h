@@ -5,4 +5,6 @@
 
 #define ptr_t unsigned long
 
-#endif //_ROSE_C_STDDEF_H
+#define byte_t unsigned char
+
+#endif//_ROSE_C_STDDEF_H
