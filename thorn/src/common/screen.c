@@ -146,25 +146,63 @@ void drawpx (unsigned int x, unsigned int y, color_t color) {
     get_fb ()[location]        = color;
 };
 
-void drawline (unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, color_t color) {
-    int dx, dy, p, x, y;
+void drawline (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
+    // begin new implementation here
+    if (ABS (y1 - y0) < ABS (x1 - x0)) {
+        if (x0 > x1)
+            drawline_shallow (x1, y1, x0, y0, color);
+        else
+            drawline_shallow (x0, y0, x1, y1, color);
+    } else {
+        if (y0 > y1)
+            drawline_steep (x1, y1, x0, y0, color);
+        else
+            drawline_steep (x0, y0, x1, y1, color);
+    }
+}
+void drawline_shallow (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
+    int dx, dy, yi, D, y;
+    dx = x1 - x0;
+    dy = y1 - y0;
+    yi = 1;
+    if (dy < 0) {
+        yi = -1;
+        dy = -dy;
+    }
+    D = (2 * dy) - dx;
+    y = y0;
 
-    dx = x2 - x1;
-    dy = y2 - y1;
-    x  = x1;
-    y  = y1;
-    p  = 2 * dy - dx;
+    for (int x = x0; x < x1; x++) {
 
-    while (x < x2) {
-        if (p >= 0) {
-            drawpx (x, y, color);
-            y++;
-            p = p + 2 * dy - 2 * dx;
+        drawpx (x, y, color);
+        if (D > 0) {
+            y = y + yi;
+            D = D + (2 * (dy - dx));
         } else {
-            drawpx (x, y, color);
-            p = p + 2 * dy;
+            D = D + 2 * dy;
         }
-        x++;
+    }
+}
+
+void drawline_steep (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
+    int dx, dy, xi, D, x;
+    dx = x1 - x0;
+    dy = y1 - y0;
+    xi = 1;
+    if (dx < 0) {
+        xi = -1;
+        dx = -dx;
+    }
+    D = (2 * dx) - dy;
+    x = x0;
+    for (int y = y0; y < y1; y++) {
+        drawpx (x, y, color);
+        if (D > 0) {
+            x = x + xi;
+            D = D + (2 * (dx - dy));
+        } else {
+            D = D + 2 * dx;
+        }
     }
 }
 
