@@ -2,6 +2,7 @@
 #include "common/logging.h"
 #include "common/printf.h"
 #include "common/rainbow.h"
+#include "common/screen.h"
 #include "common/utils.h"
 #include "kernel/fork.h"
 #include "kernel/irq.h"
@@ -50,7 +51,7 @@ void user_process () {
 }
 
 void kernel_process () {
-    printf ("Kernel process started. EL %d\r\n", get_el ());
+    // printf ("Kernel process started. EL %d\r\n", get_el ());
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -80,6 +81,14 @@ void kernel_init (void) {
     }
 
     LOG ("Initialisation done");
+
+    printf ("MAX_WIDTH: %d\n\r", get_fb_info ()->virtual_width);
+    printf ("MAX_HEIGHT: %d\n\r", get_fb_info ()->virtual_height);
+
+    printf ("GET_MAX_WIDTH: %d\n\r", get_max_width ());
+    printf ("GET_MAX_HEIGHT: %d\n\r", get_max_height ());
+
+    printf ("PITCH: %d\n\r", get_fb_info ()->pitch);
 }
 
 
@@ -93,32 +102,36 @@ void kernel_main (int processor_id) {
     while (processor_id != current_processor)
         ;
 
-    printf ("Hello, from processor %d\n\r", processor_id);
+    // printf ("Hello, from processor %d\n\r", processor_id);
 
     current_processor++;
     while (current_processor != 3)
         ;
     switch (processor_id) {
         case 0: {
-            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
-            if (res < 0) {
-                printf ("error while starting kernel process");
-                return;
-            }
+            // int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
+            // if (res < 0) {
+            //     // printf ("error while starting kernel process");
+            //     return;
+            // }
             while (1) {
-                schedule ();
+                // schedule ();
             }
         }
         case 1:
-            if (get_fb ())
-                draw ();
+            if (get_fb ()) {
+                color_t color = {0xff, 0xff, 0xff, 0xff};
+                for (int i = 0; i < 50; i++) {
+                    drawpx (i, i, color);
+                }
+            }
             break;
         case 2:
         case 3:
         default:
-            printf ("Undefined behaviour on processor %d\r\n", processor_id);
+            // printf ("Undefined behaviour on processor %d\r\n", processor_id);
             while (1)
                 ;
     }
-    printf ("Processor %d going out of scope\r\n", processor_id);
+    // printf ("Processor %d going out of scope\r\n", processor_id);
 }
