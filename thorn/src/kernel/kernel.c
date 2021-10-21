@@ -18,7 +18,7 @@ void user_process1 (char * array) {
         for (int i = 0; i < 5; i++) {
             buf[0] = array[i];
             call_sys_write (buf);
-            //            delay (100000);
+            delay (100000);
         }
     }
 }
@@ -117,11 +117,6 @@ void kernel_main (int processor_id) {
         }
         case 1:
             if (get_fb ()) {
-                blank_screen (true);
-                delay (10000000);
-                LOG ("CAN YOU SEE ME?");
-                delay (10000000);
-                blank_screen (false);
                 draw ();
             }
             break;

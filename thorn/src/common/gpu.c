@@ -130,3 +130,8 @@ bool blank_screen (bool blank) {
 
     return mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC);
 }
+
+bool toggle_blank_screen (void) {
+    static bool is_blank = false;
+    blank_screen (is_blank = ! is_blank);
+}

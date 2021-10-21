@@ -2,6 +2,7 @@
 #ifndef _ROSE_K_MINI_UART_H
 #define _ROSE_K_MINI_UART_H
 
+#include "common/gpu.h"
 #include "common/stdbool.h"
 #include "common/utils.h"
 #include "kernel/peripherals/gpio.h"
