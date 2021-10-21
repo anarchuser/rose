@@ -77,18 +77,11 @@ void kernel_init (void) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
             printf ("Received framebuffer: %p\r\n", fb);
+            init_printf (0, putc_screen);
         }
     }
 
     LOG ("Initialisation done");
-
-    printf ("MAX_WIDTH: %d\n\r", get_fb_info ()->virtual_width);
-    printf ("MAX_HEIGHT: %d\n\r", get_fb_info ()->virtual_height);
-
-    printf ("GET_MAX_WIDTH: %d\n\r", get_max_width ());
-    printf ("GET_MAX_HEIGHT: %d\n\r", get_max_height ());
-
-    printf ("PITCH: %d\n\r", get_fb_info ()->pitch);
 }
 
 
@@ -102,27 +95,27 @@ void kernel_main (int processor_id) {
     while (processor_id != current_processor)
         ;
 
-    // printf ("Hello, from processor %d\n\r", processor_id);
+    printf ("Hello, from processor %d\n\r", processor_id);
 
     current_processor++;
     while (current_processor != 3)
         ;
     switch (processor_id) {
         case 0: {
-            // int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
-            // if (res < 0) {
-            //     // printf ("error while starting kernel process");
-            //     return;
-            // }
+            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
+            if (res < 0) {
+                // printf ("error while starting kernel process");
+                return;
+            }
             while (1) {
                 // schedule ();
             }
         }
         case 1:
+            printf ("Width  resolution: %d\n\r", get_fb_info ()->virtual_width);
+            printf ("Height resolution: %d\n\r", get_fb_info ()->virtual_height);
+            printf ("Frame buffer:      %p\n\r", get_fb ());
             if (get_fb ()) {
-                for (int i = 0; i < 128; i++) {
-                    printc_location(i, i*8, 0);
-                }
             }
             break;
         case 2:

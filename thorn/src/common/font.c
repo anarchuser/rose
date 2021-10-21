@@ -135,29 +135,44 @@ const unsigned long long int * font (int c) {
     return (unsigned long long int *) f[c];
 }
 
-void printc (char c) {
-
-    // for (int i = 0; i < FONT_SIZE; i++) {
-
-    //   unsigned int y = ?;
-    //   unsigned int x = ?;
-    //   drawpx();
-    // }
-};
-
-void printc_location(char c, unsigned int x, unsigned int y) {
-    color_t bg = {0x0, 0x0, 0x0, 0x0};
-    color_t fg = {0xff, 0xff, 0xff, 0xff};
-    unsigned long long int * bitmap = font(c);
+void printc_location (char c, unsigned int x, unsigned int y) {
+    color_t               bg     = {0x0, 0x0, 0x0, 0xff};
+    color_t               fg     = {0xff, 0xff, 0xff, 0xff};
+    unsigned char const * bitmap = font (c);
     for (int i = 0; i < FONT_SIZE; i++) {
         for (int j = 0; j < FONT_SIZE; j++) {
-            bool is_on = bitmap[i] & (1 << FONT_SIZE - j - 1);
-            
-            for (int k = 0; k < 5; k++) {
-                for (int h = 0; h < 5; h++) {
-                    drawpx(((x*k) + i), ((y*h) + j), is_on ? fg : bg);
+            bool is_on = bitmap[i] & (1 << j);
+
+            int _x, _y;
+            for (int k = 0; k < FONT_FACTOR; k++) {
+                for (int h = 0; h < FONT_FACTOR; h++) {
+                    _x = x + j * FONT_FACTOR + k;
+                    _y = y + i * FONT_FACTOR + h;
+                    drawpx (_x, _y, is_on ? fg : bg);
                 }
             }
         }
     }
+}
+
+void printc (char c) {
+    printc_location (c, cursor_x, cursor_y);
+    cursor_x += FONT_SIZE * FONT_FACTOR;
+    if (c == '\r') {
+        cursor_x = 0;
+    } else if (c == '\n') {
+        cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
+    } else {
+        if (cursor_x >= get_max_width ()) {
+            cursor_x = 0;
+            cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
+        }
+    }
+    if (cursor_y >= get_max_height ()) {
+        cursor_y = 0;
+    }
+}
+
+void putc_screen (void * p, char c) {
+    printc (c);
 }
