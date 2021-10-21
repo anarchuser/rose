@@ -64,7 +64,9 @@ setup-serial-Darwin:
 	cat -v $(SERIAL_PORT) &
 	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
-resend: reboot send
+resend: reboot build
+	sleep 8
+	$(MAKE) send
 
 # send corresponding image over serial connection
 send: send-$(SEND_DEFAULT_TARGET)
@@ -84,7 +86,6 @@ poweroff:
 
 reboot:
 	printf "0: %.2x" 18 | xxd -re -g0 > $(SERIAL_PORT)
-	sleep 8
 
 
 # Emulate the corresponding kernel on qemu
