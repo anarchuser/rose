@@ -4,6 +4,7 @@
 #include "common/logging.h"
 #include "common/printf.h"
 #include "common/rainbow.h"
+#include "common/screen.h"
 #include "common/temperature.h"
 #include "common/utils.h"
 #include "kernel/fork.h"
@@ -59,37 +60,41 @@ void kernel_process () {
     }
 }
 
+void kernel_init (void) {
+    uart_init ();
+    init_printf (0, putc);
+    irq_vector_init ();
+    timer_init ();
+    enable_interrupt_controller ();
+    enable_irq ();
+    task_init ();
 
-_Noreturn void kernel_main (int processor_id) {
-    static volatile unsigned int current_processor = 0;
-
-    if (processor_id == 0) {
-        uart_init ();
-        init_printf (0, putc);
-        irq_vector_init ();
-        timer_init ();
-        enable_interrupt_controller ();
-        enable_irq ();
-        //        task_init ();
-        LOG ("Logging works");
-
-        // Display
-        printf ("Initialising Framebuffer...\r\n");
-        int gpu_status = init_gpu ();
-        if (! gpu_status) {
-            printf ("Error while initialising Framebuffer\r\n");
+    printf ("Initialising Framebuffer...\r\n");
+    int gpu_status = init_gpu ();
+    if (! gpu_status) {
+        printf ("Error while initialising Framebuffer\r\n");
+    } else {
+        if (! get_fb ()) {
+            printf ("Error: Invalid Framebuffer received\r\n");
         } else {
-            color * fb = get_fb ();
-            if (! fb) {
-                printf ("Error: Invalid Framebuffer received\r\n");
-            } else {
-                printf ("Received framebuffer: %p\r\n", fb);
-            }
+            init_printf (0, putc_screen);
+            printf ("Frame  buffer:     %p\r\n", get_fb ());
+            printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
+            printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
+    }
+    // Temperature
+    printf ("Initialising temperature %s. Max temperature set to %d °C.\r\n",
+            init_temperature () ? "succeeded" : "failed", get_max_temperature () / 1000);
+    LOG ("Initialisation done");
+}
 
-        // Temperature
-        printf ("Initialising temperature %s. Max temperature set to %d °C.\r\n",
-                init_temperature () ? "succeeded" : "failed", get_max_temperature () / 1000);
+
+void kernel_main (int processor_id) {
+
+    static volatile unsigned int current_processor = 0;
+    if (processor_id == 0) {
+        kernel_init ();
     }
 
     while (processor_id != current_processor)
@@ -98,35 +103,35 @@ _Noreturn void kernel_main (int processor_id) {
     printf ("Hello, from processor %d\n\r", processor_id);
 
     current_processor++;
-
-    if (processor_id == 0) {
-        while (current_processor != 3)
-            ;
-
-        draw ();
-
-        //        int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
-        //        if (res < 0) {
-        //            printf ("error while starting kernel process");
-        //            return;
-        //        }
-        //
-        //        while (1) {
-        //            schedule ();
-        //        }
-        LOG ("DONE PRINTING");
-    }
-
-    // Use processor 1 for checking temperature
-    if (processor_id == 1) {
-        while (current_processor != 3)
-            ;
-        while (1) {
-            regulate_temperature ();
-            delay (TEMPERATURE_CHECK_DELAY);
-        }
-    }
-
-    while (1)
+    while (current_processor != 3)
         ;
+    switch (processor_id) {
+        case 0: {
+            //            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
+            //            if (res < 0) {
+            //                // printf ("error while starting kernel process");
+            //                return;
+            //            }
+            while (1) {
+                schedule ();
+            }
+        }
+        case 1:
+            if (get_fb ()) {
+            }
+            break;
+        case 2:
+        case 3:
+            while (current_processor != 3)
+                ;
+            while (1) {
+                regulate_temperature ();
+                delay (TEMPERATURE_CHECK_DELAY);
+            }
+        default:
+            // printf ("Undefined behaviour on processor %d\r\n", processor_id);
+            while (1)
+                ;
+    }
+    // printf ("Processor %d going out of scope\r\n", processor_id);
 }

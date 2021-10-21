@@ -30,10 +30,10 @@ typedef struct {
     byte_t green;
     byte_t red;
     byte_t alpha;
-} color;
+} color_t;
 
 typedef struct {
-    color *      fb;
+    color_t *    fb;
     unsigned int fb_size;
     short        virtual_width;
     short        virtual_height;
@@ -47,7 +47,7 @@ static fb_info_t fb_info;
 
 bool init_gpu (void);
 
-color * get_fb (void);
+color_t * get_fb (void);
 
 fb_info_t const * get_fb_info (void);
 

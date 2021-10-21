@@ -8,5 +8,3 @@
 #define GPU_SET_COLOUR_DEPTH    0x48005
 
 #endif//_ROSE_K_P_GPU_H
-
-/* Copyright (C) 2020 Aaron Alef */
