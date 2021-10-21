@@ -60,4 +60,7 @@ dkms.conf
 .idea/*
 .vscode/
 .DS_Store
+
+#clangd temporary files
 compile_commands.json
+.cache/
