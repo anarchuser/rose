@@ -60,3 +60,4 @@ dkms.conf
 .idea/*
 .vscode/
 .DS_Store
+compile_commands.json
