@@ -3,6 +3,7 @@
 #include "common/printf.h"
 #include "common/rainbow.h"
 #include "common/screen.h"
+#include "common/status_led.h"
 #include "common/utils.h"
 #include "kernel/fork.h"
 #include "kernel/irq.h"
@@ -51,7 +52,7 @@ void user_process () {
 }
 
 void kernel_process () {
-    // printf ("Kernel process started. EL %d\r\n", get_el ());
+    printf ("Kernel process started. EL %d\r\n", get_el ());
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -121,6 +122,12 @@ void kernel_main (int processor_id) {
             }
             break;
         case 2:
+            while (1) {
+                toggle_led (STATUS_LED);
+                toggle_led (POWER_LED);
+                delay (4000000);
+            }
+            break;
         case 3:
         default:
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
