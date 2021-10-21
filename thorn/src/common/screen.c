@@ -146,6 +146,28 @@ void drawpx (unsigned int x, unsigned int y, color_t color) {
     get_fb ()[location]        = color;
 };
 
+void drawline (unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, color_t color) {
+    int dx, dy, p, x, y;
+
+    dx = x2 - x1;
+    dy = y2 - y1;
+    x  = x1;
+    y  = y1;
+    p  = 2 * dy - dx;
+
+    while (x < x2) {
+        if (p >= 0) {
+            drawpx (x, y, color);
+            y++;
+            p = p + 2 * dy - 2 * dx;
+        } else {
+            drawpx (x, y, color);
+            p = p + 2 * dy;
+        }
+        x++;
+    }
+}
+
 short get_max_width () {
     return get_fb_info ()->virtual_width - 1;
 }
