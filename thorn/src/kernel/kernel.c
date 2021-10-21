@@ -121,9 +121,13 @@ void kernel_main (int processor_id) {
         case 1:
             if (get_fb ()) {
                 color_t color = {0xff, 0xff, 0xff, 0xff};
-                for (int i = 0; i < 50; i++) {
+                for (int i = 0; i < get_max_height (); i++) {
                     drawpx (i, i, color);
                 }
+                drawpx (0, 0, color);
+                drawpx (get_max_width (), 0, color);
+                drawpx (0, get_max_height (), color);
+                drawpx (get_max_width (), get_max_height (), color);
             }
             break;
         case 2:
