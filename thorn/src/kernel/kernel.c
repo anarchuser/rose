@@ -75,6 +75,7 @@ void kernel_init (void) {
         if (! get_fb ()) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
+            font_set_normal ();
             init_printf (0, putc_screen);
             printf ("Frame  buffer:     %p\r\n", get_fb ());
             printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
@@ -83,6 +84,7 @@ void kernel_init (void) {
     }
 
     LOG ("Initialisation done");
+    ERROR ("I'm important!");
 }
 
 
@@ -105,7 +107,7 @@ void kernel_main (int processor_id) {
         case 0: {
             int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
             if (res < 0) {
-                // printf ("error while starting kernel process");
+                ERROR ("error while starting kernel process");
                 return;
             }
             while (1) {
@@ -114,6 +116,7 @@ void kernel_main (int processor_id) {
         }
         case 1:
             if (get_fb ()) {
+                //                draw ();
             }
             break;
         case 2:

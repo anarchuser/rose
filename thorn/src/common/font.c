@@ -141,12 +141,12 @@ void printc_location (char c, unsigned int x, unsigned int y) {
         for (int j = 0; j < FONT_SIZE; j++) {
             bool is_on = bitmap[i] & (1 << j);
 
-            int _x, _y;
+            unsigned int _x, _y;
             for (int k = 0; k < FONT_FACTOR; k++) {
                 for (int h = 0; h < FONT_FACTOR; h++) {
                     _x = x + j * FONT_FACTOR + k;
                     _y = y + i * FONT_FACTOR + h;
-                    drawpx (_x, _y, is_on ? fg : bg);
+                    drawpx (_x, _y, is_on ? font_fg : font_bg);
                 }
             }
         }
@@ -169,6 +169,13 @@ void printc (char c) {
     if (cursor_y + FONT_SIZE + FONT_FACTOR >= get_max_height ()) {
         cursor_y = 0;
     }
+}
+
+void font_set_normal (void) {
+    font_fg = font_normal_fg;
+}
+void font_set_error (void) {
+    font_fg = font_error_fg;
 }
 
 void putc_screen (void * p, char c) {
