@@ -68,18 +68,18 @@ void kernel_init (void) {
 
     printf ("Initialising Framebuffer...\r\n");
     int gpu_status = init_gpu ();
-    if (!gpu_status) {
+    if (! gpu_status) {
         printf ("Error while initialising Framebuffer\r\n");
     } else {
         color * fb = get_fb ();
-        if (!fb) {
+        if (! fb) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
             printf ("Received framebuffer: %p\r\n", fb);
         }
     }
 
-    LOG("Initialisation done");
+    LOG ("Initialisation done");
 }
 
 
@@ -98,10 +98,10 @@ void kernel_main (int processor_id) {
 
     current_processor++;
     while (current_processor != 3)
-    ;
+        ;
     switch (processor_id) {
         case 0: {
-            int res = copy_process (PF_KTHREAD, (unsigned long) & kernel_process, 0, 0);
+            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
             if (res < 0) {
                 printf ("error while starting kernel process");
                 return;
@@ -111,13 +111,15 @@ void kernel_main (int processor_id) {
             }
         }
         case 1:
-            draw ();
+            if (get_fb ())
+                draw ();
             break;
         case 2:
         case 3:
         default:
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
-            while (1);
+            while (1)
+                ;
     }
     printf ("Processor %d going out of scope\r\n", processor_id);
 }
