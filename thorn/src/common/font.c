@@ -136,9 +136,7 @@ const unsigned long long int * font (int c) {
 }
 
 void printc_location (char c, unsigned int x, unsigned int y) {
-    color_t               bg     = {0x0, 0x0, 0x0, 0xff};
-    color_t               fg     = {0xff, 0xff, 0xff, 0xff};
-    unsigned char const * bitmap = font (c);
+    unsigned char const * bitmap = (unsigned char const *) font (c);
     for (int i = 0; i < FONT_SIZE; i++) {
         for (int j = 0; j < FONT_SIZE; j++) {
             bool is_on = bitmap[i] & (1 << j);
@@ -163,12 +161,12 @@ void printc (char c) {
     } else if (c == '\n') {
         cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
     } else {
-        if (cursor_x >= get_max_width ()) {
+        if (cursor_x + FONT_SIZE + FONT_FACTOR >= get_max_width ()) {
             cursor_x = 0;
             cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
         }
     }
-    if (cursor_y >= get_max_height ()) {
+    if (cursor_y + FONT_SIZE + FONT_FACTOR >= get_max_height ()) {
         cursor_y = 0;
     }
 }

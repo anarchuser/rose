@@ -72,12 +72,13 @@ void kernel_init (void) {
     if (! gpu_status) {
         printf ("Error while initialising Framebuffer\r\n");
     } else {
-        color_t * fb = get_fb ();
-        if (! fb) {
+        if (! get_fb ()) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
-            printf ("Received framebuffer: %p\r\n", fb);
             init_printf (0, putc_screen);
+            printf ("Frame  buffer:     %p\r\n", get_fb ());
+            printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
+            printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
     }
 
@@ -108,13 +109,10 @@ void kernel_main (int processor_id) {
                 return;
             }
             while (1) {
-                // schedule ();
+                schedule ();
             }
         }
         case 1:
-            printf ("Width  resolution: %d\n\r", get_fb_info ()->virtual_width);
-            printf ("Height resolution: %d\n\r", get_fb_info ()->virtual_height);
-            printf ("Frame buffer:      %p\n\r", get_fb ());
             if (get_fb ()) {
             }
             break;
