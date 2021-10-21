@@ -143,8 +143,7 @@ void printc (char c) {};
 
 void drawpx (unsigned int x, unsigned int y, color_t color) {
     unsigned long int location = y * (get_fb_info ()->pitch) / sizeof (color_t) + x;
-    printf ("X: %d, Y: %d, location: %d\r\n", x, y, location);
-    get_fb ()[location] = color;
+    get_fb ()[location]        = color;
 };
 
 short get_max_width () {
