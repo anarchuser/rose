@@ -2,7 +2,7 @@
 #define _ROSE_C_FONT_H
 
 #define FONT_SIZE   8
-#define FONT_FACTOR 4
+#define FONT_FACTOR 2
 
 // Spacing between lines in pixels
 #define FONT_SPACING 4
