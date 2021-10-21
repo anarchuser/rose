@@ -35,10 +35,9 @@ init_bss:
 	str	x0, [x1]
 
 move_to_el1:
-	ldr	x0, =SCTLR_MMU_ENABLED
+	ldr	x0, =SCTLR_VALUE_MMU_DISABLED
 	msr	sctlr_el1, x0
-	mov x3, xzr
-	msr ttbr1_el1, x3
+
 	ldr	x0, =HCR_VALUE
 	msr	hcr_el2, x0
 
