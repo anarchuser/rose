@@ -116,15 +116,15 @@ void kernel_main (int processor_id) {
         }
         case 1:
             if (get_fb ()) {
-                //                draw ();
+                draw ();
             }
             break;
         case 2:
         case 3:
         default:
-            // printf ("Undefined behaviour on processor %d\r\n", processor_id);
+            printf ("Undefined behaviour on processor %d\r\n", processor_id);
             while (1)
                 ;
     }
-    // printf ("Processor %d going out of scope\r\n", processor_id);
+    printf ("Processor %d going out of scope\r\n", processor_id);
 }
