@@ -1,23 +1,32 @@
 #include "kernel/mmu.h"
 
 bool init_mmu (void) {
+    write_tcr ();
+    write_mair ();
 
-    //    mm_table_t * pgd = get_page_table (0, MAIR_VALUE, false);
-    //    mm_table_t * pud = get_page_table (0, MAIR_VALUE, true);
-    mm_table_t * pgd = get_page_table (0, 0, false);
-    mm_table_t * pud = get_page_table (0, 0, true);
+    mm_table_t * pgd = get_page_table (0, MMU_FLAGS, false);
+    mm_table_t * pud = get_page_table (0, MMU_FLAGS, true);
+
 
     printf ("pgd: %p\r\n", pgd);
     printf ("pud: %p\r\n", pud);
+
+    printf ("                       0...1...2...3...4...5...6...7...8...9...a...b...c...d...e...f...\r\n");
+    printf ("pgd->descriptors[0]: %lb\t%p\n\r", (pgd->descriptors)[0], (pgd->descriptors)[0]);
 
     // Write PUD address as first entry into PGD
     if (! put_address (&pgd->descriptors[0], pud))
         return false;
 
+    printf ("pgd->descriptors[0]: %lb\t%p\n\r", (pgd->descriptors)[0], (pgd->descriptors)[0]);
+
     for (long i = 0; i < RAM_IN_GB; i++) {
         if (! put_address (&pud->descriptors[i], (mm_table_t *) (_1GB * i)))
             return false;
+        printf ("pud->descriptors[%d]: %lb\t%p\n\r", i, (pud->descriptors)[i], (pud->descriptors)[i]);
     }
+
+
     LOG ("After init page tables");
     write_pgd (pgd);
     LOG ("After writing pgd to registers");
