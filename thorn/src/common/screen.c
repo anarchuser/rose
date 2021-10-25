@@ -147,7 +147,17 @@ void drawpx (unsigned int x, unsigned int y, color_t color) {
     get_fb ()[location]        = color;
 };
 
+// Bresenham's line algorithm
 void drawline (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
+
+    if (y1 - y0 == 0)
+        if (x0 > x1)
+            drawline_grid (x0, y0, x1, y1, color);
+    if (x1 - x0 == 0) {
+        if (y0 > y1)
+            drawline_grid (x0, y0, x1, y1, color);
+    }
+
     if (abs (y1 - y0) < abs (x1 - x0)) {
         if (x0 > x1)
             drawline_shallow (x1, y1, x0, y0, color);
@@ -160,6 +170,7 @@ void drawline (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y
             drawline_steep (x0, y0, x1, y1, color);
     }
 }
+
 void drawline_shallow (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
     int dx, dy, yi, D, y;
     dx = x1 - x0;
@@ -205,6 +216,17 @@ void drawline_steep (unsigned int x0, unsigned int y0, unsigned int x1, unsigned
         }
     }
 }
+void drawline_grid (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
+    if (x1 - x0 == 0) {
+        for (int y = y0; y <= y1; y++) {
+            drawpx (x0, y, color);
+        }
+    } else {
+        for (int x = x0; x <= x1; x++) {
+            drawpx (x, y0, color);
+        }
+    }
+};
 
 short get_max_width () {
     return get_fb_info ()->virtual_width - 1;

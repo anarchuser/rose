@@ -124,9 +124,7 @@ void kernel_main (int processor_id) {
                 color_t blue_color   = {0xff, 0x00, 0x00, 0xff};
                 color_t green_color  = {0x00, 0xff, 0x00, 0xff};
                 color_t purple_color = {0xff, 0x00, 0xff, 0xff};
-                // for (int i = 0; i < get_max_height (); i++) {
-                //     drawpx (i, i, green_color);
-                // }
+                // random lines
                 drawline (1, 400, 600, 1, blue_color);
                 drawline (1, 400, 600, 900, blue_color);
                 drawline (600, 900, 600, 1, blue_color);
@@ -134,6 +132,10 @@ void kernel_main (int processor_id) {
                 drawline (3, 3, 20, 800, green_color);
                 drawline (1200, 900, 1, 904, purple_color);
                 drawline (1, 500, 900, 600, white_color);
+
+                // grid
+                drawline (20, 80, 20, 500, white_color);
+                drawline (20, 80, 800, 80, white_color);
             }
             break;
         case 2:
