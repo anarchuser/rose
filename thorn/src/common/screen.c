@@ -216,6 +216,7 @@ void drawline_steep (unsigned int x0, unsigned int y0, unsigned int x1, unsigned
         }
     }
 }
+
 void drawline_grid (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
     if (x1 - x0 == 0) {
         for (int y = y0; y <= y1; y++) {
@@ -227,6 +228,13 @@ void drawline_grid (unsigned int x0, unsigned int y0, unsigned int x1, unsigned 
         }
     }
 };
+
+void drawrec (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
+    drawline (x0, y0, x1, y0, color);
+    drawline (x1, y0, x1, y1, color);
+    drawline (x1, y1, x0, y1, color);
+    drawline (x0, y1, x0, y0, color);
+}
 
 short get_max_width () {
     return get_fb_info ()->virtual_width - 1;

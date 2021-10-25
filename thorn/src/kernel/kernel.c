@@ -136,6 +136,9 @@ void kernel_main (int processor_id) {
                 // grid
                 drawline (20, 80, 20, 500, white_color);
                 drawline (20, 80, 800, 80, white_color);
+
+                // rectangle
+                drawrec (300, 300, 400, 400, purple_color);
             }
             break;
         case 2:
