@@ -1,7 +1,7 @@
 #include "common/rainbow.h"
 
 void draw () {
-    unsigned int const RB_SIZE   = sizeof (RAINBOW) / sizeof (color);
+    unsigned int const RB_SIZE   = sizeof (RAINBOW) / sizeof (color_t);
     unsigned int const X_DIVISOR = GPU_SCREEN_WIDTH / RB_SIZE;
     unsigned int const Y_DIVISOR = GPU_SCREEN_HEIGHT / RB_SIZE;
 

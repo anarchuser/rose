@@ -2,6 +2,7 @@
 #include "common/logging.h"
 #include "common/printf.h"
 #include "common/rainbow.h"
+#include "common/screen.h"
 #include "common/utils.h"
 #include "kernel/fork.h"
 #include "kernel/irq.h"
@@ -50,7 +51,7 @@ void user_process () {
 }
 
 void kernel_process () {
-    printf ("Kernel process started. EL %d\r\n", get_el ());
+    // printf ("Kernel process started. EL %d\r\n", get_el ());
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -71,22 +72,25 @@ void kernel_init (void) {
     if (! gpu_status) {
         printf ("Error while initialising Framebuffer\r\n");
     } else {
-        color * fb = get_fb ();
-        if (! fb) {
+        if (! get_fb ()) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
-            printf ("Received framebuffer: %p\r\n", fb);
+            font_set_normal ();
+            init_printf (0, putc_screen);
+            printf ("Frame  buffer:     %p\r\n", get_fb ());
+            printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
+            printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
     }
 
     LOG ("Initialisation done");
+    ERROR ("I'm important!");
 }
 
 
 void kernel_main (int processor_id) {
 
     static volatile unsigned int current_processor = 0;
-
     if (processor_id == 0) {
         kernel_init ();
     }
@@ -103,16 +107,18 @@ void kernel_main (int processor_id) {
         case 0: {
             int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
             if (res < 0) {
-                printf ("error while starting kernel process");
+                ERROR ("error while starting kernel process");
                 return;
             }
             while (1) {
                 schedule ();
             }
+            break;
         }
         case 1:
-            if (get_fb ())
+            if (get_fb ()) {
                 draw ();
+            }
             break;
         case 2:
         case 3:

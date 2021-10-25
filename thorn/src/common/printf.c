@@ -158,7 +158,8 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         uli2a (va_arg (va, unsigned long int), 10, 0, bf);
                     else
 #endif
-                        ui2a (va_arg (va, unsigned int), 10, 0, bf);
+                    ui2a (va_arg (va,
+                                  unsigned int), 10, 0, bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 }
@@ -168,7 +169,8 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         li2a (va_arg (va, unsigned long int), bf);
                     else
 #endif
-                        i2a (va_arg (va, int), bf);
+                    i2a (va_arg (va,
+                                 int), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 }
@@ -179,14 +181,17 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         uli2a (va_arg (va, unsigned long int), 16, (ch == 'X'), bf);
                     else
 #endif
-                        ui2a (va_arg (va, unsigned int), 16, (ch == 'X'), bf);
+                    ui2a (va_arg (va,
+                                  unsigned int), 16, (ch == 'X'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
-                case 'c':
-                    putf (putp, (char) (va_arg (va, int)));
+                case 'c' :
+                    putf (putp, (char) (va_arg (va,
+                                                int)));
                     break;
-                case 's':
-                    putchw (putp, putf, w, 0, va_arg (va, char *));
+                case 's' :
+                    putchw (putp, putf, w, 0, va_arg (va,
+                                                      char*));
                     break;
                 case 'p':
                 case 'P':
@@ -197,7 +202,8 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         uli2a (va_arg (va, unsigned long int), 16, (ch == 'P'), bf);
                     else
 #endif
-                        ui2a (va_arg (va, unsigned int), 16, (ch == 'P'), bf);
+                    ui2a (va_arg (va,
+                                  unsigned int), 16, (ch == 'P'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 case '%':
