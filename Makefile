@@ -86,6 +86,8 @@ reboot:
 	printf "0: %.2x" 18 | xxd -re -g0 > $(SERIAL_PORT)
 	sleep 8
 
+blank:
+	printf "0: %.2x" 19 | xxd -re -g0 > $(SERIAL_PORT)
 
 # Emulate the corresponding kernel on qemu
 emulate: emulate-$(EMULATE_DEFAULT_TARGET)

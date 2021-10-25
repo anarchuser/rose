@@ -113,6 +113,7 @@ void kernel_main (int processor_id) {
             while (1) {
                 schedule ();
             }
+            break;
         }
         case 1:
             if (get_fb ()) {
