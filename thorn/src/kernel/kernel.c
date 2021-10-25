@@ -67,6 +67,8 @@ void kernel_init (void) {
     enable_interrupt_controller ();
     enable_irq ();
     task_init ();
+    set_led (0, STATUS_LED);
+    set_led (0, POWER_LED);
 
     printf ("Initialising Framebuffer...\r\n");
     int gpu_status = init_gpu ();

@@ -36,6 +36,7 @@ void receive_kernel (void) {
     }
     int length = *(int *) kernel_size_address;
 
+    toggle_led (POWER_LED);
     uart_send_string ("- loading kernel... ");
 
     /** IMPORTANT **/
