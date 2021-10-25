@@ -174,6 +174,16 @@ void kernel_main (int processor_id) {
                 p1.x = 800;
                 p1.y = 80;
                 drawline (p0, p1, white_color);
+                p0.x = 800;
+                p0.y = 500;
+                p1.x = 800;
+                p1.y = 80;
+                drawline (p0, p1, white_color);
+                p0.x = 800;
+                p0.y = 500;
+                p1.x = 20;
+                p1.y = 500;
+                drawline (p0, p1, white_color);
 
                 // rectangle
                 p0.x = 300;

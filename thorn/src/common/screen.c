@@ -151,15 +151,17 @@ void drawpx (point p, color_t color) {
 // Bresenham's line algorithm
 void drawline (point p0, point p1, color_t color) {
 
-    if (p1.y - p0.y == 0)
-        if (p0.x > p1.x)
+    if (p1.y == p0.y) {
+        if (p0.x < p1.x)
             drawline_grid (p0, p1, color);
-    if (p1.x - p0.x == 0) {
-        if (p0.y > p1.y)
+        else
+            drawline_grid (p1, p0, color);
+    } else if (p1.x == p0.x) {
+        if (p0.y < p1.y)
             drawline_grid (p0, p1, color);
-    }
-
-    if (abs (p1.y - p0.y) < abs (p1.x - p0.x)) {
+        else
+            drawline_grid (p1, p0, color);
+    } else if (abs (p1.y - p0.y) < abs (p1.x - p0.x)) {
         if (p0.x > p1.x)
             drawline_shallow (p1, p0, color);
         else
@@ -224,7 +226,7 @@ void drawline_steep (point p0, point p1, color_t color) {
 }
 
 void drawline_grid (point p0, point p1, color_t color) {
-    if (p1.x - p0.x == 0) {
+    if (p1.x == p0.x) {
         for (int y = p0.y; y <= p1.y; y++) {
             point p = {p0.x, y};
             drawpx (p, color);
