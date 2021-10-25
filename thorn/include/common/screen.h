@@ -3,7 +3,7 @@
 #include "common/font.h"
 #include "common/gpu.h"
 
-#define ABS(N) N < 0 ? -N : N
+long abs (long n);
 
 void printc (char c);
 

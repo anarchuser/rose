@@ -1,5 +1,6 @@
 #include "common/screen.h"
 #include "common/font.h"
+#include "common/math.h"
 #define FB_PITCH GPU_COLOUR_DEPTH * GPU_SCREEN_WIDTH
 // static color_t * fb = get_fb();
 
@@ -147,8 +148,7 @@ void drawpx (unsigned int x, unsigned int y, color_t color) {
 };
 
 void drawline (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color) {
-    // begin new implementation here
-    if (ABS (y1 - y0) < ABS (x1 - x0)) {
+    if (abs (y1 - y0) < abs (x1 - x0)) {
         if (x0 > x1)
             drawline_shallow (x1, y1, x0, y0, color);
         else
