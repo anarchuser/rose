@@ -120,25 +120,67 @@ void kernel_main (int processor_id) {
         }
         case 1:
             if (get_fb ()) {
+                point   p0, p1;
                 color_t white_color  = {0xff, 0xff, 0xff, 0xff};
                 color_t blue_color   = {0xff, 0x00, 0x00, 0xff};
                 color_t green_color  = {0x00, 0xff, 0x00, 0xff};
                 color_t purple_color = {0xff, 0x00, 0xff, 0xff};
+
                 // random lines
-                drawline (1, 400, 600, 1, blue_color);
-                drawline (1, 400, 600, 900, blue_color);
-                drawline (600, 900, 600, 1, blue_color);
-                drawline (600, 1, 1, 400, green_color);
-                drawline (3, 3, 20, 800, green_color);
-                drawline (1200, 900, 1, 904, purple_color);
-                drawline (1, 500, 900, 600, white_color);
+                p0.x = 1;
+                p0.y = 400;
+                p1.x = 600;
+                p1.y = 1;
+                drawline (p0, p1, blue_color);
+                p0.x = 1;
+                p0.y = 400;
+                p1.x = 600;
+                p1.y = 900;
+                drawline (p0, p1, blue_color);
+                p0.x = 600;
+                p0.y = 900;
+                p1.x = 600;
+                p1.y = 1;
+                drawline (p0, p1, blue_color);
+                p0.x = 600;
+                p0.y = 1;
+                p1.x = 1;
+                p1.y = 400;
+                drawline (p0, p1, green_color);
+                p0.x = 3;
+                p0.y = 3;
+                p1.x = 20;
+                p1.y = 800;
+                drawline (p0, p1, green_color);
+                p0.x = 1200;
+                p0.y = 900;
+                p1.x = 1;
+                p1.y = 904;
+                drawline (p0, p1, purple_color);
+                p0.x = 1;
+                p0.y = 500;
+                p1.x = 900;
+                p1.y = 600;
+                drawline (p0, p1, white_color);
 
                 // grid
-                drawline (20, 80, 20, 500, white_color);
-                drawline (20, 80, 800, 80, white_color);
+                p0.x = 20;
+                p0.y = 80;
+                p1.x = 20;
+                p1.y = 500;
+                drawline (p0, p1, white_color);
+                p0.x = 20;
+                p0.y = 80;
+                p1.x = 800;
+                p1.y = 80;
+                drawline (p0, p1, white_color);
 
                 // rectangle
-                drawrec (300, 300, 400, 400, purple_color);
+                p0.x = 300;
+                p0.y = 300;
+                p1.x = 400;
+                p1.y = 400;
+                drawrec (p0, p1, purple_color);
             }
             break;
         case 2:

@@ -3,18 +3,21 @@
 #include "common/font.h"
 #include "common/gpu.h"
 
+typedef struct {
+    unsigned int x, y;
+} point;
 
 void printc (char c);
 
-void drawpx (unsigned int x, unsigned int y, color_t color);
+void drawpx (point p, color_t color);
 
 short get_max_width ();
 short get_max_height ();
 
-void drawline (unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, color_t color);
-void drawline_shallow (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color);
-void drawline_steep (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color);
-void drawline_grid (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color);
-void drawrec (unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, color_t color);
+void drawline (point p0, point p1, color_t color);
+void drawline_shallow (point p0, point p1, color_t color);
+void drawline_steep (point p0, point p1, color_t color);
+void drawline_grid (point p0, point p1, color_t color);
+void drawrec (point p0, point p1, color_t color);
 
 #endif//_ROSE_C_SCREEN_H
