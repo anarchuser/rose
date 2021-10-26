@@ -83,6 +83,15 @@ void kernel_init (void) {
         }
     }
 
+    printf("test\n");
+    printf("test\r");
+    printf("test\r\n");
+    printf("test\n\r");
+    printf("test\n");
+    printf("test\r");
+    printf("test\r\n");
+    printf("test\n\r");
+
     LOG ("Initialisation done");
     ERROR ("I'm important!");
 }
@@ -105,18 +114,20 @@ void kernel_main (int processor_id) {
         ;
     switch (processor_id) {
         case 0: {
+            /*
             int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
             if (res < 0) {
                 ERROR ("error while starting kernel process");
                 return;
             }
+            */
             while (1) {
-                schedule ();
+                //schedule ();
             }
         }
         case 1:
             if (get_fb ()) {
-                draw ();
+                //draw ();
             }
             break;
         case 2:

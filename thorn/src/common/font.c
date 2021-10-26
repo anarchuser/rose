@@ -154,17 +154,20 @@ void printc_location (char c, unsigned int x, unsigned int y) {
 }
 
 void printc (char c) {
-    printc_location (c, cursor_x, cursor_y);
-    cursor_x += FONT_SIZE * FONT_FACTOR;
-    if (c == '\r') {
-        cursor_x = 0;
-    } else if (c == '\n') {
-        cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
-    } else {
-        if (cursor_x + FONT_SIZE + FONT_FACTOR >= get_max_width ()) {
+    switch (c) {
+        case '\r':
             cursor_x = 0;
+            break;
+        case '\n':
             cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
-        }
+            break;
+        default:
+            printc_location (c, cursor_x, cursor_y);
+            cursor_x += FONT_SIZE * FONT_FACTOR;
+    }
+    if (cursor_x + FONT_SIZE + FONT_FACTOR >= get_max_width ()) {
+        cursor_x = 0;
+        cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
     }
     if (cursor_y + FONT_SIZE + FONT_FACTOR >= get_max_height ()) {
         cursor_y = 0;
