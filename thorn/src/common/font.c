@@ -161,6 +161,8 @@ void printc (char c) {
         case '\n':
             cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
             break;
+        case '\t':
+            cursor_x = cursor_x + FONT_TAB_WIDTH * FONT_SIZE * FONT_FACTOR - cursor_x % (FONT_TAB_WIDTH * FONT_SIZE * FONT_FACTOR);
         default:
             printc_location (c, cursor_x, cursor_y);
             cursor_x += FONT_SIZE * FONT_FACTOR;

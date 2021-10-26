@@ -4,6 +4,8 @@
 #define FONT_SIZE   8
 #define FONT_FACTOR 2
 
+#define FONT_TAB_WIDTH  4
+
 // Spacing between lines in pixels
 #define FONT_SPACING 4
 

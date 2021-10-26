@@ -83,15 +83,6 @@ void kernel_init (void) {
         }
     }
 
-    printf("test\n");
-    printf("test\r");
-    printf("test\r\n");
-    printf("test\n\r");
-    printf("test\n");
-    printf("test\r");
-    printf("test\r\n");
-    printf("test\n\r");
-
     LOG ("Initialisation done");
     ERROR ("I'm important!");
 }
