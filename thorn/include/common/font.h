@@ -1,8 +1,9 @@
 #ifndef _ROSE_C_FONT_H
 #define _ROSE_C_FONT_H
 
-#define FONT_SIZE   8
-#define FONT_FACTOR 2
+#define FONT_SIZE      8
+#define FONT_FACTOR    2
+#define FONT_REAL_SIZE (FONT_SIZE * FONT_FACTOR)
 
 #define FONT_TAB_WIDTH  4
 

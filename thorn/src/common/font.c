@@ -159,17 +159,17 @@ void printc (char c) {
             cursor_x = 0;
             break;
         case '\n':
-            cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
+            cursor_y += FONT_REAL_SIZE + FONT_SPACING;
             break;
         case '\t':
-            cursor_x = cursor_x + FONT_TAB_WIDTH * FONT_SIZE * FONT_FACTOR - cursor_x % (FONT_TAB_WIDTH * FONT_SIZE * FONT_FACTOR);
+            cursor_x = cursor_x + FONT_TAB_WIDTH * FONT_REAL_SIZE - cursor_x % (FONT_TAB_WIDTH * FONT_REAL_SIZE);
         default:
             printc_location (c, cursor_x, cursor_y);
-            cursor_x += FONT_SIZE * FONT_FACTOR;
+            cursor_x += FONT_REAL_SIZE;
     }
     if (cursor_x + FONT_SIZE + FONT_FACTOR >= get_max_width ()) {
         cursor_x = 0;
-        cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
+        cursor_y += FONT_REAL_SIZE + FONT_SPACING;
     }
     if (cursor_y + FONT_SIZE + FONT_FACTOR >= get_max_height ()) {
         cursor_y = 0;
