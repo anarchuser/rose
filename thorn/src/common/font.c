@@ -154,24 +154,32 @@ void printc_location (char c, unsigned int x, unsigned int y) {
 }
 
 void printc (char c) {
+    // Handle special characters, print otherwise
     switch (c) {
-        case '\r':
+        case '\r':  // Reset cursor to beginning of line
             cursor_x = 0;
             break;
-        case '\n':
-            cursor_y += FONT_REAL_SIZE + FONT_SPACING;
+        case '\n':  // Move cursor to next line
+            cursor_y += FONT_REAL_HEIGHT;
             break;
-        case '\t':
-            cursor_x = cursor_x + FONT_TAB_WIDTH * FONT_REAL_SIZE - cursor_x % (FONT_TAB_WIDTH * FONT_REAL_SIZE);
-        default:
+        case '\t':  // Print minimum one space, then align to tab grid
+            cursor_x = cursor_x + FONT_REAL_WIDTH;
+            cursor_x %= (FONT_TAB_WIDTH * FONT_REAL_WIDTH);
+            break;
+        default:    // Print character and update cursor
+            // TODO dynamically deal with unprintable characters (i.e., check if bitmap is all '0')
             printc_location (c, cursor_x, cursor_y);
-            cursor_x += FONT_REAL_SIZE;
+            cursor_x += FONT_REAL_WIDTH;
     }
-    if (cursor_x + FONT_SIZE + FONT_FACTOR >= get_max_width ()) {
+    
+    // If next printed char overflowed screen width move cursor to beginning of next line
+    if (cursor_x + FONT_REAL_WIDTH >= get_max_width ()) {
         cursor_x = 0;
-        cursor_y += FONT_REAL_SIZE + FONT_SPACING;
+        cursor_y += FONT_REAL_HEIGHT;
     }
-    if (cursor_y + FONT_SIZE + FONT_FACTOR >= get_max_height ()) {
+    // If next line would overflow screen height (ignoring line spacing) move to beginning of screen
+    if (cursor_y + FONT_REAL_WIDTH - FONT_SPACING >= get_max_height ()) {
+        // TODO clear framebuffer here...?
         cursor_y = 0;
     }
 }
