@@ -26,10 +26,10 @@ void user_process1 (char * array) {
     }
 }
 
-void user_process_rng() {
+void user_process_rng () {
     char buf[2] = {0};
     while (1) {
-        buf[0] = random();
+        buf[0] = random ();
         call_sys_write (buf);
         delay (100000);
     }
