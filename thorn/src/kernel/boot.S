@@ -50,10 +50,6 @@ move_to_el1:
 	eret
 
 master:
-    // Enable FPU (Floating-Point Unit) and SIMD (Single Instruction Multiple Data)
-    mov x0, #3 << 20
-    msr cpacr_el1, x0
-
 	mrs	x0, mpidr_el1
 	and	x0, x0, #0xFF
 	mov	x1, #SECTION_SIZE
