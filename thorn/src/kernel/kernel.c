@@ -120,7 +120,7 @@ void kernel_main (int processor_id) {
         }
         case 1:
             if (get_fb ()) {
-                point   p0, p1;
+                point_t p0, p1;
                 color_t white_color  = {0xff, 0xff, 0xff, 0xff};
                 color_t blue_color   = {0xff, 0x00, 0x00, 0xff};
                 color_t green_color  = {0x00, 0xff, 0x00, 0xff};
@@ -168,7 +168,7 @@ void kernel_main (int processor_id) {
                 p0.y = 80;
                 p1.x = 20;
                 p1.y = 500;
-                drawline (p0, p1, white_color);
+                drawline (point (20, 80), p1, white_color);
                 p0.x = 20;
                 p0.y = 80;
                 p1.x = 800;
@@ -184,7 +184,7 @@ void kernel_main (int processor_id) {
                 p1.x = 20;
                 p1.y = 500;
                 drawline (p0, p1, white_color);
-
+                drawline ((point_t) {20, 60}, (point_t) {60, 90}, purple_color);
                 // rectangle
                 p0.x = 300;
                 p0.y = 300;

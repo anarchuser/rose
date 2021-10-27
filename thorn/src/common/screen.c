@@ -138,18 +138,20 @@ const unsigned long long int * font (int c) {
     };
     return (unsigned long long int *) f[c];
 }
-
-
+// point_t point (unsigned int x, unsigned int y) {
+//     point_t p = {x, y};
+//     return p;
+// }
 void printc (char c) {};
 
-void drawpx (point p, color_t color) {
+void drawpx (point_t p, color_t color) {
     unsigned long int location = p.y * (get_fb_info ()->pitch) / sizeof (color_t) + p.x;
     get_fb ()[location]        = color;
 };
 
 
 // Bresenham's line algorithm
-void drawline (point p0, point p1, color_t color) {
+void drawline (point_t p0, point_t p1, color_t color) {
 
     if (p1.y == p0.y) {
         if (p0.x < p1.x)
@@ -174,9 +176,9 @@ void drawline (point p0, point p1, color_t color) {
     }
 }
 
-void drawline_shallow (point p0, point p1, color_t color) {
-    point p;
-    int   dx, dy, yi, D, y;
+void drawline_shallow (point_t p0, point_t p1, color_t color) {
+    point_t p;
+    int     dx, dy, yi, D, y;
     dx = p1.x - p0.x;
     dy = p1.y - p0.y;
     yi = 1;
@@ -200,7 +202,7 @@ void drawline_shallow (point p0, point p1, color_t color) {
     }
 }
 
-void drawline_steep (point p0, point p1, color_t color) {
+void drawline_steep (point_t p0, point_t p1, color_t color) {
     int dx, dy, xi, D, x;
     dx = p1.x - p0.x;
     dy = p1.y - p0.y;
@@ -212,9 +214,9 @@ void drawline_steep (point p0, point p1, color_t color) {
     D = (2 * dx) - dy;
     x = p0.x;
     for (int y = p0.y; y < p1.y; y++) {
-        point p = {x, y};
-        p.x     = x;
-        p.y     = y;
+        point_t p = {x, y};
+        p.x       = x;
+        p.y       = y;
         drawpx (p, color);
         if (D > 0) {
             x = x + xi;
@@ -225,23 +227,23 @@ void drawline_steep (point p0, point p1, color_t color) {
     }
 }
 
-void drawline_grid (point p0, point p1, color_t color) {
+void drawline_grid (point_t p0, point_t p1, color_t color) {
     if (p1.x == p0.x) {
         for (int y = p0.y; y <= p1.y; y++) {
-            point p = {p0.x, y};
+            point_t p = {p0.x, y};
             drawpx (p, color);
         }
     } else {
         for (int x = p0.x; x <= p1.x; x++) {
-            point p = {x, p0.y};
+            point_t p = {x, p0.y};
             drawpx (p, color);
         }
     }
 };
 
-void drawrec (point p0, point p1, color_t color) {
-    point tr = {p1.x, p0.y};
-    point bl = {p0.x, p1.y};
+void drawrec (point_t p0, point_t p1, color_t color) {
+    point_t tr = {p1.x, p0.y};
+    point_t bl = {p0.x, p1.y};
     drawline (p0, tr, color);
     drawline (tr, p1, color);
     drawline (p1, bl, color);
