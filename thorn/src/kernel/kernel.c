@@ -99,6 +99,7 @@ void kernel_main (int processor_id) {
     while (processor_id != current_processor) {}
     printf ("Hello, from processor %d in EL %d\n\r", processor_id, get_el ());
     current_processor++;
+    while (current_processor != 4) {}
 
     switch (processor_id) {
         case 0: {

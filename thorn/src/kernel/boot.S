@@ -32,6 +32,8 @@ init_bss:
 
     sev
 
+    b move_to_el1
+
 move_to_el1:
 	ldr	x0, =SCTLR_VALUE_MMU_DISABLED
 	msr	sctlr_el1, x0
