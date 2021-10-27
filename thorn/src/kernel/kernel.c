@@ -67,6 +67,8 @@ void kernel_init (void) {
     enable_interrupt_controller ();
     enable_irq ();
     task_init ();
+
+    // Turn status led OFF and power led ON
     set_led (0, STATUS_LED);
     set_led (0, POWER_LED);
 
@@ -124,12 +126,6 @@ void kernel_main (int processor_id) {
             }
             break;
         case 2:
-            while (1) {
-                toggle_led (STATUS_LED);
-                toggle_led (POWER_LED);
-                delay (4000000);
-            }
-            break;
         case 3:
         default:
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
