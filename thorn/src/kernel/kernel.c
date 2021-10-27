@@ -51,7 +51,7 @@ void user_process () {
 }
 
 void kernel_process () {
-    // printf ("Kernel process started. EL %d\r\n", get_el ());
+    printf ("Kernel process started. EL %d\r\n", get_el ());
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -105,20 +105,19 @@ void kernel_main (int processor_id) {
         ;
     switch (processor_id) {
         case 0: {
-            /*
             int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
             if (res < 0) {
                 ERROR ("error while starting kernel process");
                 return;
             }
-            */
             while (1) {
-                //schedule ();
+                schedule ();
             }
+            break;
         }
         case 1:
             if (get_fb ()) {
-                //draw ();
+                draw ();
             }
             break;
         case 2:

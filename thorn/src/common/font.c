@@ -171,7 +171,7 @@ void printc (char c) {
             printc_location (c, cursor_x, cursor_y);
             cursor_x += FONT_REAL_WIDTH;
     }
-    
+
     // If next printed char overflowed screen width move cursor to beginning of next line
     if (cursor_x + FONT_REAL_WIDTH >= get_max_width ()) {
         cursor_x = 0;
