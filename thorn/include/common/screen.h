@@ -7,7 +7,7 @@ typedef struct {
 } point_t;
 
 // point_t point (unsigned int x, unsigned int y);
-#define point(x, y) \
+#define POINT(x, y) \
     (point_t) {     \
         x, y        \
     }
