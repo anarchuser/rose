@@ -173,11 +173,17 @@ void kernel_main (int processor_id) {
                 drawrec (POINT (300, 300),
                          POINT (400, 400),
                          purple_color);
+
+                drawcircle (POINT (1200, 500),
+                            100,
+                            purple_color);
             }
             break;
         case 2:
         case 3:
         default:
+            while (1)
+                ;
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
     }
     // printf ("Processor %d going out of scope\r\n", processor_id);

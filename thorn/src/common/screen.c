@@ -108,6 +108,17 @@ void drawrec (point_t p0, point_t p1, color_t color) {
     drawline (bl, p0, color);
 }
 
+void drawcircle (point_t p, int radius, color_t color) {
+    point_t offset = {radius, 0};
+    print_point (p);
+    print_point (add_point (p, offset));
+
+    // while (offset.x > offset.y) {
+    //     drawpx ();
+    //     //do the circle octant
+    // }
+}
+
 short get_max_width () {
     return get_fb_info ()->virtual_width - 1;
 }
