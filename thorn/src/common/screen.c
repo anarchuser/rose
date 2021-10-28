@@ -2,8 +2,6 @@
 #include "common/font.h"
 #include "common/math.h"
 
-void printc (char c) {};
-
 void drawpx (point_t p, color_t color) {
     unsigned long int location = p.y * (get_fb_info ()->pitch) / sizeof (color_t) + p.x;
     get_fb ()[location]        = color;

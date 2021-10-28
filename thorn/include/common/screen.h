@@ -1,6 +1,5 @@
 #ifndef _ROSE_C_SCREEN_H
 #define _ROSE_C_SCREEN_H
-#include "common/font.h"
 #include "common/gpu.h"
 
 typedef struct {
@@ -12,8 +11,6 @@ typedef struct {
     (point_t) {     \
         x, y        \
     }
-
-void printc (char c);
 
 void drawpx (point_t p, color_t color);
 

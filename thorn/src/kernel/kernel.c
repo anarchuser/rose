@@ -1,3 +1,4 @@
+#include "common/font.h"
 #include "common/gpu.h"
 #include "common/logging.h"
 #include "common/printf.h"
