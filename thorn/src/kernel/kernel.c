@@ -89,6 +89,9 @@ void kernel_init (void) {
         }
     }
 
+    printf ("|...|...|...|...|\r\n");
+    printf ("|\t|\t|\t|\t|\r\n");
+
     LOG ("Initialisation done");
     ERROR ("I'm important!");
 }
@@ -148,10 +151,13 @@ void kernel_main (int processor_id) {
                 drawline (POINT (1, 500),
                           POINT (900, 600),
                           white_color);
+                drawline (POINT (20, 60),
+                          POINT (60, 90),
+                          purple_color);
 
                 // grid lines
                 drawline (POINT (20, 80),
-                          POINT (20, 80),
+                          POINT (20, 500),
                           white_color);
                 drawline (POINT (20, 80),
                           POINT (800, 80),
@@ -162,9 +168,6 @@ void kernel_main (int processor_id) {
                 drawline (POINT (800, 500),
                           POINT (20, 500),
                           white_color);
-                drawline (POINT (20, 60),
-                          POINT (60, 90),
-                          purple_color);
 
                 // rectangle
                 drawrec (POINT (300, 300),
