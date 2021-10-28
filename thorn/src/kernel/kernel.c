@@ -51,7 +51,7 @@ void user_process () {
 }
 
 void kernel_process () {
-    // printf ("Kernel process started. EL %d\r\n", get_el ());
+    printf ("Kernel process started. EL %d\r\n", get_el ());
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -69,10 +69,10 @@ void kernel_init (void) {
 
     printf ("Initialising Framebuffer...\r\n");
     int gpu_status = init_gpu ();
-    if (! gpu_status) {
+    if (!gpu_status) {
         printf ("Error while initialising Framebuffer\r\n");
     } else {
-        if (! get_fb ()) {
+        if (!get_fb ()) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
             font_set_normal ();
@@ -95,14 +95,12 @@ void kernel_main (int processor_id) {
         kernel_init ();
     }
 
-    while (processor_id != current_processor)
-        ;
-
-    printf ("Hello, from processor %d\n\r", processor_id);
-
+    // Synchronisation to prevent concurrent print
+    while (processor_id != current_processor) {}
+    printf ("Hello, from processor %d in EL %d\n\r", processor_id, get_el ());
     current_processor++;
-    while (current_processor != 3)
-        ;
+    while (current_processor != 4) {}
+
     switch (processor_id) {
         case 0: {
             int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
@@ -124,8 +122,6 @@ void kernel_main (int processor_id) {
         case 3:
         default:
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
-            while (1)
-                ;
     }
     printf ("Processor %d going out of scope\r\n", processor_id);
 }
