@@ -27,11 +27,16 @@ void receive_kernel (void) {
     char * const kernel_size_address = kernel_load_address - sizeof (int);
 
     uart_send_string ("Ready to receive ");
+
+    toggle_led (STATUS_LED);
+    toggle_led (POWER_LED);
+
     for (int i = sizeof (int); i > 0;) {// 4 is size of int
         kernel_size_address[--i] = uart_recv ();
     }
     int length = *(int *) kernel_size_address;
 
+    toggle_led (POWER_LED);
     uart_send_string ("- loading kernel... ");
 
     /** IMPORTANT **/

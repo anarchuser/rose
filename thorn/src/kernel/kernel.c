@@ -3,6 +3,7 @@
 #include "common/printf.h"
 #include "common/rainbow.h"
 #include "common/screen.h"
+#include "common/status_led.h"
 #include "common/utils.h"
 #include "kernel/fork.h"
 #include "kernel/irq.h"
@@ -66,6 +67,10 @@ void kernel_init (void) {
     enable_interrupt_controller ();
     enable_irq ();
     task_init ();
+
+    // Turn status led OFF and power led ON
+    set_led (0, STATUS_LED);
+    set_led (0, POWER_LED);
 
     printf ("Initialising Framebuffer...\r\n");
     int gpu_status = init_gpu ();
