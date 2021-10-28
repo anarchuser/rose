@@ -1,16 +1,17 @@
 #ifndef _ROSE_C_FONT_H
 #define _ROSE_C_FONT_H
 
-#define FONT_SIZE      8
-#define FONT_FACTOR    2
+#define FONT_SIZE       8
+#define FONT_FACTOR     2
 #define FONT_REAL_WIDTH (FONT_SIZE * FONT_FACTOR)
 
 // Spacing between lines in pixels
-#define FONT_SPACING 4
+#define FONT_SPACING     4
 #define FONT_REAL_HEIGHT (FONT_REAL_WIDTH + FONT_SPACING)
 
 // Width of horizontal tabs in characters
-#define FONT_TAB_WIDTH  4
+#define FONT_TAB_SIZE       4
+#define FONT_TAB_REAL_WIDTH (FONT_TAB_SIZE * FONT_REAL_WIDTH)
 
 #include "common/gpu.h"
 #include "common/screen.h"
