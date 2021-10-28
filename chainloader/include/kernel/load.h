@@ -1,14 +1,15 @@
 #ifndef _ROSE_K_LOAD_H
 #define _ROSE_K_LOAD_H
-#define UART_RECEIVE(ch)                                     \
-    {                                                        \
-        while (!((*(unsigned int *) AUX_MU_LSR_REG) & 0x01)) \
-            ;                                                \
-        ch = ((*(unsigned int *) AUX_MU_IO_REG) & 0xFF);     \
+#define UART_RECEIVE(ch)                                      \
+    {                                                         \
+        while (! ((*(unsigned int *) AUX_MU_LSR_REG) & 0x01)) \
+            ;                                                 \
+        ch = ((*(unsigned int *) AUX_MU_IO_REG) & 0xFF);      \
     }
 
 #ifndef __ASSEMBLER__
 
+#include "common/status_led.h"
 #include "kernel/chainload.h"
 #include "kernel/mini_uart.h"
 #include "kernel/peripherals/mini_uart.h"

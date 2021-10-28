@@ -51,4 +51,7 @@ color_t * get_fb (void);
 
 fb_info_t const * get_fb_info (void);
 
+bool blank_screen (bool blank);
+bool toggle_blank_screen (void);
+
 #endif//_ROSE_C_GPU_H

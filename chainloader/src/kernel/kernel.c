@@ -4,6 +4,8 @@ void kernel () {
     uart_init ();
     uart_send_string ("\033[2J\033[0;0H");// clear screen
     uart_send_string ("Booting chainloader...");
+    set_led (0, STATUS_LED);
+    set_led (0, POWER_LED);
 
     // Copy chainloader to offset
     char * const old = (char *) LOAD_ADDRESS;

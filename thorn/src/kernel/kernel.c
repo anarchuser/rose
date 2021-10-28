@@ -3,6 +3,7 @@
 #include "common/printf.h"
 #include "common/rainbow.h"
 #include "common/screen.h"
+#include "common/status_led.h"
 #include "common/utils.h"
 #include "kernel/fork.h"
 #include "kernel/irq.h"
@@ -67,28 +68,28 @@ void kernel_init (void) {
     enable_irq ();
     task_init ();
 
+    // Turn status led OFF and power led ON
+    set_led (0, STATUS_LED);
+    set_led (0, POWER_LED);
+
     printf ("Initialising Framebuffer...\r\n");
     int gpu_status = init_gpu ();
-    if (! gpu_status) {
+    if (!gpu_status) {
         printf ("Error while initialising Framebuffer\r\n");
     } else {
-        color_t * fb = get_fb ();
-        if (! fb) {
+        if (!get_fb ()) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
-            printf ("Received framebuffer: %p\r\n", fb);
+            font_set_normal ();
+            init_printf (0, putc_screen);
+            printf ("Frame  buffer:     %p\r\n", get_fb ());
+            printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
+            printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
     }
 
     LOG ("Initialisation done");
-
-    printf ("MAX_WIDTH: %d\n\r", get_fb_info ()->virtual_width);
-    printf ("MAX_HEIGHT: %d\n\r", get_fb_info ()->virtual_height);
-
-    printf ("GET_MAX_WIDTH: %d\n\r", get_max_width ());
-    printf ("GET_MAX_HEIGHT: %d\n\r", get_max_height ());
-
-    printf ("PITCH: %d\n\r", get_fb_info ()->pitch);
+    ERROR ("I'm important!");
 }
 
 
@@ -99,14 +100,12 @@ void kernel_main (int processor_id) {
         kernel_init ();
     }
 
-    while (processor_id != current_processor)
-        ;
-
-    // printf ("Hello, from processor %d\n\r", processor_id);
-
+    // Synchronisation to prevent concurrent print
+    while (processor_id != current_processor) {}
+    printf ("Hello, from processor %d in EL %d\n\r", processor_id, get_el ());
     current_processor++;
-    while (current_processor != 3)
-        ;
+    while (current_processor != 4) {}
+
     switch (processor_id) {
         case 0: {
             // int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
@@ -117,6 +116,7 @@ void kernel_main (int processor_id) {
             while (1) {
                 // schedule ();
             }
+            break;
         }
         case 1:
             if (get_fb ()) {
@@ -196,9 +196,7 @@ void kernel_main (int processor_id) {
         case 2:
         case 3:
         default:
-            // printf ("Undefined behaviour on processor %d\r\n", processor_id);
-            while (1)
-                ;
+            printf ("Undefined behaviour on processor %d\r\n", processor_id);
     }
     // printf ("Processor %d going out of scope\r\n", processor_id);
 }

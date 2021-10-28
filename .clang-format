@@ -52,7 +52,7 @@ ObjCSpaceBeforeProtocolList: true
 PointerAlignment: Middle
 ReflowComments: false
 SpaceAfterCStyleCast: true
-SpaceAfterLogicalNot: true
+SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: true
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeCpp11BracedList: true
