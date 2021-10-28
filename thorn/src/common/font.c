@@ -162,7 +162,7 @@ void printc (char c) {
         case '\n':// Move cursor to next line
             cursor_y += FONT_REAL_HEIGHT;
             break;
-        case '\t':// Print minimum one space, then align to tab grid
+        case '\t':// Print minimum one space, then align forwards to tab grid
             cursor_x = cursor_x + FONT_REAL_WIDTH;
             cursor_x += FONT_TAB_REAL_WIDTH - cursor_x % (FONT_TAB_REAL_WIDTH);
             break;
