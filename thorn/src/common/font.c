@@ -135,18 +135,18 @@ const unsigned long long int * font (int c) {
     return (unsigned long long int *) f[c];
 }
 
-void printc_location (char c, unsigned int x, unsigned int y) {
+void printc_location (point_t point, char c) {
     unsigned char const * bitmap = (unsigned char const *) font (c);
     for (int i = 0; i < FONT_SIZE; i++) {
         for (int j = 0; j < FONT_SIZE; j++) {
             bool is_on = bitmap[i] & (1 << j);
 
-            unsigned int _x, _y;
+            point_t _point;
             for (int k = 0; k < FONT_FACTOR; k++) {
                 for (int h = 0; h < FONT_FACTOR; h++) {
-                    _x = x + j * FONT_FACTOR + k;
-                    _y = y + i * FONT_FACTOR + h;
-                    drawpx (_x, _y, is_on ? font_fg : font_bg);
+                    _point.x = point.x + j * FONT_FACTOR + k;
+                    _point.y = point.y + i * FONT_FACTOR + h;
+                    drawpx (_point, is_on ? font_fg : font_bg);
                 }
             }
         }
@@ -154,20 +154,20 @@ void printc_location (char c, unsigned int x, unsigned int y) {
 }
 
 void printc (char c) {
-    printc_location (c, cursor_x, cursor_y);
-    cursor_x += FONT_SIZE * FONT_FACTOR;
+    printc_location (cursor, c);
+    cursor.x += FONT_SIZE * FONT_FACTOR;
     if (c == '\r') {
-        cursor_x = 0;
+        cursor.x = 0;
     } else if (c == '\n') {
-        cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
+        cursor.y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
     } else {
-        if (cursor_x + FONT_SIZE + FONT_FACTOR >= get_max_width ()) {
-            cursor_x = 0;
-            cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
+        if (cursor.x + FONT_SIZE + FONT_FACTOR >= get_max_width ()) {
+            cursor.x = 0;
+            cursor.y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
         }
     }
-    if (cursor_y + FONT_SIZE + FONT_FACTOR >= get_max_height ()) {
-        cursor_y = 0;
+    if (cursor.y + FONT_SIZE + FONT_FACTOR >= get_max_height ()) {
+        cursor.y = 0;
     }
 }
 
