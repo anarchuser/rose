@@ -1,14 +1,26 @@
 #ifndef _ROSE_C_SCREEN_H
 #define _ROSE_C_SCREEN_H
-#include "common/font.h"
 #include "common/gpu.h"
 
-void printc(char c);
+typedef struct {
+    unsigned int x, y;
+} point_t;
 
-void drawpx (unsigned int x, unsigned int y, color_t color);
+// point_t point (unsigned int x, unsigned int y);
+#define POINT(x, y) \
+    (point_t) {     \
+        x, y        \
+    }
+
+void drawpx (point_t p, color_t color);
 
 short get_max_width ();
 short get_max_height ();
 
+void drawline (point_t p0, point_t p1, color_t color);
+void drawline_shallow (point_t p0, point_t p1, color_t color);
+void drawline_steep (point_t p0, point_t p1, color_t color);
+void drawline_grid (point_t p0, point_t p1, color_t color);
+void drawrec (point_t p0, point_t p1, color_t color);
 
-#endif //_ROSE_C_SCREEN_H
+#endif//_ROSE_C_SCREEN_H
