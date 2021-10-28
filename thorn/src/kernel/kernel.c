@@ -88,6 +88,9 @@ void kernel_init (void) {
         }
     }
 
+    printf("|...|...|...|...|\r\n");
+    printf("|\t|\t|\t|\t|\r\n");
+
     LOG ("Initialisation done");
     ERROR ("I'm important!");
 }
