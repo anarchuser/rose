@@ -181,10 +181,14 @@ void printc (char c) {
     if (cursor.y + FONT_REAL_WIDTH - FONT_SPACING >= get_max_height ()) {
         // TODO clear framebuffer here...?
 #ifdef FONT_SCROLLBACK
-        unsigned int scroll_size = FONT_SB_LINES * FONT_REAL_HEIGHT * get_fb_info ()->pitch;
-        memcpy ((ptr_t) get_fb (), (ptr_t) get_fb () + scroll_size, get_fb_info ()->fb_size - scroll_size);
-#endif
+        cursor.y -= FONT_SB_LINES * FONT_REAL_HEIGHT;
+        unsigned int remove_size = FONT_SB_LINES * FONT_REAL_HEIGHT * get_fb_info ()->pitch;
+        unsigned int scroll_size = get_fb_info ()->fb_size - remove_size;
+        memcpy ((ptr_t) get_fb (), (ptr_t) get_fb () + remove_size, scroll_size);
+        memzero ((ptr_t) get_fb () + scroll_size, remove_size);
+#else
         cursor.y = 0;
+#endif
     }
 }
 

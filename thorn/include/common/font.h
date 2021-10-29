@@ -16,7 +16,7 @@
 // If this is defined, scrollback is used
 #define FONT_SCROLLBACK
 // Scroll by this amount at the same time. High = fast, low = fancy
-#define FONT_SB_LINES 4
+#define FONT_SB_LINES 1
 
 #include "common/gpu.h"
 #include "common/screen.h"
