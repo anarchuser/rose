@@ -96,7 +96,6 @@ void kernel_init (void) {
     ERROR ("I'm important!");
 }
 
-
 void kernel_main (int processor_id) {
 
     static volatile unsigned int current_processor = 0;
