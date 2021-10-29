@@ -163,7 +163,6 @@ void printc (char c) {
             cursor.y += FONT_REAL_HEIGHT;
             break;
         case '\t':// Print minimum one space, then align forwards to tab grid
-            cursor.x = cursor.x + FONT_REAL_WIDTH;
             cursor.x += FONT_TAB_REAL_WIDTH - cursor.x % (FONT_TAB_REAL_WIDTH);
             break;
         default:// Print character and update cursor
