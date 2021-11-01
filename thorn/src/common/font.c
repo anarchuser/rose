@@ -179,7 +179,6 @@ void printc (char c) {
     }
     // If next line would overflow screen height (ignoring line spacing) move to beginning of screen
     if (cursor.y + FONT_REAL_WIDTH - FONT_SPACING >= get_max_height ()) {
-        // TODO clear framebuffer here...?
 #ifdef FONT_SCROLLBACK
         cursor.y -= FONT_SB_LINES * FONT_REAL_HEIGHT;
         unsigned int remove_size = FONT_SB_LINES * FONT_REAL_HEIGHT * get_fb_info ()->pitch;
@@ -187,6 +186,7 @@ void printc (char c) {
         memcpy ((ptr_t) get_fb (), (ptr_t) get_fb () + remove_size, scroll_size);
         memzero ((ptr_t) get_fb () + scroll_size, remove_size);
 #else
+        // TODO clear framebuffer here...?
         cursor.y = 0;
 #endif
     }
