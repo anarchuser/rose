@@ -10,7 +10,7 @@ An example config line would be:
 
 ```
 # /dev/mmcblk0p1
-UUID=7616-4FD8    /home/kjell/git/rose/mnt    vfat   auto,nofail,noatime,user,rw    0 2
+UUID=7616-4FD8    /home/kjell/git/rose/mnt    vfat   noauto,nofail,noatime,user,rw    0 2
 ```
 
 `make flash` mounts the SD card, copies the chainloader onto its boot partition and then unmounts it again.
@@ -32,5 +32,7 @@ Read as follows:
 
 Once the Chainloader is waiting for the kernel size (![#80f015](https://via.placeholder.com/15/80f015/000000?text=+)![#f02015](https://via.placeholder.com/15/444444/000000?text=+)) you can build and load the image onto the Raspberry Pi with `make send`.
 
-
 If you already loaded and booted the system you can restart the Pi, to start the chainloader again and rebuild + send the new image, with `make resend`.
+
+**! Note: if you use `make resend` while the pi is waiting for the `make send` the Pi will freeze !**  
+If the Pi freezes for this or any other reason you will need to power cycle it and use `make send` again.
