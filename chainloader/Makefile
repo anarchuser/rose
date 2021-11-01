@@ -92,7 +92,7 @@ flash: flash-$(HOST_OS)
 
 flash-Linux: $(IMAGE_NAME).img
 	mkdir -p $(MNT)
-	@mount $(MNT) && echo "mounted SD card to $(MNT)" || echo "mount failed, expecting card to be already mounted, continuing..."
+	@mount $(MNT) && echo "mounted SD card to $(MNT)" || echo "Warning: mount failed, expecting card to be already mounted, continuing..."
 	cp $(IMAGE_NAME).img $(MNT)/kernel8.img
 	cp $(SRC)/config.txt $(MNT)
 	sync
