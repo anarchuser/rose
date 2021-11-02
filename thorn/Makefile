@@ -32,12 +32,14 @@ SRC     = src
 KERNEL  = kernel
 COMMON  = common
 INCLUDE = include
+TEST    = test
 
 # Assemble lists of corresponding source files for assembly, kernel and common
 SRC_KERNEL = $(wildcard $(SRC)/$(KERNEL)/*.c)
 ASM_KERNEL = $(wildcard $(SRC)/$(KERNEL)/*.S)
 SRC_COMMON = $(wildcard $(SRC)/$(COMMON)/*.c)
 ASM_COMMON = $(wildcard $(SRC)/$(COMMON)/*.S)
+TESTS      = $(wildcard $(TEST)/*.c)
 
 # Assemble list of compiled objects, correspondingly
 OBJECTS  = $(patsubst $(SRC)/$(KERNEL)/%.c, $(BUILD)/$(SRC)/$(KERNEL)/%_c.o, $(SRC_KERNEL))
@@ -79,6 +81,11 @@ $(BUILD)/$(SRC)/$(COMMON)/%_S.o: $(SRC)/$(COMMON)/%.S
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< -o $@
 
+# All test source targets
+$(BUILD)/$(TEST)/%_c.o: $(TEST)/%.c
+	mkdir -p $(@D)
+	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< $(OBJECTS) -o $@
+
 # Compile lists with the dependencies between objects
 DEP_FILES = $(OBJECTS:%.o=%.d)
 	-include $(DEP_FILES)
@@ -104,6 +111,10 @@ flash-Darwin: $(IMAGE_NAME).img
 	cp $(SRC)/config.txt $(MNT)
 	sync
 	diskutil unmount $(MNT)
+
+test: $(SRC) $(BUILD)/$(TEST)
+	# TODO: how to send and run the tests on the PI?
+	# for test in $(BUID)/$(TEST) ; do ./$$test ; done
 
 resend: reboot send
 
