@@ -5,6 +5,7 @@
 // https://github.com/bztsrc/raspi3-tutorial/blob/master/10_virtualmemory/mmu.c
 
 #include "common/logging.h"
+#include "common/status_led.h"
 #include "kernel/peripherals/base.h"
 
 #define PAGESIZE 4096

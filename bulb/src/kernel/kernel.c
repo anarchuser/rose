@@ -37,6 +37,8 @@ void kernel_init (void) {
 void kernel_main (int processor_id) {
     kernel_init ();
 
+    init_mmu ();
+
     printf ("Hello, from processor %d in EL %d\r\n", processor_id, get_el ());
 
     hang (STATUS_LED, 5000000);

@@ -68,6 +68,7 @@ void init_mmu () {
                       PT_DEV;                               // device memory
 
     /* okay, now we have to set system registers to enable MMU */
+    //    hang (POWER_LED, 2000000);
 
     // check for 4k granule and at least 36 bits physical address bus */
     asm volatile("mrs %0, id_aa64mmfr0_el1"
@@ -85,6 +86,7 @@ void init_mmu () {
     asm volatile("msr mair_el1, %0"
                  :
                  : "r"(r));
+    LOG ("MAIR attributes written");
 
     // next, specify mapping characteristics in translate control register
     r = (0b00LL << 37) |// TBI=0, no tagging
@@ -105,15 +107,20 @@ void init_mmu () {
                  :
                  : "r"(r));
 
+    LOG ("Translation control register written");
+
     // tell the MMU where our translation tables are. TTBR_CNP bit not documented, but required
     // lower half, user space
     asm volatile("msr ttbr0_el1, %0"
                  :
                  : "r"((unsigned long) &_end + TTBR_CNP));
+    LOG ("TTBR0 written");
+
     // upper half, kernel space
     asm volatile("msr ttbr1_el1, %0"
                  :
                  : "r"((unsigned long) &_end + TTBR_CNP + PAGESIZE));
+    LOG ("TTBR1 written");
 
     // finally, toggle some bits in system control register to enable page translation
     asm volatile("dsb ish; isb; mrs %0, sctlr_el1"
@@ -128,7 +135,13 @@ void init_mmu () {
            (1 << 2) | // clear C, no cache at all
            (1 << 1)); // clear A, no aligment check
     r |= (1 << 0);    // set M, enable MMU
+
+    LOG ("Read out system control register");
+
     asm volatile("msr sctlr_el1, %0; isb"
                  :
                  : "r"(r));
+
+    LOG ("Modify and write back system control register flags");
+    return;
 }
