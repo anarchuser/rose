@@ -78,6 +78,7 @@ void init_mmu () {
         ERROR ("ERROR: 4k granule or 36 bit address space not supported\n");
         return;
     }
+    LOG ("4k granule and 36bit address bus ensured");
 
     // first, set Memory Attributes array, indexed by PT_MEM, PT_DEV, PT_NC in our example
     r = (0xFF << 0) |// AttrIdx=0: normal, IWBWA, OWBWA, NTR
@@ -106,7 +107,6 @@ void init_mmu () {
     asm volatile("msr tcr_el1, %0; isb"
                  :
                  : "r"(r));
-
     LOG ("Translation control register written");
 
     // tell the MMU where our translation tables are. TTBR_CNP bit not documented, but required
@@ -142,6 +142,15 @@ void init_mmu () {
                  :
                  : "r"(r));
 
-    LOG ("Modify and write back system control register flags");
-    return;
+    LOG ("Set SCTLR flags and enable MMU");
+
+    while (1) {
+        printc ('.');
+    }
+    //    printf (msg);
+    //    printf ("test");
+
+    set_led (POWER_LED, 1);
+
+    hang (STATUS_LED, 2000000);
 }
