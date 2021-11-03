@@ -36,17 +36,18 @@ void init_pages () {
               PT_PAGE |                                             // we have area in it mapped by pages
               PT_AF |                                               // accessed flag
               PT_USER |                                             // non-privileged
+              PT_NX |                                               // non-executable
               PT_ISH |                                              // inner shareable
               PT_MEM;                                               // normal memory
 
     // identity L3
     for (r = 0; r < 512; r++)
-        PTE0[r] = (unsigned long) (r * PAGESIZE) |               // physical address
-                  PT_PAGE |                                      // map 4k
-                  PT_AF |                                        // accessed flag
-                  PT_USER |                                      // non-privileged
-                  PT_ISH |                                       // inner shareable
-                  ((r < 0x80 || r >= data_page) ? PT_RW : PT_RO);// different for code and data
+        PTE0[r] = (unsigned long) (r * PAGESIZE) |                       // physical address
+                  PT_PAGE |                                              // map 4k
+                  PT_AF |                                                // accessed flag
+                  PT_USER |                                              // non-privileged
+                  PT_ISH |                                               // inner shareable
+                  ((r < 0x80 || r >= data_page) ? PT_RW | PT_NX : PT_RO);// different for code and data
 }
 
 void init_mmu () {
