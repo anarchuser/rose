@@ -33,13 +33,15 @@
 
 #define TTBR_CNP 1
 
+#define RAM_IN_GB 8
+
 // get addresses from linker
 extern volatile unsigned char _data;
 extern volatile unsigned char _end;
 
 static volatile unsigned int __attribute__ ((aligned (16))) buffer[32];
 
-void init_pages (unsigned long * r, unsigned long * b);
+void init_pages ();
 void init_mmu (void);
 
 void data_abort_el1 (ptr_t far, ptr_t esr);

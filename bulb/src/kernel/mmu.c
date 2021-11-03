@@ -2,9 +2,9 @@
 
 static volatile unsigned int buffer[] = {32, 0, 0x00038041, 8, 0, 42, 1, 0};
 
-void init_pages (unsigned long * r, unsigned long * b) {
-    unsigned long   data_page = (unsigned long) &_data / PAGESIZE;
-    unsigned long * paging    = (unsigned long *) &_end;
+void init_pages () {
+    unsigned long data_page = (unsigned long) &_data / PAGESIZE;
+    unsigned long r, b, *paging = (unsigned long *) &_end;
 
     unsigned long * PUD0 = paging + 0 * 512;
     unsigned long * PMD0 = paging + 2 * 512;
@@ -12,8 +12,8 @@ void init_pages (unsigned long * r, unsigned long * b) {
 
     /* create MMU translation tables at _end */
     // TTBR0, identity L1
-    *b = PBASE >> 21;
-    for (int i = 0; i < 8; i++) {
+    b = PBASE >> 21;
+    for (int i = 0; i < RAM_IN_GB; i++) {
         PUD0[i] = (unsigned long) ((unsigned char *) &_end + (2 + i) * PAGESIZE) |// physical address
                   PT_PAGE |                                                       // it has the "Present" flag, which must be set, and we have area in it mapped by pages
                   PT_AF |                                                         // accessed flag. Without this we're going to have a Data Abort exception
@@ -23,12 +23,12 @@ void init_pages (unsigned long * r, unsigned long * b) {
 
         unsigned int offset = i * 512;
         // identity L2 2M blocks
-        for (*r = 0; *r < 512; (*r)++)
-            PMD0[i * 512 + *r] = (unsigned long) ((offset + *r) << 21) |                 // physical address
-                                 PT_BLOCK |                                              // map 2M block
-                                 PT_AF |                                                 // accessed flag
-                                 PT_USER |                                               // non-privileged
-                                 (offset + *r >= *b ? PT_OSH | PT_DEV : PT_ISH | PT_MEM);// different attributes for device memory
+        for (r = 0; r < 512; r++)
+            PMD0[i * 512 + r] = (unsigned long) ((offset + r) << 21) |                // physical address
+                                PT_BLOCK |                                            // map 2M block
+                                PT_AF |                                               // accessed flag
+                                PT_USER |                                             // non-privileged
+                                (offset + r >= b ? PT_OSH | PT_DEV : PT_ISH | PT_MEM);// different attributes for device memory
     }
 
     // identity L2, first 2M block
@@ -40,20 +40,20 @@ void init_pages (unsigned long * r, unsigned long * b) {
               PT_MEM;                                               // normal memory
 
     // identity L3
-    for (*r = 0; *r < 512; (*r)++)
-        PTE0[*r] = (unsigned long) (*r * PAGESIZE) |                // physical address
-                   PT_PAGE |                                        // map 4k
-                   PT_AF |                                          // accessed flag
-                   PT_USER |                                        // non-privileged
-                   PT_ISH |                                         // inner shareable
-                   ((*r < 0x80 || *r >= data_page) ? PT_RW : PT_RO);// different for code and data
+    for (r = 0; r < 512; r++)
+        PTE0[r] = (unsigned long) (r * PAGESIZE) |               // physical address
+                  PT_PAGE |                                      // map 4k
+                  PT_AF |                                        // accessed flag
+                  PT_USER |                                      // non-privileged
+                  PT_ISH |                                       // inner shareable
+                  ((r < 0x80 || r >= data_page) ? PT_RW : PT_RO);// different for code and data
 }
 
 void init_mmu () {
     unsigned long data_page = (unsigned long) &_data / PAGESIZE;
     unsigned long r, b, *paging = (unsigned long *) &_end;
 
-    init_pages (&r, &b);
+    init_pages ();
 
     /* okay, now we have to set system registers to enable MMU */
     // check for 4k granule and at least 36 bits physical address bus */
