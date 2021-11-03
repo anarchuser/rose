@@ -4,9 +4,16 @@ SECTIONS
 	.text.boot : { *(.text.boot) }
 	.text : { *(.text) }
 	.rodata : { *(.rodata) }
+    PROVIDE(_data = .);
 	.data : { *(.data) }
-	. = ALIGN(0x8);
-	bss_begin = .;
-	.bss : { *(.bss*) }
-	bss_end = .;
+	.bss (NOLOAD) : {
+        . = ALIGN(16);
+        __bss_start = .;
+        *(.bss .bss.*)
+        *(COMMON)
+        __bss_end = .;
+    }
+    . = ALIGN(4096);
+    _end = .;
 }
+__bss_size = (__bss_end - __bss_start) >> 3;

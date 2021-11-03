@@ -12,7 +12,7 @@ MNT_Darwin = /Volumes/boot
 #BOOT_PART = /dev/mmcblk0p1
 
 # Serial connection config
-SEND_DEFAULT_TARGET = bulb
+SEND_DEFAULT_TARGET = thorn
 BAUD_RATE = 115200
 SERIAL_PORT = $(SERIAL_PORT_$(HOST_OS))
 SERIAL_PORT_ALT = $(SERIAL_PORT_ALT_$(HOST_OS))

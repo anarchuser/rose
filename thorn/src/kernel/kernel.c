@@ -1,3 +1,5 @@
+#include "kernel/mini_uart.h"
+// KEEP THIS
 #include "common/font.h"
 #include "common/gpu.h"
 #include "common/logging.h"
@@ -8,8 +10,8 @@
 #include "common/utils.h"
 #include "kernel/fork.h"
 #include "kernel/irq.h"
-#include "kernel/mini_uart.h"
 #include "kernel/mm.h"
+#include "kernel/mmu.h"
 #include "kernel/sched.h"
 #include "kernel/sys.h"
 #include "kernel/timer.h"
@@ -88,9 +90,7 @@ void kernel_init (void) {
             printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
     }
-
-    printf ("|...|...|...|...|\r\n");
-    printf ("|\t|\t|\t|\t|\r\n");
+    init_pages ();
 
     LOG ("Initialisation done");
     ERROR ("I'm important!");
@@ -106,6 +106,8 @@ void kernel_main (int processor_id) {
     // Synchronisation to prevent concurrent print
     while (processor_id != current_processor) {}
     printf ("Hello, from processor %d in EL %d\n\r", processor_id, get_el ());
+    init_mmu ();
+
     current_processor++;
     while (current_processor != 4) {}
 
@@ -125,6 +127,7 @@ void kernel_main (int processor_id) {
         case 2:
         case 3:
         default:
+            while (1) {}
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
     }
     printf ("Processor %d going out of scope\r\n", processor_id);
