@@ -60,7 +60,7 @@ void init_mmu () {
 
     // kernel L3
     paging[5 * 512] = (unsigned long) (PBASE + 0x00201000) |// physical address
-                      PT_PAGE |                             // map 4k
+                      PT_BLOCK |                            // map 4k
                       PT_AF |                               // accessed flag
                       PT_NX |                               // no execute
                       PT_KERNEL |                           // privileged
@@ -68,8 +68,6 @@ void init_mmu () {
                       PT_DEV;                               // device memory
 
     /* okay, now we have to set system registers to enable MMU */
-    //    hang (POWER_LED, 2000000);
-
     // check for 4k granule and at least 36 bits physical address bus */
     asm volatile("mrs %0, id_aa64mmfr0_el1"
                  : "=r"(r));
@@ -142,15 +140,43 @@ void init_mmu () {
                  :
                  : "r"(r));
 
-    LOG ("Set SCTLR flags and enable MMU");
+    //    LOG ("Set SCTLR flags and enable MMU");
+    //    printf ("Printing non-aborting data: %d\r\n", *(char *) 0x000000001234abcd);
+    printf ((char *) 0xFFFF000000080000);
 
-    while (1) {
-        printc ('.');
-    }
-    //    printf (msg);
-    //    printf ("test");
 
     set_led (POWER_LED, 1);
 
-    hang (STATUS_LED, 2000000);
+    while (1) {
+        toggle_led (STATUS_LED);
+        delay (1000000);
+    }
+}
+
+void data_abort_el1 (ptr_t far, ptr_t esr) {
+    byte_t type  = (esr >> 2) & 0b11;
+    byte_t level = esr & 0b11;
+    //    esr &= 0b111111;
+
+    printf ("EL 1 - ");
+    printf ("FAR_EL1: %p - ", far);
+    printf ("ESR_EL1: %b\n\r", esr);
+
+    switch (type) {
+        case 0b00:// Address size fault
+            printf ("Address size fault during level %ld of table walk on lookup of address %p.\r\n", level, far);
+            //            exit_process ();
+            break;
+        case 0b01:// Translation fault
+            printf ("Translation fault during level %ld of table walk on lookup of address %p.\r\n", level, far);
+            break;
+        case 0b10:// Access flag fault
+            printf ("Access flag fault during level %ld of table walk on lookup of address %p.\r\n", level, far);
+            //            exit_process ();
+            break;
+        case 0b11:// Permission fault
+            printf ("Segmentation fault during level %ld of table walk on lookup of address %p.\r\n", level, far);
+            //            exit_process ();
+            break;
+    }
 }
