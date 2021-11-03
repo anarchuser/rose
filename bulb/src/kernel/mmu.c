@@ -123,7 +123,6 @@ void init_mmu () {
     r |= (1 << 0);    // set M, enable MMU
 
     LOG ("Read out system control register");
-    printf ("Current status LED status: %l\r\n", get_led (STATUS_LED));
 
     asm volatile("msr sctlr_el1, %0; isb"
                  :
@@ -145,17 +144,12 @@ void init_mmu () {
     printf ("%u \r\n", buffer[7]);
 
     set_led (POWER_LED, 1);
-
-    while (1) {
-        toggle_led (STATUS_LED);
-        delay (1000000);
-    }
 }
 
 void data_abort_el1 (ptr_t far, ptr_t esr) {
     byte_t type  = (esr >> 2) & 0b11;
     byte_t level = esr & 0b11;
-    //    esr &= 0b111111;
+    esr &= 0b111111;
 
     printf ("EL 1 - ");
     printf ("FAR_EL1: %p - ", far);

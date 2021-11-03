@@ -1,5 +1,5 @@
 #include "kernel/mini_uart.h"
-/*
+
 void mini_uart_send (char c) {
     while (1) {
         if (get32 (AUX_MU_LSR_REG) & 0x20) {
@@ -66,23 +66,22 @@ void mini_uart_init (void) {
     init_done = true;
 }
 
-//void handle_mini_uart_irq (void) {
-//    char c_event = mini_uart_recv ();
-//    switch (c_event) {
-//                    case 17:// device control 1
-//                        mini_uart_send_string ("Power off");
-//                        poweroff (40, true);// power off instantly, never return control here
-//                    case 18:                // device control 2
-//                        mini_uart_send_string ("Reboot");
-//                        reboot (40, true);// reboot instantly, never return control here
-//        case 19:
-//            toggle_blank_screen ();
-//        default:
-//            mini_uart_send (c_event);
-//    }
-//}
+void handle_mini_uart_irq (void) {
+    char c_event = mini_uart_recv ();
+    switch (c_event) {
+        case 17:// device control 1
+            mini_uart_send_string ("Power off");
+            poweroff (40, true);// power off instantly, never return control here
+        case 18:                // device control 2
+            mini_uart_send_string ("Reboot");
+            reboot (40, true);// reboot instantly, never return control here
+        case 19:
+            toggle_blank_screen ();
+        default:
+            mini_uart_send (c_event);
+    }
+}
 
 void mini_putc (void * p, char c) {
     mini_uart_send (c);
 }
- */

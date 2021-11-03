@@ -34,8 +34,6 @@ void enable_interrupt_controller () {
 }
 
 void handle_irq (void) {
-    put32 (GICC_EOIR, get32 (GICC_IAR));
-    /*
     unsigned int irq_ack_reg = get32 (GICC_IAR);
     unsigned int irq1        = irq_ack_reg & 0x2FF;
     if (irq1 & SYSTEM_TIMER_IRQ_1) {
@@ -49,7 +47,5 @@ void handle_irq (void) {
         put32 (GICC_EOIR, irq_ack_reg);
         handle_mini_uart_irq ();
     }
-
 #endif
-     */
 }

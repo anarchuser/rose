@@ -1,10 +1,11 @@
+#include "kernel/mini_uart.h"
+//
 #include "common/font.h"
 #include "common/gpu.h"
 #include "common/logging.h"
 #include "common/printf.h"
 #include "common/status_led.h"
 #include "common/utils.h"
-//#include "kernel/mini_uart.h"
 #include "kernel/entry.h"
 #include "kernel/irq.h"
 #include "kernel/mm.h"
@@ -19,15 +20,15 @@ void hang (int led, int cycles) {
 
 void dual_print (void * p, char c) {
     printc (c);
-    //    uart_send (c);
+    uart_send (c);
 }
 
 void kernel_init (void) {
     set_led (0, POWER_LED);
     set_led (0, STATUS_LED);
 
-    //    uart_init ();
-    //    init_printf (0, putc);
+    uart_init ();
+    init_printf (0, putc);
 
     if (init_gpu ()) {
         if (get_fb ()) {
@@ -45,6 +46,7 @@ void kernel_init (void) {
         hang (POWER_LED, 2000000);
     init_printf (0, dual_print);
 
+    timer_init ();
     irq_vector_init ();
     enable_interrupt_controller ();
     enable_irq ();
@@ -56,6 +58,7 @@ void kernel_main (int processor_id) {
     init_mmu ();
 
     printf ("Hello, from processor %d in EL %d\r\n", processor_id, get_el ());
+    uart_send ("EVERYTHING WORKS!!!\r\n");
 
-    hang (STATUS_LED, 5000000);
+    hang (POWER_LED, 5000000);
 }
