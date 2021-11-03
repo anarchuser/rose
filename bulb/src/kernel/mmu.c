@@ -1,71 +1,107 @@
 #include "kernel/mmu.h"
 
+static volatile unsigned int buffer[] = {32, 0, 0x00038041, 8, 0, 42, 1, 0};
+
+void init_pages (unsigned long * r, unsigned long * b) {
+    unsigned long   data_page = (unsigned long) &_data / PAGESIZE;
+    unsigned long * paging    = (unsigned long *) &_end;
+
+    //    unsigned long * PGD0 = paging + 0 * 512;
+    //    unsigned long * PGD1 = paging + 1 * 512;
+    unsigned long * PUD0 = paging + 0 * 512;
+    unsigned long * PUD1 = paging + 1 * 512;
+    unsigned long * PMD0 = paging + 2 * 512;
+    unsigned long * PMD1 = paging + 4 * 512;
+    unsigned long * PTE0 = paging + 3 * 512;
+    unsigned long * PTE1 = paging + 5 * 512;
+
+    /* create MMU translation tables at _end */
+    // TTBR0, identity L1
+    PUD0[0] = (unsigned long) ((unsigned char *) &_end + 2 * PAGESIZE) |// physical address
+              PT_PAGE |                                                 // it has the "Present" flag, which must be set, and we have area in it mapped by pages
+              PT_AF |                                                   // accessed flag. Without this we're going to have a Data Abort exception
+              PT_USER |                                                 // non-privileged
+              PT_ISH |                                                  // inner shareable
+              PT_MEM;                                                   // normal memory
+
+    // identity L2, first 2M block
+    PMD0[0] = (unsigned long) ((unsigned char *) &_end + 3 * PAGESIZE) |// physical address
+              PT_PAGE |                                                 // we have area in it mapped by pages
+              PT_AF |                                                   // accessed flag
+              PT_USER |                                                 // non-privileged
+              PT_ISH |                                                  // inner shareable
+              PT_MEM;                                                   // normal memory
+
+    // identity L2 2M blocks
+    *b = PBASE >> 21;
+    // skip 0th, as we're about to map it by L3
+    for (*r = 1; *r < 512; (*r)++)
+        PMD0[*r] = (unsigned long) (((*r) << 21)) |               // physical address
+                   PT_BLOCK |                                     // map 2M block
+                   PT_AF |                                        // accessed flag
+                   PT_NX |                                        // no execute
+                   PT_USER |                                      // non-privileged
+                   (*r >= *b ? PT_OSH | PT_DEV : PT_ISH | PT_MEM);// different attributes for device memory
+
+    // identity L3
+    for (*r = 0; *r < 512; (*r)++)
+        PTE0[*r] = (unsigned long) (*r * PAGESIZE) |                        // physical address
+                   PT_PAGE |                                                // map 4k
+                   PT_AF |                                                  // accessed flag
+                   PT_USER |                                                // non-privileged
+                   PT_ISH |                                                 // inner shareable
+                   ((*r < 0x80 || *r >= data_page) ? PT_RW | PT_NX : PT_RO);// different for code and data
+
+    /*
+    // TTBR1, kernel L1
+    PUD1[0] = (unsigned long) ((unsigned char *) &_end + 4 * PAGESIZE) |// physical address
+              PT_PAGE |                                                 // we have area in it mapped by pages
+              PT_AF |                                                   // accessed flag
+              PT_KERNEL |                                               // privileged
+              PT_ISH |                                                  // inner shareable
+              PT_MEM;                                                   // normal memory
+
+    // kernel L2
+    PMD1[0] = (unsigned long) ((unsigned char *) &_end + 5 * PAGESIZE) |// physical address
+              PT_PAGE |                                                 // we have area in it mapped by pages
+              PT_AF |                                                   // accessed flag
+              PT_KERNEL |                                               // privileged
+              PT_ISH |                                                  // inner shareable
+              PT_MEM;                                                   // normal memory
+
+    // kernel L2
+    PMD1[511] = (unsigned long) ((unsigned char *) &_end + 5 * PAGESIZE) |// physical address
+                PT_PAGE |                                                 // we have area in it mapped by pages
+                PT_AF |                                                   // accessed flag
+                PT_KERNEL |                                               // privileged
+                PT_ISH |                                                  // inner shareable
+                PT_MEM;                                                   // normal memory
+
+    // kernel L3
+    PTE1[0] = (unsigned long) (PBASE + 0x00201000) |// physical address
+              PT_PAGE |                             // map 4k
+              PT_AF |                               // accessed flag
+              PT_NX |                               // no execute
+              PT_KERNEL |                           // privileged
+              PT_OSH |                              // outter shareable
+              PT_DEV;                               // device memory
+
+    // kernel L3
+    PTE1[511] = (unsigned long) (PBASE + 0x00201000) |// physical address
+                PT_PAGE |                             // map 4k
+                PT_AF |                               // accessed flag
+                PT_NX |                               // no execute
+                PT_KERNEL |                           // privileged
+                PT_OSH |                              // outter shareable
+                PT_DEV;                               // device memory
+    */
+}
+
 void init_mmu () {
     unsigned long data_page = (unsigned long) &_data / PAGESIZE;
     unsigned long r, b, *paging = (unsigned long *) &_end;
 
-    /* create MMU translation tables at _end */
-
-    // TTBR0, identity L1
-    paging[0] = (unsigned long) ((unsigned char *) &_end + 2 * PAGESIZE) |// physical address
-                PT_PAGE |                                                 // it has the "Present" flag, which must be set, and we have area in it mapped by pages
-                PT_AF |                                                   // accessed flag. Without this we're going to have a Data Abort exception
-                PT_USER |                                                 // non-privileged
-                PT_ISH |                                                  // inner shareable
-                PT_MEM;                                                   // normal memory
-
-    // identity L2, first 2M block
-    paging[2 * 512] = (unsigned long) ((unsigned char *) &_end + 3 * PAGESIZE) |// physical address
-                      PT_PAGE |                                                 // we have area in it mapped by pages
-                      PT_AF |                                                   // accessed flag
-                      PT_USER |                                                 // non-privileged
-                      PT_ISH |                                                  // inner shareable
-                      PT_MEM;                                                   // normal memory
-
-    // identity L2 2M blocks
-    b = PBASE >> 21;
-    // skip 0th, as we're about to map it by L3
-    for (r = 1; r < 512; r++)
-        paging[2 * 512 + r] = (unsigned long) ((r << 21)) |                // physical address
-                              PT_BLOCK |                                   // map 2M block
-                              PT_AF |                                      // accessed flag
-                              PT_NX |                                      // no execute
-                              PT_USER |                                    // non-privileged
-                              (r >= b ? PT_OSH | PT_DEV : PT_ISH | PT_MEM);// different attributes for device memory
-
-    // identity L3
-    for (r = 0; r < 512; r++)
-        paging[3 * 512 + r] = (unsigned long) (r * PAGESIZE) |                       // physical address
-                              PT_PAGE |                                              // map 4k
-                              PT_AF |                                                // accessed flag
-                              PT_USER |                                              // non-privileged
-                              PT_ISH |                                               // inner shareable
-                              ((r < 0x80 || r >= data_page) ? PT_RW | PT_NX : PT_RO);// different for code and data
-
-    // TTBR1, kernel L1
-    paging[512 + 511] = (unsigned long) ((unsigned char *) &_end + 4 * PAGESIZE) |// physical address
-                        PT_PAGE |                                                 // we have area in it mapped by pages
-                        PT_AF |                                                   // accessed flag
-                        PT_KERNEL |                                               // privileged
-                        PT_ISH |                                                  // inner shareable
-                        PT_MEM;                                                   // normal memory
-
-    // kernel L2
-    paging[4 * 512 + 511] = (unsigned long) ((unsigned char *) &_end + 5 * PAGESIZE) |// physical address
-                            PT_PAGE |                                                 // we have area in it mapped by pages
-                            PT_AF |                                                   // accessed flag
-                            PT_KERNEL |                                               // privileged
-                            PT_ISH |                                                  // inner shareable
-                            PT_MEM;                                                   // normal memory
-
-    // kernel L3
-    paging[5 * 512] = (unsigned long) (PBASE + 0x00201000) |// physical address
-                      PT_BLOCK |                            // map 4k
-                      PT_AF |                               // accessed flag
-                      PT_NX |                               // no execute
-                      PT_KERNEL |                           // privileged
-                      PT_OSH |                              // outter shareable
-                      PT_DEV;                               // device memory
+    init_pages (&r, &b);
 
     /* okay, now we have to set system registers to enable MMU */
     // check for 4k granule and at least 36 bits physical address bus */
@@ -117,7 +153,7 @@ void init_mmu () {
     // upper half, kernel space
     asm volatile("msr ttbr1_el1, %0"
                  :
-                 : "r"((unsigned long) &_end + TTBR_CNP + PAGESIZE));
+                 : "r"((unsigned long) &_end + TTBR_CNP));
     LOG ("TTBR1 written");
 
     // finally, toggle some bits in system control register to enable page translation
@@ -140,10 +176,13 @@ void init_mmu () {
                  :
                  : "r"(r));
 
-    //    LOG ("Set SCTLR flags and enable MMU");
-    //    printf ("Printing non-aborting data: %d\r\n", *(char *) 0x000000001234abcd);
-    printf ((char *) 0xFFFF000000080000);
+    LOG ("Set SCTLR flags and enable MMU");
+    *((unsigned int volatile *) (0xFE00B8A0));
+    LOG ("LED SWITCHING DONE");
 
+    delay (100);
+
+    LOG ("TEST");
 
     set_led (POWER_LED, 1);
 
