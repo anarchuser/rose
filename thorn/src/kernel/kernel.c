@@ -16,6 +16,11 @@
 #include "kernel/sys.h"
 #include "kernel/timer.h"
 
+void multiplex_print (void * p, char c) {
+    printc (c);
+    uart_send (c);
+}
+
 void user_process1 (char * array) {
     char buf[2] = {0};
     while (1) {
@@ -84,7 +89,7 @@ void kernel_init (void) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
             font_set_normal ();
-            init_printf (0, putc_screen);
+            init_printf (0, multiplex_print);
             printf ("Frame  buffer:     %p\r\n", get_fb ());
             printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
             printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
