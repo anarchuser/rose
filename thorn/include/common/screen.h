@@ -17,4 +17,6 @@ void drawrec (point_t p0, point_t p1, color_t color);
 void drawcircle (point_t p, int radius, color_t color);
 void draw_all_octant_points (point_t p, point_t offset, color_t color);
 
+void test_drawing ();
+
 #endif//_ROSE_C_SCREEN_H
