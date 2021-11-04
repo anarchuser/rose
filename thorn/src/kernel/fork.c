@@ -4,8 +4,10 @@
 #include "kernel/entry.h"
 #include "kernel/mm.h"
 #include "kernel/sched.h"
+#include "common/font.h"
 
 int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
+    prints ("copy process.kl\n\r");
     preempt_disable ();
     struct task_struct * p;
 
@@ -14,7 +16,7 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
         return -1;
     }
 
-    p->mm.pgd = get_free_page();
+    p->mm.pgd = get_free_page ();
     if (!p->mm.pgd) {
         return -1;
     }

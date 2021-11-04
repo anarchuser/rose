@@ -191,6 +191,12 @@ void printc (char c) {
     }
 }
 
+void prints(char const * str) {
+    while (*str) {
+        printc(*str++);
+    }
+}
+
 void font_set_normal (void) {
     font_fg = font_normal_fg;
 }
@@ -200,4 +206,12 @@ void font_set_error (void) {
 
 void putc_screen (void * p, char c) {
     printc (c);
+}
+
+void test_print() {
+    prints("123454321\n\r");
+}
+
+void exit_print() {
+    prints("exit\n\r");
 }

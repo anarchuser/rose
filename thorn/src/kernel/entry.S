@@ -9,7 +9,7 @@
 	mrs	x1, esr_el1
 	mrs	x2, elr_el1
 	bl	show_invalid_entry_message
-	b 	exit_process
+	b	err_hang
 	.endm
 
 	.macro	ventry	label
@@ -191,7 +191,6 @@ el0_da:
 	mrs x1, esr_el1
 	bl data_abort_el0
 	bl disable_irq
-	bl kill_process
 	eret
 
 .globl ret_from_fork

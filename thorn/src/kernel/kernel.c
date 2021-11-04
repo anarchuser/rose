@@ -17,8 +17,8 @@
 #include "kernel/timer.h"
 
 void multiplex_print (void * p, char c) {
-    printc (c);
-    // uart_send (c);
+    // printc (c);
+    uart_send (c);
 }
 
 void user_process1 (char * array) {
@@ -33,6 +33,7 @@ void user_process1 (char * array) {
 }
 
 void user_process () {
+    prints ("User process started.\n\r");
     char buf[30] = {0};
     tfp_sprintf (buf, "User process started\n\r");
     call_sys_write (buf);
@@ -60,7 +61,9 @@ void user_process () {
 }
 
 void kernel_process () {
-    // printf ("Kernel process started. EL %d\r\n", get_el ());
+    prints ("Kernel process started.\n\r");
+    printc ('0' + get_el ());
+    prints ("\n\r");
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");

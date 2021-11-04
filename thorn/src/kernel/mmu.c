@@ -134,9 +134,9 @@ void data_abort_el0 (ptr_t far, ptr_t esr) {
     byte_t level = esr & 0b11;
     esr &= 0b111111;
 
-    printf ("EL 0 - ");
-    printf ("FAR_EL1: %p - ", far);
-    printf ("ESR_EL1: %b\n\r", esr);
+    // printf ("EL 0 - ");
+    // printf ("FAR_EL1: %p - ", far);
+    // printf ("ESR_EL1: %b\n\r", esr);
 
     switch (type) {
         case 0b00:// Address size fault

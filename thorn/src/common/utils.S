@@ -1,3 +1,5 @@
+#include "common/font.h"
+
 .globl get_el
 get_el:
 	mrs x0, CurrentEL
@@ -22,10 +24,15 @@ delay:
 
 .globl set_pgd
 set_pgd:
+	bl test_print
 	msr	ttbr0_el1, x0
-	tlbi vmalle1is
-  	DSB ISH              // ensure completion of TLB invalidation
+	bl test_print
+	//tlbi vmalle1is
+	bl test_print
+	DSB ISH              // ensure completion of TLB invalidation
+	bl test_print
 	isb
+	bl exit_print
 	ret
 
 .globl get_pgd

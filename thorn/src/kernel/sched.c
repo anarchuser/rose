@@ -4,6 +4,7 @@
 #include "kernel/fork.h"
 #include "kernel/irq.h"
 #include "kernel/mm.h"
+#include "common/debug.h"
 
 static struct task_struct init_task      = INIT_TASK;
 struct task_struct *      current        = &(init_task);
@@ -45,6 +46,7 @@ void _schedule (void) {
             }
         }
     }
+    CHECKPOINT
     switch_to (task[next], next);
     preempt_enable ();
 }
@@ -61,7 +63,18 @@ void switch_to (struct task_struct * next, int index) {
     }
     struct task_struct * prev = current;
     current                   = next;
-    set_pgd (next->mm.pgd);
+    // set_pgd (next->mm.pgd);
+    CHECKPOINT
+    // asm("tlbi vmalle1is");
+    // CHECKPOINT
+    asm volatile("msr ttbr0_el1, %0"
+                 :
+                 : "r"(next->mm.pgd));
+    CHECKPOINT
+    asm("DSB ISH");
+    CHECKPOINT
+    asm("isb");
+    CHECKPOINT
     cpu_switch_to (prev, next);
 }
 
