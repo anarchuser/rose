@@ -129,29 +129,29 @@ void init_mmu () {
     LOG ("Set SCTLR flags and enable MMU");
 }
 
-void data_abort_el1 (ptr_t far, ptr_t esr) {
+void data_abort_el0 (ptr_t far, ptr_t esr) {
     byte_t type  = (esr >> 2) & 0b11;
     byte_t level = esr & 0b11;
     esr &= 0b111111;
 
-    printf ("EL 1 - ");
+    printf ("EL 0 - ");
     printf ("FAR_EL1: %p - ", far);
     printf ("ESR_EL1: %b\n\r", esr);
 
     switch (type) {
         case 0b00:// Address size fault
-            printf ("Address size fault during level %ld of table walk on lookup of address %p.\r\n", level, far);
+            printf ("Address size fault during level %u of table walk on lookup of address %p.\r\n", level, far);
             //            exit_process ();
             break;
         case 0b01:// Translation fault
-            printf ("Translation fault during level %ld of table walk on lookup of address %p.\r\n", level, far);
+            printf ("Translation fault during level %u of table walk on lookup of address %p.\r\n", level, far);
             break;
         case 0b10:// Access flag fault
-            printf ("Access flag fault during level %ld of table walk on lookup of address %p.\r\n", level, far);
+            printf ("Access flag fault during level %u of table walk on lookup of address %p.\r\n", level, far);
             //            exit_process ();
             break;
         case 0b11:// Permission fault
-            printf ("Segmentation fault during level %ld of table walk on lookup of address %p.\r\n", level, far);
+            printf ("Permission fault during level %u of table walk on lookup of address %p.\r\n", level, far);
             //            exit_process ();
             break;
     }
