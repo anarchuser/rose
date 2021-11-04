@@ -13,6 +13,11 @@ Then **green** of one cable to 10 (GPIO 15 / RXD)
 The serial cable with **white** connected is transmitting to the computer and has to be plugged into the computer first. It has to show up as `/dev/ttyUSB0`.  
 The **green** one is receiving on the Raspberry Pi and has to be `/dev/ttyUSB1`.
 
+### MacOS cable setup:
+Under the assumtion that the serial cable is starting with the name `usbserial-`. The cable with the biggest value is receiving from the Raspberry Pi and the cable with the smallest value is transmitting to the Raspberry Pi.
+
+For example `/dev/cu.usbserial-14320` is used for receiving from the Raspberry Pi and `/dev/cu.usbserial-14330` is used for transmitting to the Raspberry Pi.
+
 ![Raspberry Pi pinout](gpio_pins.png)
 
 ## Chainloader
