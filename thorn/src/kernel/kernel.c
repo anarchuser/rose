@@ -96,7 +96,6 @@ void kernel_init (void) {
     ERROR ("I'm important!");
 }
 
-
 void kernel_main (int processor_id) {
 
     static volatile unsigned int current_processor = 0;
@@ -112,73 +111,21 @@ void kernel_main (int processor_id) {
 
     switch (processor_id) {
         case 0: {
-            // int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
-            // if (res < 0) {
-            //     // printf ("error while starting kernel process");
-            //     return;
-            // }
+            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
+            if (res < 0) {
+                ERROR ("Can't start kernel process");
+                break;
+            }
             while (1) {
-                // schedule ();
+                schedule ();
             }
             break;
         }
         case 1:
-            if (get_fb ()) {
-                color_t white_color  = {0xff, 0xff, 0xff, 0xff};
-                color_t blue_color   = {0xff, 0x00, 0x00, 0xff};
-                color_t green_color  = {0x00, 0xff, 0x00, 0xff};
-                color_t purple_color = {0xff, 0x00, 0xff, 0xff};
-
-                // random lines
-                drawline (POINT (1, 400),
-                          POINT (600, 1),
-                          blue_color);
-                drawline (POINT (1, 400),
-                          POINT (600, 900),
-                          blue_color);
-                drawline (POINT (600, 900),
-                          POINT (600, 1),
-                          blue_color);
-                drawline (POINT (600, 1),
-                          POINT (1, 400),
-                          green_color);
-                drawline (POINT (3, 3),
-                          POINT (20, 800),
-                          green_color);
-                drawline (POINT (1200, 900),
-                          POINT (1, 904),
-                          purple_color);
-                drawline (POINT (1, 500),
-                          POINT (900, 600),
-                          white_color);
-                drawline (POINT (20, 60),
-                          POINT (60, 90),
-                          purple_color);
-
-                // grid lines
-                drawline (POINT (20, 80),
-                          POINT (20, 500),
-                          white_color);
-                drawline (POINT (20, 80),
-                          POINT (800, 80),
-                          white_color);
-                drawline (POINT (800, 500),
-                          POINT (800, 80),
-                          white_color);
-                drawline (POINT (800, 500),
-                          POINT (20, 500),
-                          white_color);
-
-                // rectangle
-                drawrec (POINT (300, 300),
-                         POINT (400, 400),
-                         purple_color);
-            }
-            break;
         case 2:
         case 3:
         default:
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
     }
-    // printf ("Processor %d going out of scope\r\n", processor_id);
+    printf ("Processor %d going out of scope\r\n", processor_id);
 }
