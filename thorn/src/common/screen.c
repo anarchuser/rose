@@ -108,21 +108,12 @@ void drawrec (point_t p0, point_t p1, color_t color) {
     drawline (bl, p0, color);
 }
 
+// Midpoint Circle Algorithm
 void drawcircle (point_t p, int radius, color_t color) {
     point_t offset = {radius, 0};
 
     // draw the first pixel of every octant
-    drawpx (add_point (p, offset), color);
-    drawpx (add_point (p, POINT (offset.x, -offset.y)), color);
-
-    drawpx (add_point (p, POINT (-offset.x, offset.y)), color);
-    drawpx (add_point (p, POINT (-offset.x, -offset.y)), color);
-
-    drawpx (add_point (p, POINT (offset.y, offset.x)), color);
-    drawpx (add_point (p, POINT (offset.y, -offset.x)), color);
-
-    drawpx (add_point (p, POINT (-offset.y, offset.x)), color);
-    drawpx (add_point (p, POINT (-offset.y, -offset.x)), color);
+    draw_all_octant_points (p, offset, color);
 
     // if x and y are the same, an octant should be completed
     while (offset.x > offset.y) {
@@ -134,18 +125,20 @@ void drawcircle (point_t p, int radius, color_t color) {
             offset.x--;
 
         // draw all of the octants
-        drawpx (add_point (p, offset), color);
-        drawpx (add_point (p, POINT (offset.x, -offset.y)), color);
-
-        drawpx (add_point (p, POINT (-offset.x, offset.y)), color);
-        drawpx (add_point (p, POINT (-offset.x, -offset.y)), color);
-
-        drawpx (add_point (p, POINT (offset.y, offset.x)), color);
-        drawpx (add_point (p, POINT (offset.y, -offset.x)), color);
-
-        drawpx (add_point (p, POINT (-offset.y, offset.x)), color);
-        drawpx (add_point (p, POINT (-offset.y, -offset.x)), color);
+        draw_all_octant_points (p, offset, color);
     }
+}
+
+
+void draw_all_octant_points (point_t p, point_t offset, color_t color) {
+    drawpx (add_point (p, offset), color);
+    drawpx (add_point (p, POINT (offset.x, -offset.y)), color);
+    drawpx (add_point (p, POINT (-offset.x, offset.y)), color);
+    drawpx (add_point (p, POINT (-offset.x, -offset.y)), color);
+    drawpx (add_point (p, POINT (offset.y, offset.x)), color);
+    drawpx (add_point (p, POINT (offset.y, -offset.x)), color);
+    drawpx (add_point (p, POINT (-offset.y, offset.x)), color);
+    drawpx (add_point (p, POINT (-offset.y, -offset.x)), color);
 }
 
 short get_max_width () {
