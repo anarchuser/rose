@@ -7,8 +7,8 @@ tutorial: https://github.com/s-matyukevich/raspberry-pi-os.git
 
 Plug in the black cables of each serial cable into a Ground pin on the Pi (for example pin 6 and 14).
 
-Then **white** of the other cable to 8 (GPIO 14 / TXD)  
-Then **green** of one cable to 10 (GPIO 15 / RXD)
+Then **white** of one cable to 8 (GPIO 14 / TXD)  
+Then **green** of the other cable to 10 (GPIO 15 / RXD)
 
 The serial cable with **white** connected is transmitting to the computer and has to be plugged into the computer first. It has to show up as `/dev/ttyUSB0`.  
 The **green** one is receiving on the Raspberry Pi and has to be `/dev/ttyUSB1`.
