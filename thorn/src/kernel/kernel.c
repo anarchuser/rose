@@ -96,7 +96,6 @@ void kernel_init (void) {
     ERROR ("I'm important!");
 }
 
-
 void kernel_main (int processor_id) {
 
     static volatile unsigned int current_processor = 0;
@@ -112,13 +111,13 @@ void kernel_main (int processor_id) {
 
     switch (processor_id) {
         case 0: {
-            // int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
-            // if (res < 0) {
-            //     // printf ("error while starting kernel process");
-            //     return;
-            // }
+            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
+            if (res < 0) {
+                ERROR ("Can't start kernel process");
+                break;
+            }
             while (1) {
-                // schedule ();
+                schedule ();
             }
             break;
         }
@@ -134,5 +133,5 @@ void kernel_main (int processor_id) {
                 ;
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
     }
-    // printf ("Processor %d going out of scope\r\n", processor_id);
+    printf ("Processor %d going out of scope\r\n", processor_id);
 }
