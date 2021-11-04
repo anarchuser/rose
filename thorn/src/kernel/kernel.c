@@ -1,3 +1,5 @@
+#include "kernel/mini_uart.h"
+// KEEP THIS
 #include "common/font.h"
 #include "common/gpu.h"
 #include "common/logging.h"
@@ -8,11 +10,16 @@
 #include "common/utils.h"
 #include "kernel/fork.h"
 #include "kernel/irq.h"
-#include "kernel/mini_uart.h"
 #include "kernel/mm.h"
+#include "kernel/mmu.h"
 #include "kernel/sched.h"
 #include "kernel/sys.h"
 #include "kernel/timer.h"
+
+void multiplex_print (void * p, char c) {
+    // printc (c);
+    uart_send (c);
+}
 
 void user_process1 (char * array) {
     char buf[2] = {0};
@@ -26,6 +33,7 @@ void user_process1 (char * array) {
 }
 
 void user_process () {
+    prints ("User process started.\n\r");
     char buf[30] = {0};
     tfp_sprintf (buf, "User process started\n\r");
     call_sys_write (buf);
@@ -53,7 +61,9 @@ void user_process () {
 }
 
 void kernel_process () {
-    // printf ("Kernel process started. EL %d\r\n", get_el ());
+    prints ("Kernel process started.\n\r");
+    printc ('0' + get_el ());
+    prints ("\n\r");
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -82,15 +92,13 @@ void kernel_init (void) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
             font_set_normal ();
-            init_printf (0, putc_screen);
+            init_printf (0, multiplex_print);
             printf ("Frame  buffer:     %p\r\n", get_fb ());
             printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
             printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
     }
-
-    printf ("|...|...|...|...|\r\n");
-    printf ("|\t|\t|\t|\t|\r\n");
+    init_pages ();
 
     LOG ("Initialisation done");
     ERROR ("I'm important!");
@@ -106,6 +114,8 @@ void kernel_main (int processor_id) {
     // Synchronisation to prevent concurrent print
     while (processor_id != current_processor) {}
     printf ("Hello, from processor %d in EL %d\n\r", processor_id, get_el ());
+    init_mmu ();
+
     current_processor++;
     while (current_processor != 4) {}
 
@@ -125,6 +135,7 @@ void kernel_main (int processor_id) {
         case 2:
         case 3:
         default:
+            while (1) {}
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
     }
     printf ("Processor %d going out of scope\r\n", processor_id);

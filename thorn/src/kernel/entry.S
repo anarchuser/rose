@@ -1,6 +1,7 @@
 #include "kernel/arm/sysregs.h"
 #include "kernel/entry.h"
 #include "kernel/sys.h"
+#include "kernel/mmu.h"
 
 	.macro handle_invalid_entry el, type
 	kernel_entry \el
@@ -156,38 +157,46 @@ el0_irq:
 
 el0_sync:
 	kernel_entry 0
-	mrs	x25, esr_el1				// read the syndrome register
-	lsr	x24, x25, #ESR_ELx_EC_SHIFT		// exception class
-	cmp	x24, #ESR_ELx_EC_SVC64			// SVC in 64-bit state
-	b.eq	el0_svc
+	mrs	x25, esr_el1													// read the syndrome register
+	lsr	x24, x25, #ESR_ELx_EC_SHIFT						// exception class
+	cmp x24, #ESR_ELx_EC_DABT_LOW
+	b.eq 	el0_da
 	handle_invalid_entry 0, SYNC_ERROR
 
-sc_nr	.req	x25					// number of system calls
-scno	.req	x26					// syscall number
-stbl	.req	x27					// syscall table pointer
+sc_nr	.req	x25															// number of system calls
+scno	.req	x26															// syscall number
+stbl	.req	x27															// syscall table pointer
 
 el0_svc:
-	adr	stbl, sys_call_table			// load syscall table pointer
-	uxtw	scno, w8				// syscall number in w8
+	adr	stbl, sys_call_table									// load syscall table pointer
+	uxtw	scno, w8														// syscall number in w8
 	mov	sc_nr, #__NR_syscalls
 	bl	enable_irq
 	cmp     scno, sc_nr                     	// check upper syscall limit
 	b.hs	ni_sys
 
-	ldr	x16, [stbl, scno, lsl #3]		// address in the syscall table
-	blr	x16					// call sys_* routine
+	ldr	x16, [stbl, scno, lsl #3]							// address in the syscall table
+	blr	x16																		// call sys_* routine
 	b	ret_from_syscall
 ni_sys:
 	handle_invalid_entry 0, SYSCALL_ERROR
 ret_from_syscall:
 	bl	disable_irq
-	str	x0, [sp, #S_X0]				// returned x0
+	str	x0, [sp, #S_X0]												// returned x0
 	kernel_exit 0
+
+el0_da:
+	bl enable_irq
+	mrs x0, far_el1
+	mrs x1, esr_el1
+	bl data_abort_el0
+	bl disable_irq
+	eret
 
 .globl ret_from_fork
 ret_from_fork:
 	bl	schedule_tail
-	cbz	x19, ret_to_user			// not a kernel thread
+	cbz	x19, ret_to_user											// not a kernel thread
 	mov	x0, x20
 	blr	x19
 ret_to_user:

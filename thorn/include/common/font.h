@@ -1,6 +1,8 @@
 #ifndef _ROSE_C_FONT_H
 #define _ROSE_C_FONT_H
 
+#ifndef __ASSEMBLER__
+
 #define FONT_SIZE       8
 #define FONT_FACTOR     2
 #define FONT_REAL_WIDTH (FONT_SIZE * FONT_FACTOR)
@@ -32,6 +34,7 @@ static volatile color_t font_fg;
 const unsigned long long int * font (int c);
 
 void printc (char c);
+void prints (char const * str);
 void printc_location (point_t point, char c);
 
 void putc_screen (void * p, char c);
@@ -39,4 +42,8 @@ void putc_screen (void * p, char c);
 void font_set_normal (void);
 void font_set_error (void);
 
+void test_print();
+void exit_print();
+
+#endif
 #endif
