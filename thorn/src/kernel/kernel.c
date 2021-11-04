@@ -128,6 +128,8 @@ void kernel_main (int processor_id) {
                 color_t blue_color   = {0xff, 0x00, 0x00, 0xff};
                 color_t green_color  = {0x00, 0xff, 0x00, 0xff};
                 color_t purple_color = {0xff, 0x00, 0xff, 0xff};
+                color_t yellow_color = {0x00, 0xff, 0xff, 0xff};
+                color_t red_color    = {0x00, 0x00, 0xff, 0xff};
 
                 // random lines
                 drawline (POINT (1, 400),
@@ -174,9 +176,38 @@ void kernel_main (int processor_id) {
                          POINT (400, 400),
                          purple_color);
 
+                // circles
                 drawcircle (POINT (1200, 500),
                             100,
                             purple_color);
+                drawcircle (POINT (1200, 500),
+                            50,
+                            blue_color);
+
+                drawcircle (POINT (1300, 500),
+                            75,
+                            yellow_color);
+                drawcircle (POINT (1272, 572),
+                            50,
+                            red_color);
+                drawcircle (POINT (1200, 600),
+                            75,
+                            yellow_color);
+                drawcircle (POINT (1272, 428),
+                            50,
+                            red_color);
+                drawcircle (POINT (1100, 500),
+                            75,
+                            yellow_color);
+                drawcircle (POINT (1128, 572),
+                            50,
+                            red_color);
+                drawcircle (POINT (1200, 400),
+                            75,
+                            yellow_color);
+                drawcircle (POINT (1128, 428),
+                            50,
+                            red_color);
             }
             break;
         case 2:

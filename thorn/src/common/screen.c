@@ -111,11 +111,40 @@ void drawrec (point_t p0, point_t p1, color_t color) {
 void drawcircle (point_t p, int radius, color_t color) {
     point_t offset = {radius, 0};
 
+    // draw the first pixel of every octant
+    drawpx (add_point (p, offset), color);
+    drawpx (add_point (p, POINT (offset.x, -offset.y)), color);
+
+    drawpx (add_point (p, POINT (-offset.x, offset.y)), color);
+    drawpx (add_point (p, POINT (-offset.x, -offset.y)), color);
+
+    drawpx (add_point (p, POINT (offset.y, offset.x)), color);
+    drawpx (add_point (p, POINT (offset.y, -offset.x)), color);
+
+    drawpx (add_point (p, POINT (-offset.y, offset.x)), color);
+    drawpx (add_point (p, POINT (-offset.y, -offset.x)), color);
+
+    // if x and y are the same, an octant should be completed
     while (offset.x > offset.y) {
+        // increase y offset on every itera
+        offset.y++;
+
+        // if the hypotenuse of x and y is bigger than the radius, reduce x
         if (sqrt ((offset.x * offset.x) + (offset.y * offset.y)) > radius)
             offset.x--;
+
+        // draw all of the octants
         drawpx (add_point (p, offset), color);
-        //do the full circle
+        drawpx (add_point (p, POINT (offset.x, -offset.y)), color);
+
+        drawpx (add_point (p, POINT (-offset.x, offset.y)), color);
+        drawpx (add_point (p, POINT (-offset.x, -offset.y)), color);
+
+        drawpx (add_point (p, POINT (offset.y, offset.x)), color);
+        drawpx (add_point (p, POINT (offset.y, -offset.x)), color);
+
+        drawpx (add_point (p, POINT (-offset.y, offset.x)), color);
+        drawpx (add_point (p, POINT (-offset.y, -offset.x)), color);
     }
 }
 
