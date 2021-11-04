@@ -25,10 +25,19 @@ For example `/dev/cu.usbserial-14320` is used for receiving from the Raspberry P
 
 ## Chainloader
 
-`make flash` copies the chainloader onto the boot partition of the sd card (may not work, depends on system
-configuration). The chainloader uses the STATUS led ![#80f015](https://via.placeholder.com/15/80f015/000000?text=+)
-and the POWER led ![#f02015](https://via.placeholder.com/15/f02015/000000?text=+) to indicate its current status. Read
-as follows:
+To make mounting of the SD card in the makefile work it is currently required to have set up the SD card in `/etc/fstab` to mount in the mnt directory at the project directory root level.  
+An example config line would be:
+
+```
+# /dev/mmcblk0p1
+UUID=7616-4FD8    /home/kjell/git/rose/mnt    vfat   noauto,nofail,noatime,user,rw    0 2
+```
+
+`make flash` mounts the SD card, copies the chainloader onto its boot partition and then unmounts it again.
+
+The chainloader uses the **STATUS** led ![#80f015](https://via.placeholder.com/15/80f015/000000?text=+)
+and the **POWER** led ![#f02015](https://via.placeholder.com/15/f02015/000000?text=+) to indicate its current status.  
+Read as follows:
 
 - ![#444444](https://via.placeholder.com/15/444444/000000?text=+)![#444444](https://via.placeholder.com/15/444444/000000?text=+)
   ---> Raspberry is off
@@ -38,3 +47,12 @@ as follows:
   ---> Chainloader is waiting for 32 bit kernel size
 - ![#80f015](https://via.placeholder.com/15/80f015/000000?text=+)![#f02015](https://via.placeholder.com/15/f02015/000000?text=+)
   ---> Chainloader is waiting for kernel
+
+## Loading the system
+
+Once the Chainloader is waiting for the kernel size (![#80f015](https://via.placeholder.com/15/80f015/000000?text=+)![#f02015](https://via.placeholder.com/15/444444/000000?text=+)) you can build and load the image onto the Raspberry Pi with `make send`.
+
+If you already loaded and booted the system you can restart the Pi, to start the chainloader again and rebuild + send the new image, with `make resend`.
+
+**! Note: if you use `make resend` while the pi is waiting for the `make send` the Pi will freeze !**  
+If the Pi freezes for this or any other reason you will need to power cycle it and use `make send` again.
