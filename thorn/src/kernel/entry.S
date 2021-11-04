@@ -159,8 +159,6 @@ el0_sync:
 	kernel_entry 0
 	mrs	x25, esr_el1													// read the syndrome register
 	lsr	x24, x25, #ESR_ELx_EC_SHIFT						// exception class
-	cmp	x24, #ESR_ELx_EC_SVC64								// SVC in 64-bit state
-	b.eq	el0_svc
 	cmp x24, #ESR_ELx_EC_DABT_LOW
 	b.eq 	el0_da
 	handle_invalid_entry 0, SYNC_ERROR
@@ -192,8 +190,9 @@ el0_da:
 	mrs x0, far_el1
 	mrs x1, esr_el1
 	bl data_abort_el0
-    bl disable_irq
-    eret
+	bl disable_irq
+	bl kill_process
+	eret
 
 .globl ret_from_fork
 ret_from_fork:

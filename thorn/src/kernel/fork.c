@@ -14,6 +14,11 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
         return -1;
     }
 
+    p->mm.pgd = get_free_page();
+    if (!p->mm.pgd) {
+        return -1;
+    }
+
     struct pt_regs * childregs = task_pt_regs (p);
     memzero ((ptr_t) childregs, sizeof (struct pt_regs));
     memzero ((ptr_t) &p->cpu_context, sizeof (struct cpu_context));
@@ -26,7 +31,6 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
         *childregs                = *cur_regs;
         childregs->regs[0]        = 0;
         childregs->sp             = stack + PAGE_SIZE;
-        p->stack                  = stack;
     }
     p->flags         = clone_flags;
     p->priority      = current->priority;
@@ -48,12 +52,6 @@ int move_to_user_mode (ptr_t pc) {
     memzero ((ptr_t) regs, sizeof (*regs));
     regs->pc     = pc;
     regs->pstate = PSR_MODE_EL0t;
-    ptr_t stack  = get_free_page ();//allocate new user stack
-    if (!stack) {
-        return -1;
-    }
-    regs->sp       = stack + PAGE_SIZE;
-    current->stack = stack;
     return 0;
 }
 

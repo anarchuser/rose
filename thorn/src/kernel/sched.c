@@ -61,6 +61,7 @@ void switch_to (struct task_struct * next, int index) {
     }
     struct task_struct * prev = current;
     current                   = next;
+    set_pgd (next->mm.pgd);
     cpu_switch_to (prev, next);
 }
 
@@ -87,13 +88,20 @@ void exit_process () {
             break;
         }
     }
-    if (current->stack) {
-        free_page (current->stack);
-    }
     preempt_enable ();
     schedule ();
 }
 
+void kill_process () {
+    preempt_disable ();
+    for (int i = 0; i < NR_TASKS; i++) {
+        if (task[i] == current) {
+            task[i]->state = TASK_ZOMBIE;
+            break;
+        }
+    }
+    preempt_enable ();
+}
 
 void task_init () {
     memzero ((ptr_t) current, sizeof (struct task_struct));

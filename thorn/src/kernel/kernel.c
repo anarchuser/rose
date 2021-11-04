@@ -18,7 +18,7 @@
 
 void multiplex_print (void * p, char c) {
     printc (c);
-    uart_send (c);
+    // uart_send (c);
 }
 
 void user_process1 (char * array) {
