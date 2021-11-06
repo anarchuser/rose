@@ -35,12 +35,8 @@ void mini_uart_init (void) {
     }
     init_progress = true;
 
-    unsigned int selector;
-    int          target = BAUD_RATE_REG (115200);
-
     gpio_mode (12, GPIO_ALT5);
     gpio_mode (15, GPIO_ALT5);
-    selector = get32 (GPFSEL1);
 
     put32 (GPPUD, 0);
     delay (150);
@@ -53,7 +49,7 @@ void mini_uart_init (void) {
     put32 (AUX_MU_IER_REG, ENABLE_MU_REC_INT);
     put32 (AUX_MU_LCR_REG, 3);
     put32 (AUX_MU_MCR_REG, 0);
-    put32 (AUX_MU_BAUD_REG, target);
+    put32 (AUX_MU_BAUD_REG, BAUD_RATE_REG (115200));
 
     put32 (AUX_MU_CNTL_REG, 3);
 
