@@ -38,12 +38,9 @@ void mini_uart_init (void) {
     unsigned int selector;
     int          target = BAUD_RATE_REG (115200);
 
+    gpio_mode (12, GPIO_ALT5);
+    gpio_mode (15, GPIO_ALT5);
     selector = get32 (GPFSEL1);
-    selector &= ~(7 << 12);
-    selector |= 2 << 12;
-    selector &= ~(7 << 15);
-    selector |= 2 << 15;
-    put32 (GPFSEL1, selector);
 
     put32 (GPPUD, 0);
     delay (150);
