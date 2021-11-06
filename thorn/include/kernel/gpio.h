@@ -4,6 +4,8 @@
 #include "common/stdbool.h"
 #include "common/stddef.h"
 #include "common/utils.h"
+#include "common/logging.h"
+#include "common/debug.h"
 
 #include "kernel/peripherals/gpio.h"
 

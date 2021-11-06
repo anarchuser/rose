@@ -1,7 +1,7 @@
 #include "kernel/gpio.h"
 
 bool gpio_mode (byte_t pin, GPIO_MODE mode) {
-    if (pin > GPIO_MAX_PINS) return false;      
+    if (pin >= GPIO_MAX_PINS) return false;      
     if (mode > 0b111) return false;
 
     // 3 bits per pin, 10 pins per FSEL int. Equals to first mode bit of pin
@@ -22,21 +22,27 @@ bool gpio_mode (byte_t pin, GPIO_MODE mode) {
 }
 
 int  gpio_get (byte_t pin) {
-    if (pin > GPIO_MAX_PINS) return -1;
+    if (pin >= GPIO_MAX_PINS) return -1;
 
-    // Actual pin value, from bits 0-53
-    unsigned long value = * (unsigned long *) GPLEV0;
+    // There are two registers, depending on the pin
+    int offset = (pin / 32) * 4;
+
+    // GPLEV0 and GPLEV1 store the actual value of the pins
+    unsigned int value = * (unsigned int *) (GPLEV0 + offset);
 
     // Read out corresponding bit
     return value & (1 << pin);
 }
 
 int  gpio_set (byte_t pin, bool value) {
-    if (pin > GPIO_MAX_PINS) return -1;
+    if (pin >= GPIO_MAX_PINS) return -1;
+
+    // There are two registers, depending on the pin
+    int offset = (pin / 32) * 4;
 
     // Use GPSET to set a pin to HIGH
     // Use GPCLR to set a pin to LOW
-    * (unsigned long *) (value ? GPSET0 : GPCLR0) |= 1 << pin;
-
+    * (unsigned int *) ((value ? GPSET0 : GPCLR0) + offset) |= 1 << pin;
+    
     return value;
 }
