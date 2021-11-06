@@ -22,8 +22,10 @@ typedef enum {
 
 bool gpio_mode (byte_t pin, GPIO_MODE mode);
 
+// -1 = ERROR, 0 = LOW, 1 = HIGH
 int  gpio_get (byte_t pin);
 
+// -1 = ERROR, 0 = LOW, 1 = HIGH
 int  gpio_set (byte_t pin, bool value);
 
 #endif//_ROSE_K_GPIO_H

@@ -22,7 +22,21 @@ bool gpio_mode (byte_t pin, GPIO_MODE mode) {
 }
 
 int  gpio_get (byte_t pin) {
+    if (pin > GPIO_MAX_PINS) return -1;
+
+    // Actual pin value, from bits 0-53
+    unsigned long value = * (unsigned long *) GPLEV0;
+
+    // Read out corresponding bit
+    return value & (1 << pin);
 }
 
 int  gpio_set (byte_t pin, bool value) {
+    if (pin > GPIO_MAX_PINS) return -1;
+
+    // Use GPSET to set a pin to HIGH
+    // Use GPCLR to set a pin to LOW
+    * (unsigned long *) (value ? GPSET0 : GPCLR0) |= 1 << pin;
+
+    return value;
 }
