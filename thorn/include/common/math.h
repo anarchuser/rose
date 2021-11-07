@@ -3,4 +3,6 @@
 
 long abs (long n);
 
+long sqrt (long n);
+
 #endif//_ROSE_C_MATH_H

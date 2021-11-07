@@ -30,6 +30,6 @@ static color_t const RAINBOW[] = {
         {0xff, 0x00, 0xc0, 0}};
 
 
-void draw (void);
+void draw_rainbow (void);
 
 #endif//_ROSE_RAINBOW_H

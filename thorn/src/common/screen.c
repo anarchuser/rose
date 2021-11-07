@@ -108,10 +108,130 @@ void drawrec (point_t p0, point_t p1, color_t color) {
     drawline (bl, p0, color);
 }
 
+// Midpoint Circle Algorithm
+void drawcircle (point_t p, int radius, color_t color) {
+    point_t offset = {radius, 0};
+
+    // draw the first pixel of every octant
+    draw_all_octant_points (p, offset, color);
+
+    // if x and y are the same, an octant should be completed
+    while (offset.x > offset.y) {
+        // increase y offset on every itera
+        offset.y++;
+
+        // if the hypotenuse of x and y is bigger than the radius, reduce x
+        if (sqrt ((offset.x * offset.x) + (offset.y * offset.y)) > radius)
+            offset.x--;
+
+        // draw all of the octants
+        draw_all_octant_points (p, offset, color);
+    }
+}
+
+
+void draw_all_octant_points (point_t p, point_t offset, color_t color) {
+    drawpx (add_point (p, offset), color);
+    drawpx (add_point (p, POINT (offset.x, -offset.y)), color);
+    drawpx (add_point (p, POINT (-offset.x, offset.y)), color);
+    drawpx (add_point (p, POINT (-offset.x, -offset.y)), color);
+    drawpx (add_point (p, POINT (offset.y, offset.x)), color);
+    drawpx (add_point (p, POINT (offset.y, -offset.x)), color);
+    drawpx (add_point (p, POINT (-offset.y, offset.x)), color);
+    drawpx (add_point (p, POINT (-offset.y, -offset.x)), color);
+}
+
 short get_max_width () {
     return get_fb_info ()->virtual_width - 1;
 }
 
 short get_max_height () {
     return get_fb_info ()->virtual_height - 1;
+}
+
+void test_drawing () {
+    color_t white_color  = {0xff, 0xff, 0xff, 0xff};
+    color_t blue_color   = {0xff, 0x00, 0x00, 0xff};
+    color_t green_color  = {0x00, 0xff, 0x00, 0xff};
+    color_t purple_color = {0xff, 0x00, 0xff, 0xff};
+    color_t yellow_color = {0x00, 0xff, 0xff, 0xff};
+    color_t red_color    = {0x00, 0x00, 0xff, 0xff};
+
+    // random lines
+    drawline (POINT (1, 400),
+              POINT (600, 1),
+              blue_color);
+    drawline (POINT (1, 400),
+              POINT (600, 900),
+              blue_color);
+    drawline (POINT (600, 900),
+              POINT (600, 1),
+              blue_color);
+    drawline (POINT (600, 1),
+              POINT (1, 400),
+              green_color);
+    drawline (POINT (3, 3),
+              POINT (20, 800),
+              green_color);
+    drawline (POINT (1200, 900),
+              POINT (1, 904),
+              purple_color);
+    drawline (POINT (1, 500),
+              POINT (900, 600),
+              white_color);
+    drawline (POINT (20, 60),
+              POINT (60, 90),
+              purple_color);
+
+    // grid lines
+    drawline (POINT (20, 80),
+              POINT (20, 500),
+              white_color);
+    drawline (POINT (20, 80),
+              POINT (800, 80),
+              white_color);
+    drawline (POINT (800, 500),
+              POINT (800, 80),
+              white_color);
+    drawline (POINT (800, 500),
+              POINT (20, 500),
+              white_color);
+
+    // rectangle
+    drawrec (POINT (300, 300),
+             POINT (400, 400),
+             purple_color);
+
+    // circles
+    drawcircle (POINT (1200, 500),
+                100,
+                purple_color);
+    drawcircle (POINT (1200, 500),
+                50,
+                blue_color);
+
+    drawcircle (POINT (1300, 500),
+                75,
+                yellow_color);
+    drawcircle (POINT (1272, 572),
+                50,
+                red_color);
+    drawcircle (POINT (1200, 600),
+                75,
+                yellow_color);
+    drawcircle (POINT (1272, 428),
+                50,
+                red_color);
+    drawcircle (POINT (1100, 500),
+                75,
+                yellow_color);
+    drawcircle (POINT (1128, 572),
+                50,
+                red_color);
+    drawcircle (POINT (1200, 400),
+                75,
+                yellow_color);
+    drawcircle (POINT (1128, 428),
+                50,
+                red_color);
 }

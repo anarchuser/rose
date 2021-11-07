@@ -25,6 +25,7 @@
 
 #define VC_SDRAM_OFFSET 0x3FFFFFFF
 
+// blue, green, red, alpha
 typedef struct {
     byte_t blue;
     byte_t green;
