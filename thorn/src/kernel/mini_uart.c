@@ -29,7 +29,7 @@ void mini_uart_init (void) {
     static volatile bool init_done     = false;
 
     if (init_progress) {
-        while (! init_done)
+        while (!init_done)
             ;
         return;
     }
@@ -70,15 +70,15 @@ void handle_mini_uart_irq (void) {
     char c_event = mini_uart_recv ();
     switch (c_event) {
         case 17:// device control 1
-            mini_uart_send_string ("Power off");
+            printf ("Power off");
             poweroff (40, true);// power off instantly, never return control here
         case 18:                // device control 2
-            mini_uart_send_string ("Reboot");
+            printf ("Reboot");
             reboot (40, true);// reboot instantly, never return control here
         case 19:
             toggle_blank_screen ();
         default:
-            mini_uart_send (c_event);
+            printf ("%c", c_event);
     }
 }
 
