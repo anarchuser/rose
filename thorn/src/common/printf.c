@@ -30,6 +30,7 @@ static void * stdout_putp;
 #ifdef PRINTF_LONG_SUPPORT
 
 static void uli2a (unsigned long int num, unsigned int base, int uc, char * bf) {
+    printf ("(%u)", num);
     int          n = 0;
     unsigned int d = 1;
     while (num / d >= base)
@@ -121,7 +122,7 @@ static void putchw (void * putp, putcf putf, int n, char z, char * bf) {
 }
 
 void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
-    char bf[12];
+    char bf[80];
 
     char ch;
 
@@ -158,8 +159,9 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         uli2a (va_arg (va, unsigned long int), 10, 0, bf);
                     else
 #endif
-                    ui2a (va_arg (va,
-                                  unsigned int), 10, 0, bf);
+                        ui2a (va_arg (va,
+                                      unsigned int),
+                              10, 0, bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 }
@@ -169,8 +171,9 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         li2a (va_arg (va, unsigned long int), bf);
                     else
 #endif
-                    i2a (va_arg (va,
-                                 int), bf);
+                        i2a (va_arg (va,
+                                     int),
+                             bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 }
@@ -181,29 +184,39 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         uli2a (va_arg (va, unsigned long int), 16, (ch == 'X'), bf);
                     else
 #endif
-                    ui2a (va_arg (va,
-                                  unsigned int), 16, (ch == 'X'), bf);
+                        ui2a (va_arg (va,
+                                      unsigned int),
+                              16, (ch == 'X'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
-                case 'c' :
+                case 'c':
                     putf (putp, (char) (va_arg (va,
                                                 int)));
                     break;
-                case 's' :
-                    putchw (putp, putf, w, 0, va_arg (va,
-                                                      char*));
+                case 's':
+                    putchw (putp, putf, w, 0, va_arg (va, char *));
                     break;
                 case 'p':
                 case 'P':
                     putf (putp, '0');
                     putf (putp, 'x');
 #ifdef PRINTF_LONG_SUPPORT
+                    uli2a (va_arg (va, unsigned long int), 16, (ch == 'P'), bf);
+#else
+                    ui2a (va_arg (va, unsigned int), 16, (ch == 'P'), bf);
+#endif
+                    putchw (putp, putf, w, lz, bf);
+                    break;
+                case 'b':
+                case 'B':
+                    putf (putp, '0');
+                    putf (putp, 'b');
+#ifdef PRINTF_LONG_SUPPORT
                     if (lng)
-                        uli2a (va_arg (va, unsigned long int), 16, (ch == 'P'), bf);
+                        uli2a (va_arg (va, unsigned long int), 2, 0, bf);
                     else
 #endif
-                    ui2a (va_arg (va,
-                                  unsigned int), 16, (ch == 'P'), bf);
+                        ui2a (va_arg (va, unsigned int), 2, 0, bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 case '%':
@@ -232,7 +245,6 @@ void tfp_printf (char * fmt, ...) {
 static void putcp (void * p, char c) {
     *(*((char **) p))++ = c;
 }
-
 
 void tfp_sprintf (char * s, char * fmt, ...) {
     va_list va;
