@@ -121,7 +121,7 @@ static void putchw (void * putp, putcf putf, int n, char z, char * bf) {
 }
 
 void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
-    char bf[12];
+    char bf[80];
 
     char ch;
 
