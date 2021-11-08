@@ -79,7 +79,7 @@ send-thorn: setup-serial-$(HOST_OS)
 
 # Set up screen on alternate serial port
 screen:
-	screen $(SERIAL_PORT_ALT) $(BAUD_RATE)
+	minicom -D $(SERIAL_PORT_ALT) -b $(BAUD_RATE) || screen $(SERIAL_PORT_ALT) $(BAUD_RATE)
 
 poweroff:
 	printf "0: %.2x" 17 | xxd -re -g0 > $(SERIAL_PORT)
