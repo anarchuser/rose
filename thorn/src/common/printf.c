@@ -211,10 +211,11 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                     putf (putp, '0');
                     putf (putp, 'b');
 #ifdef PRINTF_LONG_SUPPORT
-                    uli2a (va_arg (va, unsigned long int), 2, (ch == 'B'), bf);
-#else
-                    ui2a (va_arg (va, unsigned int), 2, (ch == 'B'), bf);
+                    if (lng)
+                        uli2a (va_arg (va, unsigned long int), 2, (ch == 'B'), bf);
+                    else
 #endif
+                        ui2a (va_arg (va, unsigned int), 2, (ch == 'B'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 case '%':
