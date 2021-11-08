@@ -26,15 +26,6 @@ void user_process1 (char * array) {
     }
 }
 
-void user_process_rng () {
-    char buf[2] = {0};
-    while (1) {
-        buf[0] = random ();
-        call_sys_write (buf);
-        delay (100000);
-    }
-}
-
 void user_process () {
     char buf[30] = {0};
     tfp_sprintf (buf, "User process started\n\r");
@@ -57,16 +48,6 @@ void user_process () {
     err = call_sys_clone ((unsigned long) &user_process1, (unsigned long) "abcd", stack);
     if (err < 0) {
         printf ("Error while cloning process 2\n\r");
-        return;
-    }
-    stack = call_sys_malloc ();
-    if (stack < 0) {
-        printf ("Error while allocating stack for process 3\n\r");
-        return;
-    }
-    err = call_sys_clone ((unsigned long) &user_process_rng, 0, stack);
-    if (err < 0) {
-        printf ("Error while cloning process 3\n\r");
         return;
     }
     call_sys_exit ();
