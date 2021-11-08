@@ -30,6 +30,7 @@ static void * stdout_putp;
 #ifdef PRINTF_LONG_SUPPORT
 
 static void uli2a (unsigned long int num, unsigned int base, int uc, char * bf) {
+    printf ("(%u)", num);
     int          n = 0;
     unsigned int d = 1;
     while (num / d >= base)
@@ -212,10 +213,10 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                     putf (putp, 'b');
 #ifdef PRINTF_LONG_SUPPORT
                     if (lng)
-                        uli2a (va_arg (va, unsigned long int), 2, (ch == 'B'), bf);
+                        uli2a (va_arg (va, unsigned long int), 2, 0, bf);
                     else
 #endif
-                        ui2a (va_arg (va, unsigned int), 2, (ch == 'B'), bf);
+                        ui2a (va_arg (va, unsigned int), 2, 0, bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 case '%':
