@@ -5,13 +5,22 @@ tutorial: https://github.com/s-matyukevich/raspberry-pi-os.git
 
 # How to cable
 
-Plug in the black cables of each serial cable into a Ground pin on the Pi (for example pin 6 and 14).
+Plug the black wires of each serial cable onto a Ground pin on the Pi (for example pin 6 and 14).
 
-Then **white** of one cable to 8 (GPIO 14 / TXD)  
-Then **green** of the other cable to 10 (GPIO 15 / RXD)
+Then the **white** wire of one cable to 8 (GPIO 14 / TXD)  
+Then the **green** wire of the other cable to 10 (GPIO 15 / RXD)
 
-The serial cable with **white** connected is transmitting to the computer and has to be plugged into the computer first. It has to show up as `/dev/ttyUSB0`.  
-The **green** one is receiving on the Raspberry Pi and has to be `/dev/ttyUSB1`.
+The serial cable with the **white** wire connected is transmitting to the computer and has to be plugged into the computer first. It has to show up as `/dev/ttyUSB0`.  
+The **green** wire is the one receiving on the Raspberry Pi and has to be `/dev/ttyUSB1`.
+
+You can read the Pi's output from the white cable by executing `make screen`.
+Which launches screen, connected to the serial port. However due to its
+blocking nature we have to give it a separate cable.
+
+If you have installed `picocom` or `minicom` as an alternative to `screen` then you
+actually only need one serial cable of which you can then connect both the
+green and the white wire. `make screen` will then prioritize them over
+`screen`.
 
 ### MacOS cable setup:
 
