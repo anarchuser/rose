@@ -36,15 +36,15 @@ void regulate_temperature () {
         temperatures[current_temperature_index] = get_temperature ();
         unsigned int current                    = temperatures[current_temperature_index];
 
-        previous = (previous + 50) / 100 * 100;
-        current  = (previous + 50) / 100 * 100;
-        printf ("\rCurrent temperature: %d,%d C. Change since last iteration: %d mC    ", current / 1000, current % 1000 / 100, current - previous);
-
-        if (current >= TEMPERATURE_SHOULD) {
+        if (current >= TEMPERATURE_FAN_ON) {
             set_fan (1);
-        } else if (current < TEMPERATURE_SHOULD - 2500) {
+        } else if (current <= TEMPERATURE_FAN_OFF) {
             set_fan (0);
         }
+
+        previous = (previous + 50) / 100 * 100;
+        current  = (current + 50) / 100 * 100;
+        printf ("\rCurrent temperature: %d,%d C. Change since last iteration: %d mC    ", current / 1000, current % 1000 / 100, current - previous);
 
         draw_temp_graph ();
     }
@@ -96,19 +96,29 @@ void draw_temp_graph () {
     drawrec (OO, XY, (color_t) {0xFF, 0xFF, 0x00, 0});
     drawline_grid ((point_t) {0, get_max_height () / 8 * 6}, (point_t) {get_max_width (), get_max_height () / 4 * 3}, (color_t) {0, 128, 255, 0});
     drawline_grid ((point_t) {0, get_max_height () / 8 * 7}, (point_t) {get_max_width (), get_max_height () / 4 * 3}, (color_t) {0, 128, 0, 0});
-    prints_location (OO, "55C");
-    prints_location ((point_t) {OY.x, OY.y - FONT_REAL_WIDTH}, "45C");
+    char buf[5] = {0};
+    sprintf (buf, "%d C", TEMPERATURE_GRAPH_HIGH / 1000);
+    prints_location (OO, buf);
+    sprintf (buf, "%d C", TEMPERATURE_GRAPH_LOW / 1000);
+    prints_location ((point_t) {OY.x, OY.y - FONT_REAL_WIDTH}, buf);
 
     // Draw lines between data points
-    int factor_x  = get_fb_info ()->virtual_width / TEMPERATURE_POINTS;
-    int divisor_y = 10000 / (get_fb_info ()->virtual_height / 2);
-    for (int j = 0; j < TEMPERATURE_POINTS - 1; j++) {
+    color_t const red       = {0, 0, 255, 0};
+    color_t const blue      = {196, 0, 0, 0};
+    color_t       current   = red;
+    int           factor_x  = get_fb_info ()->virtual_width / TEMPERATURE_POINTS;
+    int           divisor_y = (TEMPERATURE_GRAPH_HIGH - TEMPERATURE_GRAPH_LOW) / (get_fb_info ()->virtual_height / 2);
+    for (int j = 0; j < TEMPERATURE_POINTS; j++) {
         unsigned int i0 = (current_temperature_index + j + 1) % TEMPERATURE_POINTS;
         unsigned int i1 = (i0 + 1) % TEMPERATURE_POINTS;
         if (!temperatures[i0] || !temperatures[i1])
             continue;
-        point_t a = {j * factor_x, OY.y - (temperatures[i0] - 45000) / divisor_y};
-        point_t b = {(j + 1) * factor_x, OY.y - (temperatures[i1] - 45000) / divisor_y};
-        drawline (a, b, (color_t) {0, 0, 255, 0});
+        if (temperatures[i0] >= TEMPERATURE_FAN_ON)
+            current = red;
+        else if (temperatures[i0] <= TEMPERATURE_FAN_OFF)
+            current = blue;
+        point_t a = {j * factor_x, OY.y - (temperatures[i0] - TEMPERATURE_GRAPH_LOW) / divisor_y};
+        point_t b = {(j + 1) * factor_x, OY.y - (temperatures[i1] - TEMPERATURE_GRAPH_LOW) / divisor_y};
+        drawline (a, b, current);
     }
 }
