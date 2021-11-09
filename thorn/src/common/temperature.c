@@ -35,8 +35,10 @@ void regulate_temperature () {
         unsigned int previous                   = temperatures[(current_temperature_index++) % TEMPERATURE_POINTS];
         temperatures[current_temperature_index] = get_temperature ();
         unsigned int current                    = temperatures[current_temperature_index];
-        printf ("\rCurrent temperature: %d C. Change since last iteration: %d mC    ", current / 1000,
-                (current - previous + 5050) / 100 * 100 - 5000);
+
+        previous = (previous + 50) / 100 * 100;
+        current  = (previous + 50) / 100 * 100;
+        printf ("\rCurrent temperature: %d,%d C. Change since last iteration: %d mC    ", current / 1000, current % 1000 / 100, current - previous);
 
         if (current >= TEMPERATURE_SHOULD) {
             set_fan (1);
@@ -82,7 +84,7 @@ void set_fan (bool enable) {
 
 void draw_temp_graph () {
     // Clear lower half of screen
-    memzero ((unsigned long) get_fb () + get_fb_info ()->fb_size / 2, get_fb_info ()->fb_size / 2);
+    memzero ((unsigned long) get_fb () + get_fb_info ()->fb_size / 2, get_fb_info ()->fb_size / 2 - get_fb_info ()->pitch * 10);
 
     // Corners of graph
     point_t OO = {0, get_max_height () / 2};
