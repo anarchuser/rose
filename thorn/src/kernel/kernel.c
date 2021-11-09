@@ -93,7 +93,7 @@ void kernel_init (void) {
         }
     }
     // Temperature
-    printf ("Initialising temperature %s. Max temperature set to %d °C.\r\n",
+    printf ("Initialising temperature %s. Max temperature set to %d C.\r\n",
             init_temperature () ? "succeeded" : "failed", get_max_temperature () / 1000);
     LOG ("Initialisation done");
     ERROR ("I'm important!");

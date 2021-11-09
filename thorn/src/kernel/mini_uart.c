@@ -29,7 +29,7 @@ void mini_uart_init (void) {
     static volatile bool init_done     = false;
 
     if (init_progress) {
-        while (! init_done)
+        while (!init_done)
             ;
         return;
     }
@@ -71,7 +71,7 @@ void handle_mini_uart_irq (void) {
         case 19:
             toggle_blank_screen ();
         default:
-            mini_uart_send (c_event);
+            printf ("%c", c_event);
     }
 }
 

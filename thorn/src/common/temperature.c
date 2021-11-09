@@ -30,24 +30,21 @@ bool init_temperature () {
 }
 
 void regulate_temperature () {
-    static int fan      = 1;
     static int previous = TEMPERATURE_SHOULD;
     while (1) {
+        delay (TEMPERATURE_CHECK_DELAY);
         int current = get_temperature ();
-        printf ("\rCurrent temperature: %d °C. Change since last iteration: %d °mC    ", current / 1000,
-                (current - previous));
+        printf ("\rCurrent temperature: %d C. Change since last iteration: %d mC    ", current / 1000,
+                ((current - previous) + 50) / 500 * 500);
 
         if (current >= TEMPERATURE_SHOULD) {
-            fan = 1;
+            set_fan (1);
         } else if (current < TEMPERATURE_SHOULD - 2000) {
-            fan = 0;
+            set_fan (0);
         }
-
-        set_fan (fan);
-
         previous = current;
 
-        delay (TEMPERATURE_CHECK_DELAY);
+        draw_temp_graph ();
     }
 }
 
@@ -81,4 +78,20 @@ int get_temperature () {
 
 void set_fan (bool enable) {
     gpio_set (GPIO_FAN, !enable);
+}
+
+void draw_temp_graph () {
+    // Clear lower half of screen
+    memzero (get_fb () + get_fb_info ()->fb_size / 2, get_fb_info ()->fb_size / 2);
+
+    // Corners of graph
+    point_t OO = {0, get_fb_info ()->virtual_height / 2};
+    point_t OY = {0, get_fb_info ()->virtual_height - 1};
+    point_t XO = {get_fb_info ()->virtual_width - 1, get_fb_info ()->virtual_height / 2};
+    point_t XY = {get_fb_info ()->virtual_width - 1, get_fb_info ()->virtual_height - 1};
+
+    // Draw frame + legend
+    drawrec (OO, XY, (color_t) {0xFF, 0xFF, 0x00, 0});
+    prints_location (OO, "55C");
+    prints_location ((point_t) {OY.x, OY.y - FONT_REAL_WIDTH}, "45C");
 }

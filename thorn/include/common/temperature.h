@@ -1,6 +1,8 @@
 #ifndef _ROSE_C_TEMPERATURE_H
 #define _ROSE_C_TEMPERATURE_H
 
+#include "common/font.h"
+#include "common/screen.h"
 #include "common/stdbool.h"
 #include "kernel/fork.h"
 #include "kernel/gpio.h"
@@ -33,5 +35,7 @@ int get_max_temperature (void);
 int get_temperature (void);
 
 void set_fan (bool enable);
+
+void draw_temp_graph (void);
 
 #endif//_ROSE_C_TEMPERATURE_H
