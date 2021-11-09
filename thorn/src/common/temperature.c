@@ -105,8 +105,8 @@ void draw_temp_graph () {
         unsigned int i1 = (i0 + 1) % TEMPERATURE_POINTS;
         if (!temperatures[i0] || !temperatures[i1])
             continue;
-        point_t a = {j * factor_x, OO.y + (temperatures[i0] - 45000) / divisor_y};
-        point_t b = {(j + 1) * factor_x, OO.y + (temperatures[i1] - 45000) / divisor_y};
+        point_t a = {j * factor_x, OY.y - (temperatures[i0] - 45000) / divisor_y};
+        point_t b = {(j + 1) * factor_x, OY.y - (temperatures[i1] - 45000) / divisor_y};
         drawline (a, b, (color_t) {0, 0, 255, 0});
     }
 }
