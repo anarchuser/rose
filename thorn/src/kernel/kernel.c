@@ -1,10 +1,13 @@
 #include "kernel/mini_uart.h"// needs to be above kernel/irq.h
 
+#include "common/font.h"
 #include "common/gpu.h"
 #include "common/logging.h"
 #include "common/printf.h"
 #include "common/rainbow.h"
+#include "common/rng.h"
 #include "common/screen.h"
+#include "common/status_led.h"
 #include "common/temperature.h"
 #include "common/utils.h"
 #include "kernel/fork.h"
@@ -41,7 +44,7 @@ void user_process () {
     }
     stack = call_sys_malloc ();
     if (stack < 0) {
-        printf ("Error while allocating stack for process 1\n\r");
+        printf ("Error while allocating stack for process 2\n\r");
         return;
     }
     err = call_sys_clone ((unsigned long) &user_process1, (unsigned long) "abcd", stack);
@@ -68,15 +71,21 @@ void kernel_init (void) {
     enable_interrupt_controller ();
     enable_irq ();
     task_init ();
+    init_rng ();
+
+    // Turn status led OFF and power led ON
+    set_led (0, STATUS_LED);
+    set_led (0, POWER_LED);
 
     printf ("Initialising Framebuffer...\r\n");
     int gpu_status = init_gpu ();
-    if (! gpu_status) {
+    if (!gpu_status) {
         printf ("Error while initialising Framebuffer\r\n");
     } else {
-        if (! get_fb ()) {
+        if (!get_fb ()) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
+            font_set_normal ();
             init_printf (0, putc_screen);
             printf ("Frame  buffer:     %p\r\n", get_fb ());
             printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
@@ -87,8 +96,8 @@ void kernel_init (void) {
     printf ("Initialising temperature %s. Max temperature set to %d °C.\r\n",
             init_temperature () ? "succeeded" : "failed", get_max_temperature () / 1000);
     LOG ("Initialisation done");
+    ERROR ("I'm important!");
 }
-
 
 void kernel_main (int processor_id) {
 
@@ -97,41 +106,39 @@ void kernel_main (int processor_id) {
         kernel_init ();
     }
 
-    while (processor_id != current_processor)
-        ;
-
-    printf ("Hello, from processor %d\n\r", processor_id);
-
+    // Synchronisation to prevent concurrent print
+    while (processor_id != current_processor) {}
+    printf ("Hello, from processor %d in EL %d\n\r", processor_id, get_el ());
     current_processor++;
-    while (current_processor != 3)
-        ;
+    while (current_processor != 4) {}
+
     switch (processor_id) {
         case 0: {
             //            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
             //            if (res < 0) {
-            //                // printf ("error while starting kernel process");
-            //                return;
+            //                ERROR ("Can't start kernel process");
+            //                break;
             //            }
             while (1) {
-                schedule ();
-            }
-        }
-        case 1:
-            if (get_fb ()) {
+                //                schedule ();
             }
             break;
-        case 2:
-        case 3:
-            while (current_processor != 3)
-                ;
+        }
+        case 1:
             while (1) {
                 regulate_temperature ();
                 delay (TEMPERATURE_CHECK_DELAY);
             }
+            break;
+        case 2:
+            while (get_fb ()) {
+                // Do screen work here
+            }
+            break;
+        case 3:
         default:
-            // printf ("Undefined behaviour on processor %d\r\n", processor_id);
-            while (1)
-                ;
+            while (1) {}
+            printf ("Undefined behaviour on processor %d\r\n", processor_id);
     }
-    // printf ("Processor %d going out of scope\r\n", processor_id);
+    printf ("Processor %d going out of scope\r\n", processor_id);
 }

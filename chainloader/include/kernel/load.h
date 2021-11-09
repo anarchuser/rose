@@ -9,6 +9,7 @@
 
 #ifndef __ASSEMBLER__
 
+#include "common/status_led.h"
 #include "kernel/chainload.h"
 #include "kernel/mini_uart.h"
 #include "kernel/peripherals/mini_uart.h"

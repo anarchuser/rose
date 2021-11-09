@@ -25,6 +25,7 @@
 
 #define VC_SDRAM_OFFSET 0x3FFFFFFF
 
+// blue, green, red, alpha
 typedef struct {
     byte_t blue;
     byte_t green;
@@ -50,5 +51,8 @@ bool init_gpu (void);
 color_t * get_fb (void);
 
 fb_info_t const * get_fb_info (void);
+
+bool blank_screen (bool blank);
+bool toggle_blank_screen (void);
 
 #endif//_ROSE_C_GPU_H

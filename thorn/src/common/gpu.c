@@ -113,3 +113,26 @@ color_t * get_fb () {
 fb_info_t const * get_fb_info () {
     return &fb_info;
 }
+
+bool blank_screen (bool blank) {
+    int c               = 0;// Message size; increment while we write
+    gpu_msg_buffer[++c] = 0;// Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
+
+    gpu_msg_buffer[++c] = 0x00040002;// Tag to blank screen
+    gpu_msg_buffer[++c] = 4;         // Size of value buffer
+    gpu_msg_buffer[++c] = 0;         //
+    gpu_msg_buffer[++c] = blank;     // On or off
+
+    gpu_msg_buffer[++c] = 0;// End tag
+    gpu_msg_buffer[++c] = 0;// Padding
+
+    gpu_msg_buffer[0] = (4 * ++c);// Write message size at the beginning of the buffer
+
+    return mailbox_request (gpu_msg_buffer, PROPERTY_ARM_VC);
+}
+
+bool toggle_blank_screen (void) {
+    static bool is_blank = false;
+    blank_screen (is_blank = !is_blank);
+    return is_blank;
+}

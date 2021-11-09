@@ -64,7 +64,9 @@ setup-serial-Darwin:
 	cat -v $(SERIAL_PORT) &
 	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
-resend: reboot send
+resend: reboot build
+	sleep 8
+	$(MAKE) send
 
 # send corresponding image over serial connection
 send: send-$(SEND_DEFAULT_TARGET)
@@ -77,15 +79,16 @@ send-thorn: setup-serial-$(HOST_OS)
 
 # Set up screen on alternate serial port
 screen:
-	screen $(SERIAL_PORT_ALT) $(BAUD_RATE)
+	picocom -b $(BAUD_RATE) $(SERIAL_PORT_ALT) || minicom -D $(SERIAL_PORT_ALT) -b $(BAUD_RATE) || screen $(SERIAL_PORT_ALT) $(BAUD_RATE)
 
 poweroff:
 	printf "0: %.2x" 17 | xxd -re -g0 > $(SERIAL_PORT)
 
 reboot:
 	printf "0: %.2x" 18 | xxd -re -g0 > $(SERIAL_PORT)
-	sleep 8
 
+blank:
+	printf "0: %.2x" 19 | xxd -re -g0 > $(SERIAL_PORT)
 
 # Emulate the corresponding kernel on qemu
 emulate: emulate-$(EMULATE_DEFAULT_TARGET)

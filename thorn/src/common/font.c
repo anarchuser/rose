@@ -135,18 +135,18 @@ const unsigned long long int * font (int c) {
     return (unsigned long long int *) f[c];
 }
 
-void printc_location (char c, unsigned int x, unsigned int y) {
+void printc_location (point_t point, char c) {
     unsigned char const * bitmap = (unsigned char const *) font (c);
     for (int i = 0; i < FONT_SIZE; i++) {
         for (int j = 0; j < FONT_SIZE; j++) {
             bool is_on = bitmap[i] & (1 << j);
 
-            int _x, _y;
+            point_t _point;
             for (int k = 0; k < FONT_FACTOR; k++) {
                 for (int h = 0; h < FONT_FACTOR; h++) {
-                    _x = x + j * FONT_FACTOR + k;
-                    _y = y + i * FONT_FACTOR + h;
-                    drawpx (_x, _y, is_on ? fg : bg);
+                    _point.x = point.x + j * FONT_FACTOR + k;
+                    _point.y = point.y + i * FONT_FACTOR + h;
+                    drawpx (_point, is_on ? font_fg : font_bg);
                 }
             }
         }
@@ -154,21 +154,48 @@ void printc_location (char c, unsigned int x, unsigned int y) {
 }
 
 void printc (char c) {
-    printc_location (c, cursor_x, cursor_y);
-    cursor_x += FONT_SIZE * FONT_FACTOR;
-    if (c == '\r') {
-        cursor_x = 0;
-    } else if (c == '\n') {
-        cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
-    } else {
-        if (cursor_x + FONT_SIZE + FONT_FACTOR >= get_max_width ()) {
-            cursor_x = 0;
-            cursor_y += FONT_SIZE * FONT_FACTOR + FONT_SPACING;
-        }
+    // Handle special characters, print otherwise
+    switch (c) {
+        case '\r':// Reset cursor to beginning of line
+            cursor.x = 0;
+            break;
+        case '\n':// Move cursor to next line
+            cursor.y += FONT_REAL_HEIGHT;
+            break;
+        case '\t':// Print minimum one space, then align forwards to tab grid
+            cursor.x += FONT_TAB_REAL_WIDTH - cursor.x % (FONT_TAB_REAL_WIDTH);
+            break;
+        default:// Print character and update cursor
+            // TODO dynamically deal with unprintable characters (i.e., check if bitmap is all '0')
+            printc_location (cursor, c);
+            cursor.x += FONT_REAL_WIDTH;
     }
-    if (cursor_y + FONT_SIZE + FONT_FACTOR >= get_max_height ()) {
-        cursor_y = 0;
+
+    // If next printed char overflowed screen width move cursor to beginning of next line
+    if (cursor.x + FONT_REAL_WIDTH >= get_max_width ()) {
+        cursor.x = 0;
+        cursor.y += FONT_REAL_HEIGHT;
     }
+    // If next line would overflow screen height (ignoring line spacing) move to beginning of screen
+    if (cursor.y + FONT_REAL_WIDTH - FONT_SPACING >= get_max_height ()) {
+#ifdef FONT_SCROLLBACK
+        cursor.y -= FONT_SB_LINES * FONT_REAL_HEIGHT;
+        unsigned int remove_size = FONT_SB_LINES * FONT_REAL_HEIGHT * get_fb_info ()->pitch;
+        unsigned int scroll_size = get_fb_info ()->fb_size - remove_size;
+        memcpy ((ptr_t) get_fb (), (ptr_t) get_fb () + remove_size, scroll_size);
+        memzero ((ptr_t) get_fb () + scroll_size, remove_size);
+#else
+        // TODO clear framebuffer here...?
+        cursor.y = 0;
+#endif
+    }
+}
+
+void font_set_normal (void) {
+    font_fg = font_normal_fg;
+}
+void font_set_error (void) {
+    font_fg = font_error_fg;
 }
 
 void putc_screen (void * p, char c) {
