@@ -5,6 +5,7 @@
 #include "common/gpu.h"
 #include "common/stdbool.h"
 #include "common/utils.h"
+#include "kernel/gpio.h"
 #include "kernel/peripherals/gpio.h"
 #include "kernel/peripherals/mini_uart.h"
 #include "kernel/power.h"
