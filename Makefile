@@ -71,10 +71,10 @@ resend: reboot build
 # send corresponding image over serial connection
 send: send-$(SEND_DEFAULT_TARGET)
 
-send-seed: setup-serial-$(HOST_OS)
+send-seed: setup-serial-$(HOST_OS) reboot
 	$(MAKE) -C seed send
 
-send-thorn: setup-serial-$(HOST_OS)
+send-thorn: setup-serial-$(HOST_OS) reboot
 	$(MAKE) -C thorn send
 
 # Set up screen on alternate serial port

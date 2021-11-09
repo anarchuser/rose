@@ -31,6 +31,9 @@ void receive_kernel (void) {
     toggle_led (STATUS_LED);
     toggle_led (POWER_LED);
 
+    // Discard one char to prevent send/resend issue
+    uart_recv();
+
     for (int i = sizeof (int); i > 0;) {// 4 is size of int
         kernel_size_address[--i] = uart_recv ();
     }
