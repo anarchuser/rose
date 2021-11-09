@@ -300,11 +300,11 @@ void printc (char c) {
         cursor.y += FONT_REAL_HEIGHT;
     }
     // If next line would overflow screen height (ignoring line spacing) move to beginning of screen
-    if (cursor.y + FONT_REAL_WIDTH - FONT_SPACING >= get_max_height ()) {
+    if (cursor.y + FONT_REAL_WIDTH - FONT_SPACING > get_max_height () / 2) {
 #ifdef FONT_SCROLLBACK
         cursor.y -= FONT_SB_LINES * FONT_REAL_HEIGHT;
-        unsigned int remove_size = FONT_SB_LINES * FONT_REAL_HEIGHT * get_fb_info ()->pitch;
-        unsigned int scroll_size = get_fb_info ()->fb_size - remove_size;
+        unsigned int remove_size = FONT_SB_LINES * FONT_REAL_HEIGHT * get_fb_info ()->pitch - FONT_SPACING;
+        unsigned int scroll_size = get_fb_info ()->fb_size / 2 - remove_size;
         memcpy ((ptr_t) get_fb (), (ptr_t) get_fb () + remove_size, scroll_size);
         memzero ((ptr_t) get_fb () + scroll_size, remove_size);
 #else

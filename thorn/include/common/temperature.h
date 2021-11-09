@@ -16,9 +16,14 @@
 #define TEMPERATURE_SHOULD (50 * 1000)
 #define TEMPERATURE_MAX    (80 * 1000)
 
-#define TEMPERATURE_CHECK_DELAY 20000000
+#define TEMPERATURE_CHECK_DELAY 10000000
+
+#define TEMPERATURE_POINTS 100
 
 static volatile unsigned int __attribute__ ((aligned (16))) temperature_request[8];
+
+static unsigned int temperatures[TEMPERATURE_POINTS] = {0};
+static unsigned int current_temperature_index        = 0;
 
 // Max temperature in degree milliCelsius.
 // USB + Ethernet are designed up to 70 °C but unlikely to overheat.

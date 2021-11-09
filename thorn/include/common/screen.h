@@ -3,6 +3,7 @@
 
 #include "common/geometry.h"
 #include "common/gpu.h"
+#include "common/logging.h"
 #include "common/math.h"
 #include "common/printf.h"
 

@@ -30,19 +30,19 @@ bool init_temperature () {
 }
 
 void regulate_temperature () {
-    static int previous = TEMPERATURE_SHOULD;
     while (1) {
         delay (TEMPERATURE_CHECK_DELAY);
-        int current = get_temperature ();
+        unsigned int previous                   = temperatures[(current_temperature_index++) % TEMPERATURE_POINTS];
+        temperatures[current_temperature_index] = get_temperature ();
+        unsigned int current                    = temperatures[current_temperature_index];
         printf ("\rCurrent temperature: %d C. Change since last iteration: %d mC    ", current / 1000,
-                ((current - previous) + 50) / 500 * 500);
+                (current - previous + 5050) / 100 * 100 - 5000);
 
         if (current >= TEMPERATURE_SHOULD) {
             set_fan (1);
         } else if (current < TEMPERATURE_SHOULD - 2000) {
             set_fan (0);
         }
-        previous = current;
 
         draw_temp_graph ();
     }
@@ -82,16 +82,31 @@ void set_fan (bool enable) {
 
 void draw_temp_graph () {
     // Clear lower half of screen
-    memzero (get_fb () + get_fb_info ()->fb_size / 2, get_fb_info ()->fb_size / 2);
+    memzero ((unsigned long) get_fb () + get_fb_info ()->fb_size / 2, get_fb_info ()->fb_size / 2);
 
     // Corners of graph
-    point_t OO = {0, get_fb_info ()->virtual_height / 2};
-    point_t OY = {0, get_fb_info ()->virtual_height - 1};
-    point_t XO = {get_fb_info ()->virtual_width - 1, get_fb_info ()->virtual_height / 2};
-    point_t XY = {get_fb_info ()->virtual_width - 1, get_fb_info ()->virtual_height - 1};
+    point_t OO = {0, get_max_height () / 2};
+    point_t OY = {0, get_max_height ()};
+    point_t XO = {get_max_width (), get_max_height () / 2};
+    point_t XY = {get_max_width (), get_max_height ()};
 
     // Draw frame + legend
     drawrec (OO, XY, (color_t) {0xFF, 0xFF, 0x00, 0});
+    drawline_grid ((point_t) {0, get_max_height () / 8 * 6}, (point_t) {get_max_width (), get_max_height () / 4 * 3}, (color_t) {0, 128, 255, 0});
+    drawline_grid ((point_t) {0, get_max_height () / 8 * 7}, (point_t) {get_max_width (), get_max_height () / 4 * 3}, (color_t) {0, 128, 0, 0});
     prints_location (OO, "55C");
     prints_location ((point_t) {OY.x, OY.y - FONT_REAL_WIDTH}, "45C");
+
+    // Draw lines between data points
+    int factor_x  = get_fb_info ()->virtual_width / TEMPERATURE_POINTS;
+    int divisor_y = 10000 / (get_fb_info ()->virtual_height / 2);
+    for (int j = 0; j < TEMPERATURE_POINTS - 1; j++) {
+        unsigned int i0 = (current_temperature_index + j + 1) % TEMPERATURE_POINTS;
+        unsigned int i1 = (i0 + 1) % TEMPERATURE_POINTS;
+        if (!temperatures[i0] || !temperatures[i1])
+            continue;
+        point_t a = {j * factor_x, OO.y + (temperatures[i0] - 45000) / divisor_y};
+        point_t b = {(j + 1) * factor_x, OO.y + (temperatures[i1] - 45000) / divisor_y};
+        drawline (a, b, (color_t) {0, 0, 255, 0});
+    }
 }

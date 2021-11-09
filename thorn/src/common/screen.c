@@ -8,6 +8,14 @@ void drawpx (point_t p, color_t color) {
 
 // Bresenham's line algorithm
 void drawline (point_t p0, point_t p1, color_t color) {
+    if (p0.x > get_max_width ()
+        || p0.y > get_max_height ()
+        || p1.x > get_max_width ()
+        || p1.y > get_max_height ()) {
+        ERROR ("Couldn't draw line");
+        printf ("Offending points: {%u, %u} - {%u, %u}\r\n", p0.x, p0.y, p1.x, p1.y);
+        return;
+    }
 
     if (p1.y == p0.y) {
         if (p0.x < p1.x)
