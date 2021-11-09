@@ -40,7 +40,7 @@ void regulate_temperature () {
 
         if (current >= TEMPERATURE_SHOULD) {
             set_fan (1);
-        } else if (current < TEMPERATURE_SHOULD - 2000) {
+        } else if (current < TEMPERATURE_SHOULD - 2500) {
             set_fan (0);
         }
 
