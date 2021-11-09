@@ -25,6 +25,7 @@ bool init_temperature () {
     }
 
     // Start regulate_temperature service here
+    copy_process (PF_KTHREAD, (unsigned long) &regulate_temperature, 0, 0);
     return true;
 }
 
@@ -36,10 +37,10 @@ void regulate_temperature () {
         printf ("\rCurrent temperature: %d °C. Change since last iteration: %d °mC    ", current / 1000,
                 (current - previous));
 
-        if (current < TEMPERATURE_SHOULD) {
-            fan = 0;
-        } else {
+        if (current >= TEMPERATURE_SHOULD) {
             fan = 1;
+        } else if (current < TEMPERATURE_SHOULD - 2000) {
+            fan = 0;
         }
 
         set_fan (fan);

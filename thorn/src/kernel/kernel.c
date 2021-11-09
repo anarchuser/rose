@@ -120,17 +120,15 @@ void kernel_main (int processor_id) {
             //                break;
             //            }
             while (1) {
-                //                schedule ();
+                schedule ();
             }
             break;
         }
         case 1:
-            regulate_temperature ();
-            break;
-        case 2:
             while (get_fb ()) {
                 // Do screen work here
             }
+        case 2:
         case 3:
         default:
             while (1) {}

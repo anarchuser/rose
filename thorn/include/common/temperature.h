@@ -2,6 +2,7 @@
 #define _ROSE_C_TEMPERATURE_H
 
 #include "common/stdbool.h"
+#include "kernel/fork.h"
 #include "kernel/gpio.h"
 #include "kernel/mailbox.h"
 
