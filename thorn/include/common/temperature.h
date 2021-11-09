@@ -2,8 +2,8 @@
 #define _ROSE_C_TEMPERATURE_H
 
 #include "common/stdbool.h"
+#include "kernel/gpio.h"
 #include "kernel/mailbox.h"
-#include "kernel/peripherals/gpio.h"
 
 #define GPIO_FAN 18
 

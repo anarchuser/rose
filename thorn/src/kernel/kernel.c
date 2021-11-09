@@ -125,16 +125,12 @@ void kernel_main (int processor_id) {
             break;
         }
         case 1:
-            while (1) {
-                regulate_temperature ();
-                delay (TEMPERATURE_CHECK_DELAY);
-            }
+            regulate_temperature ();
             break;
         case 2:
             while (get_fb ()) {
                 // Do screen work here
             }
-            break;
         case 3:
         default:
             while (1) {}

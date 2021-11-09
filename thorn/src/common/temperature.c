@@ -1,6 +1,7 @@
 #include "common/temperature.h"
 
 bool init_temperature () {
+    gpio_mode (GPIO_FAN, GPIO_OUTPUT);
     {                                // Read out maximum temperature
         int c                    = 0;// Message size; increment while we write
         temperature_request[++c] = 0;// Response - will be 0x80000000 for SUCCESS or 0x80000001 for FAILURE
@@ -17,7 +18,7 @@ bool init_temperature () {
         temperature_request[0] = (4 * ++c);// Write message size at the beginning of the buffer
 
         // If reading maximum temperature fails, keep default
-        if (! mailbox_request (temperature_request, PROPERTY_ARM_VC))
+        if (!mailbox_request (temperature_request, PROPERTY_ARM_VC))
             return false;
         // Else update temperature
         max_temperature = temperature_request[index_max_temperature] ?: TEMPERATURE_MAX;
@@ -30,19 +31,23 @@ bool init_temperature () {
 void regulate_temperature () {
     static int fan      = 1;
     static int previous = TEMPERATURE_SHOULD;
-    int        current  = get_temperature ();
-    printf ("\rCurrent temperature: %d °C. Change since last iteration: %d °mC    ", current / 1000,
-            (current - previous));
+    while (1) {
+        int current = get_temperature ();
+        printf ("\rCurrent temperature: %d °C. Change since last iteration: %d °mC    ", current / 1000,
+                (current - previous));
 
-    if (current < TEMPERATURE_SHOULD) {
-        fan = 0;
-    } else {
-        fan = 1;
+        if (current < TEMPERATURE_SHOULD) {
+            fan = 0;
+        } else {
+            fan = 1;
+        }
+
+        set_fan (fan);
+
+        previous = current;
+
+        delay (TEMPERATURE_CHECK_DELAY);
     }
-
-    set_fan (fan);
-
-    previous = current;
 }
 
 int get_max_temperature () {
@@ -66,7 +71,7 @@ int get_temperature () {
         temperature_request[0] = (4 * ++c);// Write message size at the beginning of the buffer
 
         // If reading maximum temperature fails, keep default
-        if (! mailbox_request (temperature_request, PROPERTY_ARM_VC))
+        if (!mailbox_request (temperature_request, PROPERTY_ARM_VC))
             return max_temperature;
         // Else return temperature
         return temperature_request[index_temperature];
@@ -74,5 +79,5 @@ int get_temperature () {
 }
 
 void set_fan (bool enable) {
-    printf ("set fan %d   \r", enable);
+    gpio_set (GPIO_FAN, !enable);
 }
