@@ -228,7 +228,11 @@ abort:;
 
 
 void printf_register (void (*putf) (void *, char)) {
-    stdout_putf_arr[putf_counter++] = putf;
+    if (putf_counter >= PRINTF_MAX_PRINTERS) {
+        printf ("WARNING: max number of printing functions reached. Registering cancelled.\r\n");
+    } else {
+        stdout_putf_arr[putf_counter++] = putf;
+    }
 }
 
 void printf_unregister (void (*putf) (void *, char)) {
