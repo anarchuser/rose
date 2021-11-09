@@ -82,7 +82,7 @@ void kernel_process () {
 
 void kernel_init (void) {
     uart_init ();
-    init_printf (0, putc);
+    printf_register (putc);
     irq_vector_init ();
     timer_init ();
     enable_interrupt_controller ();
@@ -103,7 +103,7 @@ void kernel_init (void) {
             printf ("Error: Invalid Framebuffer received\r\n");
         } else {
             font_set_normal ();
-            init_printf (0, putc_screen);
+            printf_register (putc_screen);
             printf ("Frame  buffer:     %p\r\n", get_fb ());
             printf ("Width  resolution: %d\r\n", get_fb_info ()->virtual_width);
             printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
@@ -149,7 +149,6 @@ void kernel_main (int processor_id) {
             break;
         case 2:
         case 3:
-            break;
         default:
             while (1)
                 ;

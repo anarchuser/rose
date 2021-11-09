@@ -93,7 +93,13 @@ regs Kusti, 23.10.2004
 
 #include <stdarg.h>
 
-void init_printf (void * putp, void (*putf) (void *, char));
+#include "common/status_led.h"
+
+#define PRINTF_MAX_PRINTERS 10
+
+void printf_register (void (*putf) (void *, char));
+
+void printf_unregister (void (*putf) (void *, char));
 
 void tfp_printf (char * fmt, ...);
 
