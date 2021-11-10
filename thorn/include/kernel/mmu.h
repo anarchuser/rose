@@ -11,6 +11,7 @@
 #include "common/status_led.h"
 #include "kernel/mini_uart.h"
 #include "kernel/peripherals/base.h"
+#include "kernel/sched.h"
 
 #define PAGESIZE 4096
 
@@ -45,7 +46,7 @@ static volatile unsigned int __attribute__ ((aligned (16))) buffer[32];
 void init_pages ();
 void init_mmu (void);
 
-void data_abort_el0 (ptr_t far, ptr_t esr);
+void data_abort_el0 (ptr_t far, ptr_t esr, ptr_t elr);
 
 #endif
 #endif//_ROSE_MMU_H

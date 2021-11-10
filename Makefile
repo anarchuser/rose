@@ -22,7 +22,7 @@ SERIAL_PORT_Darwin     = /dev/$(shell ls /dev | grep usbserial | head -n 2 | tai
 SERIAL_PORT_ALT_Darwin = /dev/$(shell ls /dev | grep usbserial | head -n 1)
 
 # Building
-BUILD_DEFAULT_TARGET = bulb
+BUILD_DEFAULT_TARGET = thorn
 
 # Ensure make still works if someone creates a file named like follows:
 .PHONY: all build clean flash resend send reboot poweroff
@@ -35,7 +35,6 @@ clean:
 	rm -rf $(BUILD) *.img
 	$(MAKE) -C chainloader clean
 	$(MAKE) -C thorn clean
-	$(MAKE) -C bulb clean
 
 # Build the different OSes
 build: build-$(BUILD_DEFAULT_TARGET)
@@ -48,9 +47,6 @@ build-chainloader:
 build-thorn:
 	$(MAKE) -C thorn build
 
-build-bulb:
-	$(MAKE) -C bulb build
-
 # Mount boot partition of SD card onto set mount point to copy image onto it
 flash: flash-$(FLASH_DEFAULT_TARGET)
 
@@ -59,9 +55,6 @@ flash-chainloader:
 
 flash-thorn:
 	$(MAKE) -C thorn flash
-
-flash-bulb:
-	$(MAKE) -C bulb flash
 
 # Send kernel size + kernel
 setup-serial-Linux:
@@ -84,9 +77,6 @@ send-chainloader: setup-serial-$(HOST_OS)
 send-thorn: setup-serial-$(HOST_OS)
 	$(MAKE) -C thorn send
 
-send-bulb: setup-serial-$(HOST_OS)
-	$(MAKE) -C bulb send
-
 # Set up screen on alternate serial port
 screen:
 	screen $(SERIAL_PORT_ALT) $(BAUD_RATE)
@@ -108,7 +98,4 @@ emulate-chainloader:
 
 emulate-thorn:
 	$(MAKE) -C thorn emulate
-
-emulate-bulb:
-	$(MAKE) -C bulb emulate
 

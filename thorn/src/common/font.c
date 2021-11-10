@@ -191,9 +191,9 @@ void printc (char c) {
     }
 }
 
-void prints(char const * str) {
+void prints (char const * str) {
     while (*str) {
-        printc(*str++);
+        printc (*str++);
     }
 }
 
@@ -208,10 +208,10 @@ void putc_screen (void * p, char c) {
     printc (c);
 }
 
-void test_print() {
-    prints("123454321\n\r");
+void test_print () {
+    prints ("test\n\r");
 }
 
-void exit_print() {
-    prints("exit\n\r");
+void exit_print () {
+    prints ("exit\n\r");
 }

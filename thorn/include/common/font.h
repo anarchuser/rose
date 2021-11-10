@@ -42,8 +42,8 @@ void putc_screen (void * p, char c);
 void font_set_normal (void);
 void font_set_error (void);
 
-void test_print();
-void exit_print();
+void test_print ();
+void exit_print ();
 
 #endif
 #endif

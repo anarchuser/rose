@@ -17,8 +17,8 @@
 #include "kernel/timer.h"
 
 void multiplex_print (void * p, char c) {
-    // printc (c);
-    uart_send (c);
+    printc (c);
+    //    uart_send (c);
 }
 
 void user_process1 (char * array) {
@@ -116,8 +116,8 @@ void kernel_main (int processor_id) {
     printf ("Hello, from processor %d in EL %d\n\r", processor_id, get_el ());
     init_mmu ();
 
-    current_processor++;
-    while (current_processor != 4) {}
+    //    current_processor++;
+    //    while (current_processor != 4) {}
 
     switch (processor_id) {
         case 0: {

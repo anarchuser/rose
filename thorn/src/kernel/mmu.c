@@ -130,14 +130,15 @@ void init_mmu () {
     LOG ("Set SCTLR flags and enable MMU");
 }
 
-void data_abort_el0 (ptr_t far, ptr_t esr) {
+void data_abort_el0 (ptr_t far, ptr_t esr, ptr_t elr) {
     byte_t type  = (esr >> 2) & 0b11;
     byte_t level = esr & 0b11;
     esr &= 0b111111;
 
-    // printf ("EL 0 - ");
-    // printf ("FAR_EL1: %p - ", far);
-    // printf ("ESR_EL1: %b\n\r", esr);
+    printf ("EL 0 - ");
+    printf ("FAR_EL1: %p - ", far);
+    printf ("ELR_EL1: %p - ", elr);
+    printf ("ESR_EL1: %b\r\n", esr);
 
     switch (type) {
         case 0b00:// Address size fault
@@ -146,6 +147,11 @@ void data_abort_el0 (ptr_t far, ptr_t esr) {
             break;
         case 0b01:// Translation fault
             printf ("Translation fault during level %u of table walk on lookup of address %p.\r\n", level, far);
+            set_pgd ((unsigned long) &_end + TTBR_CNP);
+            //            asm volatile("msr ttbr0_el1, %0"
+            //                         :
+            //                         : "r"((unsigned long) &_end + TTBR_CNP));
+            LOG ("Successfully (?) updated TTBR");
             break;
         case 0b10:// Access flag fault
             printf ("Access flag fault during level %u of table walk on lookup of address %p.\r\n", level, far);

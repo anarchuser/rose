@@ -24,13 +24,9 @@ delay:
 
 .globl set_pgd
 set_pgd:
-	bl test_print
 	msr	ttbr0_el1, x0
-	bl test_print
-	//tlbi vmalle1is
-	bl test_print
-	DSB ISH              // ensure completion of TLB invalidation
-	bl test_print
+//	tlbi vmalle1is
+	dsb ish              // ensure completion of TLB invalidation
 	isb
 	bl exit_print
 	ret

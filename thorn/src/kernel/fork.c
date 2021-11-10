@@ -1,13 +1,12 @@
 #include "kernel/fork.h"
+#include "common/font.h"
 #include "common/printf.h"
 #include "common/utils.h"
 #include "kernel/entry.h"
 #include "kernel/mm.h"
 #include "kernel/sched.h"
-#include "common/font.h"
 
 int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
-    prints ("copy process.kl\n\r");
     preempt_disable ();
     struct task_struct * p;
 
