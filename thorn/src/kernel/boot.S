@@ -21,16 +21,17 @@ init_bss:
     bl	memzero
 
     adr x0, move_to_el1
-    mov	x1, #0xe0
-    str	x0, [x1]
 
-    mov	x1, #0xe8
-    str	x0, [x1]
-
-    mov	x1, #0xf0
-    str	x0, [x1]
-
-    sev
+//    mov	x1, #0xe0
+//    str	x0, [x1]
+//
+//    mov	x1, #0xe8
+//    str	x0, [x1]
+//
+//    mov	x1, #0xf0
+//    str	x0, [x1]
+//
+//    sev
 
     b move_to_el1
 

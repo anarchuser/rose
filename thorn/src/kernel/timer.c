@@ -15,6 +15,7 @@ void timer_init (void) {
 
 void handle_timer_irq (void) {
     toggle_led (STATUS_LED);
+    printc ('|');
 
     curVal += interval;
     put32 (TIMER_C1, curVal);

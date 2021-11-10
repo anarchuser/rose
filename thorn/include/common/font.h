@@ -4,7 +4,7 @@
 #ifndef __ASSEMBLER__
 
 #define FONT_SIZE       8
-#define FONT_FACTOR     2
+#define FONT_FACTOR     3
 #define FONT_REAL_WIDTH (FONT_SIZE * FONT_FACTOR)
 
 // Spacing between lines in pixels

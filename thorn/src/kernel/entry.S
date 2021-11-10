@@ -188,12 +188,13 @@ ret_from_syscall:
 	kernel_exit 0
 
 el0_da:
-	bl enable_irq
+    bl preempt_disable
 	mrs x0, far_el1
 	mrs x1, esr_el1
 	mrs	x2, elr_el1
 	bl data_abort_el0
-	bl disable_irq
+    bl preempt_enable
+    bl disable_irq
 	eret
 
 .globl ret_from_fork

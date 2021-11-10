@@ -26,6 +26,7 @@ void _schedule (void) {
     int                  next, c;
     struct task_struct * p;
     while (1) {
+        printc ('-');
         c    = -1;
         next = 0;
         for (int i = 0; i < NR_TASKS; i++) {
@@ -61,12 +62,11 @@ void switch_to (struct task_struct * next, int index) {
     struct task_struct * prev = current;
     current                   = next;
     //    set_pgd (next->mm.pgd);
-    asm("tlbi vmalle1is");
-    asm volatile("msr ttbr0_el1, %0"
-                 :
-                 : "r"(next->mm.pgd));
-    asm("DSB ISH");
-    asm("isb");
+    //    asm volatile("msr ttbr0_el1, %0"
+    //                 :
+    //                 : "r"(next->mm.pgd));
+    //    asm("DSB ISH");
+    //    asm("isb");
     cpu_switch_to (prev, next);
 }
 

@@ -33,7 +33,7 @@ void user_process1 (char * array) {
 }
 
 void user_process () {
-    prints ("User process started.\n\r");
+    printf ("User process started.\n\r");
     char buf[30] = {0};
     tfp_sprintf (buf, "User process started\n\r");
     call_sys_write (buf);
@@ -73,10 +73,6 @@ void kernel_process () {
 void kernel_init (void) {
     uart_init ();
     init_printf (0, putc);
-    irq_vector_init ();
-    timer_init ();
-    enable_interrupt_controller ();
-    enable_irq ();
     task_init ();
 
     // Turn status led OFF and power led ON
@@ -118,6 +114,11 @@ void kernel_main (int processor_id) {
 
     //    current_processor++;
     //    while (current_processor != 4) {}
+
+    irq_vector_init ();
+    timer_init ();
+    enable_interrupt_controller ();
+    enable_irq ();
 
     switch (processor_id) {
         case 0: {

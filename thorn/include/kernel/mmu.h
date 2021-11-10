@@ -9,6 +9,7 @@
 #include "common/font.h"
 #include "common/logging.h"
 #include "common/status_led.h"
+#include "kernel/irq.h"
 #include "kernel/mini_uart.h"
 #include "kernel/peripherals/base.h"
 #include "kernel/sched.h"

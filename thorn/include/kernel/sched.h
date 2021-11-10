@@ -1,6 +1,7 @@
 #ifndef _ROSE_K_SCHED_H
 #define _ROSE_K_SCHED_H
 
+#include "common/font.h"
 #include "common/stddef.h"
 
 #define THREAD_CPU_CONTEXT 0// offset of cpu_context in task_struct
