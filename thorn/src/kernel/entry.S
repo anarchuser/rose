@@ -157,7 +157,6 @@ el0_irq:
 	kernel_exit 0
 
 el0_sync:
-    bl test_print
 	kernel_entry 0
 	mrs	x25, esr_el1									// read the syndrome register
 	lsr	x24, x25, #ESR_ELx_EC_SHIFT						// exception class

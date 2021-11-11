@@ -28,7 +28,6 @@ set_pgd:
 //	tlbi vmalle1is      // Crashes CPU
 	dsb ish              // ensure completion of TLB invalidation
 	isb
-	bl exit_print
 	ret
 
 .globl get_pgd

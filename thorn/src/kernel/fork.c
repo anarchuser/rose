@@ -50,9 +50,9 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
 
 int move_to_user_mode (ptr_t pc) {
     struct pt_regs * regs = task_pt_regs (current);
-    memzero ((ptr_t) regs, sizeof (*regs));
-    regs->pc     = pc;
-    regs->pstate = PSR_MODE_EL0t;
+    regs->pc              = pc;
+    regs->pstate          = PSR_MODE_EL0t;
+    regs->sp              = 2 * PAGE_SIZE;
     return 0;
 }
 

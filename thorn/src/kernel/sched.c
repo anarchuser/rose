@@ -26,8 +26,6 @@ void _schedule (void) {
     long                 next, c, cur;
     struct task_struct * p;
     while (1) {
-        printc ('-');
-        printc ('0' + nr_tasks);
         c    = -1;
         next = 0;
         cur;
@@ -41,7 +39,6 @@ void _schedule (void) {
             }
         }
         if (c) {
-            printc ('0' + cur);
             break;
         }
         for (int i = 0; i < NR_TASKS; i++) {

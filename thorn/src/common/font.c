@@ -209,9 +209,5 @@ void putc_screen (void * p, char c) {
 }
 
 void test_print () {
-    prints ("test\n\r");
-}
-
-void exit_print () {
-    prints ("exit\n\r");
+    prints ("test\r\n");
 }

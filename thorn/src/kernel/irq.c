@@ -20,7 +20,7 @@ void assign_target (unsigned int irq, unsigned int cpu) {
 }
 
 void show_invalid_entry_message (int type, ptr_t esr, ptr_t elr, ptr_t far) {
-    printf ("Type %s, FAR: %p, ESR: %p, ELR: %p\r\n", entry_error_messages[type], (void *) far, (void *) (esr >> ESR_ELx_EC_SHIFT), (void *) elr);
+    printf ("Type %s, FAR: %p, ESR: %p, ELR: %p\r\n", entry_error_messages[type], (void *) far, (void *) (esr >> 0), (void *) elr);
 }
 
 void enable_interrupt_controller () {
