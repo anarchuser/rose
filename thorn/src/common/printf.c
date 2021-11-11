@@ -23,8 +23,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 typedef void (*putcf) (void *, char);
 
-static putcf  stdout_putf;
-static void * stdout_putp;
+static void *       stdout_putp                          = 0;
+static putcf        stdout_putf_arr[PRINTF_MAX_PRINTERS] = {0};
+static unsigned int putf_counter                         = 0;
+
+void stdout_putf (void * p, char c) {
+    for (unsigned int i = 0; i < putf_counter; i++) {
+        stdout_putf_arr[i](p, c);
+    }
+}
 
 
 #ifdef PRINTF_LONG_SUPPORT
@@ -158,8 +165,9 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         uli2a (va_arg (va, unsigned long int), 10, 0, bf);
                     else
 #endif
-                    ui2a (va_arg (va,
-                                  unsigned int), 10, 0, bf);
+                        ui2a (va_arg (va,
+                                      unsigned int),
+                              10, 0, bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 }
@@ -169,8 +177,9 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         li2a (va_arg (va, unsigned long int), bf);
                     else
 #endif
-                    i2a (va_arg (va,
-                                 int), bf);
+                        i2a (va_arg (va,
+                                     int),
+                             bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 }
@@ -181,17 +190,17 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         uli2a (va_arg (va, unsigned long int), 16, (ch == 'X'), bf);
                     else
 #endif
-                    ui2a (va_arg (va,
-                                  unsigned int), 16, (ch == 'X'), bf);
+                        ui2a (va_arg (va,
+                                      unsigned int),
+                              16, (ch == 'X'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
-                case 'c' :
+                case 'c':
                     putf (putp, (char) (va_arg (va,
                                                 int)));
                     break;
-                case 's' :
-                    putchw (putp, putf, w, 0, va_arg (va,
-                                                      char*));
+                case 's':
+                    putchw (putp, putf, w, 0, va_arg (va, char *));
                     break;
                 case 'p':
                 case 'P':
@@ -202,8 +211,9 @@ void tfp_format (void * putp, putcf putf, char * fmt, va_list va) {
                         uli2a (va_arg (va, unsigned long int), 16, (ch == 'P'), bf);
                     else
 #endif
-                    ui2a (va_arg (va,
-                                  unsigned int), 16, (ch == 'P'), bf);
+                        ui2a (va_arg (va,
+                                      unsigned int),
+                              16, (ch == 'P'), bf);
                     putchw (putp, putf, w, lz, bf);
                     break;
                 case '%':
@@ -217,12 +227,27 @@ abort:;
 }
 
 
-void init_printf (void * putp, void (*putf) (void *, char)) {
-    stdout_putf = putf;
-    stdout_putp = putp;
+void printf_register (void (*putf) (void *, char)) {
+    if (putf_counter >= PRINTF_MAX_PRINTERS) {
+        printf ("WARNING: max number of printing functions reached. Registering cancelled.\r\n");
+    } else {
+        stdout_putf_arr[putf_counter++] = putf;
+    }
+}
+
+void printf_unregister (void (*putf) (void *, char)) {
+    for (int i = 0; i < putf_counter; i++) {
+        if (stdout_putf_arr[i] == putf)
+            memcpy ((unsigned long) &stdout_putf_arr[i], (unsigned long) &stdout_putf_arr[i + 1], --putf_counter - i);
+    }
 }
 
 void tfp_printf (char * fmt, ...) {
+    while (!(volatile unsigned int) putf_counter) {
+        toggle_led (POWER_LED);
+        delay (1000000);
+    }
+
     va_list va;
     va_start (va, fmt);
     tfp_format (stdout_putp, stdout_putf, fmt, va);
