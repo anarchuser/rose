@@ -37,7 +37,7 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
     p->priority      = current->priority;
     p->state         = TASK_RUNNING;
     p->counter       = p->priority;
-    p->preempt_count = 1;//disable preemtion until schedule_tail
+    p->preempt_count = 1;//disable preemption until schedule_tail
 
     p->cpu_context.pc = (ptr_t) ret_from_fork;
     p->cpu_context.sp = (ptr_t) childregs;

@@ -23,7 +23,7 @@ void preempt_enable (void) {
 
 void _schedule (void) {
     preempt_disable ();
-    int                  next, c;
+    long                 next, c;
     struct task_struct * p;
     while (1) {
         printc ('-');

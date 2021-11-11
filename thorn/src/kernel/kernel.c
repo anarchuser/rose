@@ -119,6 +119,7 @@ void kernel_main (int processor_id) {
     timer_init ();
     enable_interrupt_controller ();
     enable_irq ();
+    CHECKPOINT
 
     switch (processor_id) {
         case 0: {
