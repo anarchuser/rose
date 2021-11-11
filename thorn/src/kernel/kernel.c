@@ -68,6 +68,9 @@ void kernel_process () {
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
     }
+    // Explicitly remove this task..?
+    --nr_tasks;
+    current->state = TASK_ZOMBIE;
 }
 
 void kernel_init (void) {

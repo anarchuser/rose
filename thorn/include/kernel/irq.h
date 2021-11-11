@@ -13,7 +13,7 @@
 
 void enable_interrupt_controller (void);
 
-void show_invalid_entry_message (int type, ptr_t esr, ptr_t address);
+void show_invalid_entry_message (int type, ptr_t esr, ptr_t elr, ptr_t far);
 
 void irq_vector_init (void);
 

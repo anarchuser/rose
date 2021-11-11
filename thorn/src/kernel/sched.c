@@ -23,13 +23,17 @@ void preempt_enable (void) {
 
 void _schedule (void) {
     preempt_disable ();
-    long                 next, c;
+    long                 next, c, cur;
     struct task_struct * p;
     while (1) {
         printc ('-');
+        printc ('0' + nr_tasks);
         c    = -1;
         next = 0;
+        cur;
         for (int i = 0; i < NR_TASKS; i++) {
+            if (task[i] == current)
+                cur = i;
             p = task[i];
             if (p && p->state == TASK_RUNNING && p->counter > c) {
                 c    = p->counter;
@@ -37,6 +41,7 @@ void _schedule (void) {
             }
         }
         if (c) {
+            printc ('0' + cur);
             break;
         }
         for (int i = 0; i < NR_TASKS; i++) {
@@ -61,12 +66,11 @@ void switch_to (struct task_struct * next, int index) {
     }
     struct task_struct * prev = current;
     current                   = next;
-    //    set_pgd (next->mm.pgd);
     //    asm volatile("msr ttbr0_el1, %0"
     //                 :
     //                 : "r"(next->mm.pgd));
-    //    asm("DSB ISH");
-    //    asm("isb");
+    //    asm volatile("DSB ISH");
+    //    asm volatile ("isb");
     cpu_switch_to (prev, next);
 }
 

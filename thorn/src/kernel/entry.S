@@ -8,6 +8,7 @@
 	mov	x0, #\type
 	mrs	x1, esr_el1
 	mrs	x2, elr_el1
+    mrs x3, far_el1
 	bl	show_invalid_entry_message
 	b	err_hang
 	.endm
@@ -92,19 +93,19 @@ vectors:
 	ventry	error_invalid_el1t			// Error EL1t
 
 	ventry	sync_invalid_el1h			// Synchronous EL1h
-	ventry	el1_irq					// IRQ EL1h
+	ventry	el1_irq					    // IRQ EL1h
 	ventry	fiq_invalid_el1h			// FIQ EL1h
 	ventry	error_invalid_el1h			// Error EL1h
 
-	ventry	el0_sync				// Synchronous 64-bit EL0
-	ventry	el0_irq					// IRQ 64-bit EL0
+	ventry	el0_sync				    // Synchronous 64-bit EL0
+	ventry	el0_irq					    // IRQ 64-bit EL0
 	ventry	fiq_invalid_el0_64			// FIQ 64-bit EL0
-	ventry	error_invalid_el0_64			// Error 64-bit EL0
+	ventry	error_invalid_el0_64		// Error 64-bit EL0
 
 	ventry	sync_invalid_el0_32			// Synchronous 32-bit EL0
 	ventry	irq_invalid_el0_32			// IRQ 32-bit EL0
 	ventry	fiq_invalid_el0_32			// FIQ 32-bit EL0
-	ventry	error_invalid_el0_32			// Error 32-bit EL0
+	ventry	error_invalid_el0_32		// Error 32-bit EL0
 
 sync_invalid_el1t:
 	handle_invalid_entry 1,  SYNC_INVALID_EL1t
@@ -156,6 +157,7 @@ el0_irq:
 	kernel_exit 0
 
 el0_sync:
+    bl test_print
 	kernel_entry 0
 	mrs	x25, esr_el1									// read the syndrome register
 	lsr	x24, x25, #ESR_ELx_EC_SHIFT						// exception class
@@ -170,15 +172,15 @@ scno	.req	x26															// syscall number
 stbl	.req	x27															// syscall table pointer
 
 el0_svc:
-	adr	stbl, sys_call_table									// load syscall table pointer
-	uxtw	scno, w8														// syscall number in w8
+	adr	stbl, sys_call_table		// load syscall table pointer
+	uxtw	scno, w8				// syscall number in w8
 	mov	sc_nr, #__NR_syscalls
 	bl	enable_irq
-	cmp     scno, sc_nr                     	// check upper syscall limit
+	cmp     scno, sc_nr             // check upper syscall limit
 	b.hs	ni_sys
 
-	ldr	x16, [stbl, scno, lsl #3]							// address in the syscall table
-	blr	x16																		// call sys_* routine
+	ldr	x16, [stbl, scno, lsl #3]	// address in the syscall table
+	blr	x16							// call sys_* routine
 	b	ret_from_syscall
 ni_sys:
 	handle_invalid_entry 0, SYSCALL_ERROR

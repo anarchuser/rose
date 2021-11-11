@@ -25,7 +25,7 @@ delay:
 .globl set_pgd
 set_pgd:
 	msr	ttbr0_el1, x0
-//	tlbi vmalle1is
+//	tlbi vmalle1is      // Crashes CPU
 	dsb ish              // ensure completion of TLB invalidation
 	isb
 	bl exit_print

@@ -149,8 +149,8 @@ void data_abort_el0 (ptr_t far, ptr_t esr, ptr_t elr) {
             asm volatile("msr ttbr0_el1, %0"
                          :
                          : "r"((unsigned long) &_end + TTBR_CNP));
-            //            asm volatile("dsb ish");
-            //            asm volatile("isb");
+            asm volatile("dsb ish");
+            asm volatile("isb");
             enable_irq ();
             break;
         case 0b10:// Access flag fault
