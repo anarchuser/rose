@@ -64,17 +64,24 @@ setup-serial-Darwin:
 	cat -v $(SERIAL_PORT) &
 	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
-resend: reboot build
+# reboot and send corresponding image over serial connection
+resend: resend-$(SEND_DEFAULT_TARGET)
+
+resend-seed: setup-serial-$(HOST_OS) reboot
 	sleep 8
-	$(MAKE) send
+	$(MAKE) -C seed send
+
+resend-thorn: setup-serial-$(HOST_OS) reboot
+	sleep 8
+	$(MAKE) -C thorn send
 
 # send corresponding image over serial connection
 send: send-$(SEND_DEFAULT_TARGET)
 
-send-seed: setup-serial-$(HOST_OS) reboot
+send-seed: setup-serial-$(HOST_OS)
 	$(MAKE) -C seed send
 
-send-thorn: setup-serial-$(HOST_OS) reboot
+send-thorn: setup-serial-$(HOST_OS)
 	$(MAKE) -C thorn send
 
 # Set up screen on alternate serial port
