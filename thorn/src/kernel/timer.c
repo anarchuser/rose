@@ -1,8 +1,4 @@
-#include "kernel/peripherals/timer.h"
-#include "common/printf.h"
-#include "common/status_led.h"
-#include "common/utils.h"
-#include "kernel/sched.h"
+#include "kernel/timer.h"
 
 const unsigned int interval = 200000;
 unsigned int       curVal   = 0;

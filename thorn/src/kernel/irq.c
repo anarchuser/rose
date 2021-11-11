@@ -19,8 +19,8 @@ void assign_target (unsigned int irq, unsigned int cpu) {
     put32 (targetRegister, get32 (targetRegister) | (1 << 8));
 }
 
-void show_invalid_entry_message (int type, ptr_t esr, ptr_t address) {
-    printf ("Type %s, ESR: %p, address, %p\r\n", entry_error_messages[type], (void *) esr, (void *) address);
+void show_invalid_entry_message (int type, ptr_t esr, ptr_t address, ptr_t far) {
+    printf ("Type %s, ESR: %p, ELR: %p, FAR: %p\r\n", entry_error_messages[type], (void *) esr, (void *) address, (void *) far);
 }
 
 void enable_interrupt_controller () {

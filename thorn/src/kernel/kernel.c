@@ -127,6 +127,8 @@ void kernel_main (int processor_id) {
         case 1:
             while (get_fb ()) {
                 // Do screen work here
+                //                test_drawing ();
+                //                break;
             }
         case 2:
         case 3:

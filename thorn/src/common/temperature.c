@@ -32,7 +32,8 @@ bool init_temperature () {
 void regulate_temperature () {
     while (1) {
         delay (TEMPERATURE_CHECK_DELAY);
-        unsigned int previous                   = temperatures[(current_temperature_index++) % TEMPERATURE_POINTS];
+        unsigned int previous                   = temperatures[current_temperature_index];
+        current_temperature_index               = (current_temperature_index + 1) % TEMPERATURE_POINTS;
         temperatures[current_temperature_index] = get_temperature ();
         unsigned int current                    = temperatures[current_temperature_index];
 
@@ -83,31 +84,39 @@ void set_fan (bool enable) {
 }
 
 void draw_temp_graph () {
-    // Clear lower half of screen
-    memzero ((unsigned long) get_fb () + get_fb_info ()->fb_size / 2, get_fb_info ()->fb_size / 2 - get_fb_info ()->pitch * 10);
-
     // Corners of graph
     point_t OO = {0, get_max_height () / 2};
     point_t OY = {0, get_max_height ()};
     point_t XO = {get_max_width (), get_max_height () / 2};
     point_t XY = {get_max_width (), get_max_height ()};
 
-    // Draw frame + legend
-    drawrec (OO, XY, (color_t) {0xFF, 0xFF, 0x00, 0});
-    drawline_grid ((point_t) {0, get_max_height () / 8 * 6}, (point_t) {get_max_width (), get_max_height () / 4 * 3}, (color_t) {0, 128, 255, 0});
-    drawline_grid ((point_t) {0, get_max_height () / 8 * 7}, (point_t) {get_max_width (), get_max_height () / 4 * 3}, (color_t) {0, 128, 0, 0});
+    // Clear lower half of screen
+    unsigned int  pitch = get_fb_info ()->pitch;
+    unsigned int  size  = get_fb_info ()->fb_size;
+    unsigned long fb    = (unsigned long) get_fb ();
+    memzero (fb + size / 8 * 4 - 7 * pitch, size / 4 - 5 * pitch);
+    memzero (fb + size / 8 * 6 - 11 * pitch, size / 8 - 3 * pitch);
+    memzero (fb + size / 8 * 7 - 13 * pitch, size / 8 - 22 * pitch);
+
+    // Draw frame, legend and orientation lines
+    drawline_grid ((point_t) {0, get_max_height () / 8 * 6}, (point_t) {get_max_width (), get_max_height () / 8 * 6}, (color_t) {0, 128, 255, 0});
+    drawline_grid ((point_t) {0, get_max_height () / 8 * 7}, (point_t) {get_max_width (), get_max_height () / 8 * 7}, (color_t) {0, 128, 0, 0});
+
+    drawline_grid ((point_t) {0, get_max_height () / 8 * 4}, (point_t) {get_max_width (), get_max_height () / 8 * 4}, (color_t) {255, 128, 0, 0});
+    drawline_grid ((point_t) {4 * FONT_REAL_WIDTH, get_max_height () / 8 * 8}, (point_t) {get_max_width (), get_max_height () / 8 * 8}, (color_t) {255, 128, 0, 0});
+
     char buf[5] = {0};
     sprintf (buf, "%d C", TEMPERATURE_GRAPH_HIGH / 1000);
-    prints_location (OO, buf);
+    prints_location (POINT (OO.x, OO.y - FONT_REAL_WIDTH - 3), buf);
     sprintf (buf, "%d C", TEMPERATURE_GRAPH_LOW / 1000);
     prints_location ((point_t) {OY.x, OY.y - FONT_REAL_WIDTH}, buf);
 
     // Draw lines between data points
     color_t const red       = {0, 0, 255, 0};
     color_t const blue      = {196, 0, 0, 0};
-    color_t       current   = red;
     int           factor_x  = get_fb_info ()->virtual_width / TEMPERATURE_POINTS;
     int           divisor_y = (TEMPERATURE_GRAPH_HIGH - TEMPERATURE_GRAPH_LOW) / (get_fb_info ()->virtual_height / 2);
+    color_t       current   = red;
     for (int j = 0; j < TEMPERATURE_POINTS; j++) {
         unsigned int i0 = (current_temperature_index + j + 1) % TEMPERATURE_POINTS;
         unsigned int i1 = (i0 + 1) % TEMPERATURE_POINTS;
