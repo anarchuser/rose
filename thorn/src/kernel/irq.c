@@ -34,17 +34,17 @@ void enable_interrupt_controller () {
 }
 
 void handle_irq (void) {
-    unsigned int irq_ack_reg = get32 (GICC_IAR);
-    unsigned int irq1        = irq_ack_reg & 0x2FF;
-    if (irq1 & SYSTEM_TIMER_IRQ_1) {
-        put32 (GICC_EOIR, irq_ack_reg);
+    unsigned int irq = get32 (GICC_IAR) & 0x3FF; // Use first 10 Bit of register
+
+    if (irq & SYSTEM_TIMER_IRQ_1) {
+        put32 (GICC_EOIR, irq);
         handle_timer_irq ();
     }
 
 #ifdef _ROSE_K_MINI_UART_H
     unsigned int irq2 = get32 (AUX_IRQ_REG);
     if (irq2 & MINI_UART_IRQ) {
-        put32 (GICC_EOIR, irq_ack_reg);
+        put32 (GICC_EOIR, irq);
         handle_mini_uart_irq ();
     }
 
