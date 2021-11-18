@@ -34,16 +34,19 @@ void enable_interrupt_controller () {
 void handle_irq (void) {
     unsigned int irq = get32 (GICC_IAR) & 0x3FF; // Use first 10 Bit of register
 
-    if (irq & SYSTEM_TIMER_IRQ_1) {
-        put32 (GICC_EOIR, irq);
-        handle_timer_irq ();
-    }
-
+    switch (irq) {
+        case (SYSTEM_TIMER_IRQ_1):
+            put32 (GICC_EOIR, irq);
+            handle_timer_irq ();
+            break;
 #ifdef _ROSE_K_MINI_UART_H
-    if (irq & AUX_CUMULATIVE) {
-        put32 (GICC_EOIR, irq);
-        handle_mini_uart_irq ();
-    }
-
+        case (AUX_CUMULATIVE):
+            put32 (GICC_EOIR, irq);
+            handle_mini_uart_irq ();
+            break;
 #endif
+        default:
+            printf ("Unhandled interrupt received: %x\r\n", irq);
+            put32 (GICC_EOIR, irq);
+    }
 }
