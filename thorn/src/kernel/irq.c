@@ -32,7 +32,7 @@ void enable_interrupt_controller () {
 }
 
 void handle_irq (void) {
-    unsigned int irq = get32 (GICC_IAR) & 0x3FF; // Use first 10 Bit of register
+    unsigned int irq = get32 (GICC_IAR) & 0x3FF;// Use first 10 Bit of register
 
     switch (irq) {
         case (SYSTEM_TIMER_IRQ_1):
