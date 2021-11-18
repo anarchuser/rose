@@ -25,12 +25,14 @@ void show_invalid_entry_message (int type, ptr_t esr, ptr_t address) {
 
 void enable_interrupt_controller () {
     assign_target (SYSTEM_TIMER_IRQ_1, 0);
+    assign_target (AUX_CUMULATIVE, 0);
     put32 (ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1
 #ifdef _ROSE_K_MINI_UART_H
                                   | ENABLE_AUX_INT
 #endif
     );
     enable_interrupt (SYSTEM_TIMER_IRQ_1);
+    enable_interrupt (AUX_CUMULATIVE);
 }
 
 void handle_irq (void) {
@@ -42,8 +44,7 @@ void handle_irq (void) {
     }
 
 #ifdef _ROSE_K_MINI_UART_H
-    unsigned int irq2 = get32 (AUX_IRQ_REG);
-    if (irq2 & MINI_UART_IRQ) {
+    if (irq & AUX_CUMULATIVE) {
         put32 (GICC_EOIR, irq);
         handle_mini_uart_irq ();
     }
