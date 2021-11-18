@@ -7,14 +7,14 @@ void enable_interrupt (unsigned int irq) {
     printf ("Interrupt pointer %p\r\n", irq);
     unsigned int n              = irq / 32;
     unsigned int offset         = irq % 32;
-    unsigned int enableRegister = GICD_ENABLE_IRQ_BASE + (4 * n);
+    unsigned int enableRegister = GICD_ISENABLERN + (4 * n);
     printf ("EnableRegister: %x\r\n", enableRegister);
     put32 (enableRegister, 1 << offset);
 }
 
 void assign_target (unsigned int irq, unsigned int cpu) {
     unsigned int n              = irq / 4;
-    unsigned int targetRegister = GIC_IRQ_TARGET_BASE + (4 * n);
+    unsigned int targetRegister = GICD_ITARGETSRN + (4 * n);
     // Currently we only enter the target CPU 0
     put32 (targetRegister, get32 (targetRegister) | (1 << 8));
 }
