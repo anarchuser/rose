@@ -3,15 +3,17 @@
 
 #include "kernel/peripherals/base.h"
 
+// GIC (Generic Interupt Controller)
 #define GIC_BASE       0xFF840000
-#define GICD_DIST_BASE (GIC_BASE + 0x00001000)
+
+// GICC registers (GIC CPU register)
 #define GICC_CPU_BASE  (GIC_BASE + 0x00002000)
-
-#define GICD_ISENABLERN (GICD_DIST_BASE + 0x00000100)
-
 #define GICC_IAR  (GICC_CPU_BASE + 0x0000000C)
 #define GICC_EOIR (GICC_CPU_BASE + 0x00000010)
 
+// GICD registers (GIC Distributor registers)
+#define GICD_DIST_BASE (GIC_BASE + 0x00001000)
+#define GICD_ISENABLERN (GICD_DIST_BASE + 0x00000100)
 #define GICD_ITARGETSRN (GICD_DIST_BASE + 0x00000800)
 
 //VC (=VideoCore) starts at 96
