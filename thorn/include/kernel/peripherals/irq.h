@@ -16,7 +16,11 @@
 #define GICD_ISENABLERN (GICD_BASE + 0x00000100)
 #define GICD_ITARGETSRN (GICD_BASE + 0x00000800)
 
-//VC (=VideoCore) starts at 96
+/*
+* GIC interrupts
+*
+* IRQ 96-63 VideoCore interrupts
+*/
 #define SYSTEM_TIMER_IRQ_0 (0x60)//96
 #define SYSTEM_TIMER_IRQ_1 (0x61)//97
 #define SYSTEM_TIMER_IRQ_2 (0x62)//98
