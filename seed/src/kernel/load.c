@@ -32,7 +32,9 @@ void receive_kernel (void) {
     toggle_led (POWER_LED);
 
     for (int i = sizeof (int); i > 0;) {// 4 is size of int
-        kernel_size_address[--i] = uart_recv ();
+        unsigned char c = uart_recv();
+        if (i == sizeof (int) && c == 18) continue;    // Ignore first char if reboot signal
+        kernel_size_address[--i] = c;
     }
     int length = *(int *) kernel_size_address;
 

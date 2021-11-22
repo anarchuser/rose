@@ -5,7 +5,7 @@
 HOST_OS = $(shell uname -s)
 
 # Mount point and boot partition
-FLASH_DEFAULT_TARGET = chainloader
+FLASH_DEFAULT_TARGET = seed
 MNT = $(MNT_$(HOST_OS))
 MNT_Linux  = mnt
 MNT_Darwin = /Volumes/boot
@@ -33,16 +33,16 @@ all: clean buildall
 # Remove kernel and build directory
 clean:
 	rm -rf $(BUILD) *.img
-	$(MAKE) -C chainloader clean
+	$(MAKE) -C seed clean
 	$(MAKE) -C thorn clean
 
 # Build the different OSes
 build: build-$(BUILD_DEFAULT_TARGET)
 
-buildall: build-chainloader build-thorn
+buildall: build-seed build-thorn
 
-build-chainloader:
-	$(MAKE) -C chainloader build
+build-seed:
+	$(MAKE) -C seed build
 
 build-thorn:
 	$(MAKE) -C thorn build
@@ -50,8 +50,8 @@ build-thorn:
 # Mount boot partition of SD card onto set mount point to copy image onto it
 flash: flash-$(FLASH_DEFAULT_TARGET)
 
-flash-chainloader:
-	$(MAKE) -C chainloader flash
+flash-seed:
+	$(MAKE) -C seed flash
 
 flash-thorn:
 	$(MAKE) -C thorn flash
@@ -64,15 +64,22 @@ setup-serial-Darwin:
 	cat -v $(SERIAL_PORT) &
 	stty -f $(SERIAL_PORT) $(BAUD_RATE) raw cs8 -ixoff -cstopb -parenb
 
-resend: reboot build
+# reboot and send corresponding image over serial connection
+resend: resend-$(SEND_DEFAULT_TARGET)
+
+resend-seed: setup-serial-$(HOST_OS) reboot
 	sleep 8
-	$(MAKE) send
+	$(MAKE) -C seed send
+
+resend-thorn: setup-serial-$(HOST_OS) reboot
+	sleep 8
+	$(MAKE) -C thorn send
 
 # send corresponding image over serial connection
 send: send-$(SEND_DEFAULT_TARGET)
 
-send-chainloader: setup-serial-$(HOST_OS)
-	$(MAKE) -C chainloader send
+send-seed: setup-serial-$(HOST_OS)
+	$(MAKE) -C seed send
 
 send-thorn: setup-serial-$(HOST_OS)
 	$(MAKE) -C thorn send
@@ -93,8 +100,8 @@ blank:
 # Emulate the corresponding kernel on qemu
 emulate: emulate-$(EMULATE_DEFAULT_TARGET)
 
-emulate-chainloader:
-	$(MAKE) -C chainloader emulate
+emulate-seed:
+	$(MAKE) -C seed emulate
 
 emulate-thorn:
 	$(MAKE) -C thorn emulate
