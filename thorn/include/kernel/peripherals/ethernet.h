@@ -8,6 +8,7 @@
 
 // SYS registers
 #define SYS             (ETHERNET_BASE + 0x0000)
+#define SYS_REV_CTRL	(SYS + 0x0000)
 
 // GR_BRIDGE registers
 #define GR_BRIDGE       (ETHERNET_BASE + 0x0040)
