@@ -8,6 +8,7 @@
 #include "kernel/entry.h"
 #include "kernel/peripherals/irq.h"
 #include "kernel/timer.h"
+#include "kernel/ethernet.h"
 
 #include "kernel/mini_uart.h"
 

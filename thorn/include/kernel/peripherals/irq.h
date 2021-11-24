@@ -21,10 +21,11 @@
 *
 * IRQ 96-63 VideoCore interrupts
 */
-#define SYSTEM_TIMER_IRQ_0 (0x60)//96
-#define SYSTEM_TIMER_IRQ_1 (0x61)//97
-#define SYSTEM_TIMER_IRQ_2 (0x62)//98
-#define SYSTEM_TIMER_IRQ_3 (0x63)//99
-#define AUX_CUMULATIVE     (0x7D)// 125 Cumulates UART1, SPI1, and SPI2
+#define SYSTEM_TIMER_IRQ_0      (0x60)//96
+#define SYSTEM_TIMER_IRQ_1      (0x61)//97
+#define SYSTEM_TIMER_IRQ_2      (0x62)//98
+#define SYSTEM_TIMER_IRQ_3      (0x63)//99
+#define AUX_CUMULATIVE          (0x7D)// 125 Cumulates UART1, SPI1, and SPI2
+#define ETH_PCIE_L2_CUMULATIVE  (0x9A)// 154 Cumulates 57 ETH_PCIE_L2 interrupts
 
 #endif /*_ROSE_K_P_IRQ_H */

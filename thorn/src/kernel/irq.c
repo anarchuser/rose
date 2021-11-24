@@ -28,11 +28,13 @@ void enable_interrupt_controller () {
 #ifdef _ROSE_K_MINI_UART_H
     assign_target (AUX_CUMULATIVE, 0);
 #endif
+    assign_target (ETH_PCIE_L2_CUMULATIVE, 0);
 
     enable_interrupt (SYSTEM_TIMER_IRQ_1);
 #ifdef _ROSE_K_MINI_UART_H
     enable_interrupt (AUX_CUMULATIVE);
 #endif
+    enable_interrupt (ETH_PCIE_L2_CUMULATIVE);
 }
 
 void handle_irq (void) {
@@ -49,6 +51,10 @@ void handle_irq (void) {
             handle_mini_uart_irq ();
             break;
 #endif
+        case (ETH_PCIE_L2_CUMULATIVE):
+            put32 (GICC_EOIR, irq);
+            handle_ethernet_irq ();
+            break;
         default:
             printf ("Unhandled interrupt received: %x\r\n", irq);
             put32 (GICC_EOIR, irq);
