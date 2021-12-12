@@ -13,23 +13,23 @@ bool mailbox_request (volatile unsigned int * data_ptr, channel_t channel) {
     unsigned int outgoing = ((unsigned int) ((long) data_ptr) & ~0xF) | (channel & 0xF);
 
     // Wait until we can write
-    while (get32 (MBOX0 + MBOX_STATUS) & MBOX_WRITE_FULL)
+    while (get32 (MAILBOX_WRITE_STATUS) & MAILBOX_STATUS_FULL)
         ;
 
     // Write the address of our buffer to the mailbox with the channel appended
-    put32 (MBOX0 + MBOX_WRITE, outgoing);
+    put32 (MAILBOX_WRITE, outgoing);
 
     unsigned int incoming;
     while (1) {
         // Is there a reply?
-        while (get32 (MBOX0 + MBOX_STATUS) & MBOX_READ_EMPTY)
+        while (get32 (MAILBOX_READ_STATUS) & MAILBOX_STATUS_EMPTY)
             ;
 
-        incoming = get32 (MBOX0 + MBOX_READ);
+        incoming = get32 (MAILBOX_READ);
 
         // Is it a reply to our message?
         if (outgoing == incoming) {
-            if (buffer[1] != MBOX_SUCCESS) {
+            if (buffer[1] != PROPERTY_RESPONSE_SUCCESS) {
                 if (DUMP_BUFFER) {
                     LOG ("Dumping failed message buffer:");
                     int_dump ((unsigned int *) buffer);
