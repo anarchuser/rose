@@ -35,6 +35,9 @@ typedef struct {
 } mailbox_message_t;
 
 // Send message and check responses
-bool mailbox_request (volatile unsigned int * data_ptr, channel_t channel);
+bool         mailbox_request (volatile unsigned int * buffer, channel_t channel);
+unsigned int mailbox_message_to_register_value (mailbox_message_t * message);
+void         mailbox_read (mailbox_message_t * message);
+void         mailbox_write (mailbox_message_t * message);
 
 #endif//_ROSE_K_MAILBOX_H
