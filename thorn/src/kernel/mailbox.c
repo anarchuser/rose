@@ -7,10 +7,10 @@ bool mailbox_request (volatile unsigned int * buffer, channel_t channel) {
         hex_dump ((byte_t *) buffer);
     }
 
-    mailbox_message_t message = {buffer, channel};
+    mailbox_message_t message = {(long) buffer, channel};
 
-    mailbox_write (&message);
-    mailbox_read (&message);
+    mailbox_write (message);
+    mailbox_read (message);
 
     if (DUMP_BUFFER) {
         LOG ("Dumping successful message buffer:");
@@ -21,11 +21,11 @@ bool mailbox_request (volatile unsigned int * buffer, channel_t channel) {
     return buffer[1] == PROPERTY_RESPONSE_SUCCESS;
 }
 
-unsigned int mailbox_message_to_register_value (mailbox_message_t * message) {
-    return ((unsigned int) ((long) message->data) & ~0xF) | (message->channel & 0xF);
+unsigned int mailbox_message_to_register_value (mailbox_message_t message) {
+    return (message.data & ~0xF) | message.channel;
 }
 
-void mailbox_write (mailbox_message_t * message) {
+void mailbox_write (mailbox_message_t message) {
     unsigned int status;
     unsigned int raw_message = mailbox_message_to_register_value (message);
 
@@ -36,7 +36,7 @@ void mailbox_write (mailbox_message_t * message) {
     put32 (MAILBOX_WRITE, raw_message);
 }
 
-void mailbox_read (mailbox_message_t * message) {
+void mailbox_read (mailbox_message_t message) {
     unsigned int status;
     unsigned int raw_message = mailbox_message_to_register_value (message);
 
