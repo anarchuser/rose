@@ -18,11 +18,7 @@ bool mailbox_request (volatile unsigned int * buffer, channel_t channel) {
         hex_dump ((byte_t *) buffer);
     }
 
-    if (buffer[1] == PROPERTY_RESPONSE_SUCCESS) {
-        return true;
-    } else {
-        return false;
-    }
+    return buffer[1] == PROPERTY_RESPONSE_SUCCESS;
 }
 
 unsigned int mailbox_message_to_register_value (mailbox_message_t * message) {
