@@ -7,7 +7,7 @@ bool mailbox_request (volatile unsigned int * buffer, channel_t channel) {
         hex_dump ((byte_t *) buffer);
     }
 
-    mailbox_message_t message = {(long) buffer, channel};
+    mailbox_message_t message = {channel, (unsigned long) buffer >> 4};
 
     mailbox_write (message);
     mailbox_read (message);
@@ -22,7 +22,7 @@ bool mailbox_request (volatile unsigned int * buffer, channel_t channel) {
 }
 
 unsigned int mailbox_message_to_register_value (mailbox_message_t message) {
-    return (message.data & ~0xF) | message.channel;
+    return *(unsigned int *) &message;
 }
 
 void mailbox_write (mailbox_message_t message) {

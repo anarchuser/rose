@@ -30,8 +30,8 @@ typedef enum {
 
 
 typedef struct {
-    unsigned int data    : 28;// most significant bits (MSB) contain 28 MSB of shared memory address so that `mailbox_message_t` is in the proper format the mailbox expects. The 4 LSB are 0 anyways.
     channel_t    channel : 4; // least four significant bits (LSB) contain channel
+    unsigned int data    : 28;// most significant bits (MSB) contain 28 MSB of shared memory address so that `mailbox_message_t` is in the proper format the mailbox expects. The 4 LSB are 0 anyways.
 } mailbox_message_t;
 
 // Send message and check responses
