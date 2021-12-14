@@ -91,6 +91,11 @@ void kernel_init (void) {
             printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
     }
+    irq_vector_init ();
+    timer_init ();
+    enable_interrupt_controller ();
+    enable_irq ();
+
     init_pages ();
 
     LOG ("Initialisation done");
@@ -112,10 +117,6 @@ void kernel_main (int processor_id) {
     //    current_processor++;
     //    while (current_processor != 4) {}
 
-    irq_vector_init ();
-    timer_init ();
-    enable_interrupt_controller ();
-    enable_irq ();
     CHECKPOINT
 
     switch (processor_id) {
