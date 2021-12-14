@@ -142,24 +142,16 @@ void data_abort_el0 (ptr_t far, ptr_t esr, ptr_t elr) {
     switch (type) {
         case 0b00:// Address size fault
             printf ("Address size fault during level %u of table walk on lookup of address %p.\r\n", level, far);
-            //            exit_process ();
             break;
         case 0b01:// Translation fault
             printf ("Translation fault during level %u of table walk on lookup of address %p.\r\n", level, far);
-            asm volatile("msr ttbr0_el1, %0"
-                         :
-                         : "r"((unsigned long) &_end + TTBR_CNP));
-            asm volatile("dsb ish");
-            asm volatile("isb");
-            enable_irq ();
             break;
         case 0b10:// Access flag fault
             printf ("Access flag fault during level %u of table walk on lookup of address %p.\r\n", level, far);
-            //            exit_process ();
             break;
         case 0b11:// Permission fault
             printf ("Permission fault during level %u of table walk on lookup of address %p.\r\n", level, far);
-            //            exit_process ();
             break;
     }
+    exit_process ();
 }
