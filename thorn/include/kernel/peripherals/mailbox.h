@@ -3,17 +3,30 @@
 
 #include "base.h"
 
-#define MBOX0 (PBASE + 0xB880)// Read from CPU
-#define MBOX1 (PBASE + 0xB840)// Write to CPU
+// Mailbox base register
+#define MAILBOX_BASE (PBASE + 0xB880)
 
-#define MBOX_READ   0x00
-#define MBOX_STATUS 0x18
-#define MBOX_IRQ    0x1C
-#define MBOX_WRITE  0x20
+// Mailbox 0 registers (read mailbox)
+#define MAILBOX_READ        (MAILBOX_BASE)// Reading from the VC
+#define MAILBOX_READ_PEEK   (MAILBOX_BASE + 0x10)
+#define MAILBOX_READ_SENDER (MAILBOX_BASE + 0x14)
+#define MAILBOX_READ_STATUS (MAILBOX_BASE + 0x18)// Queue status
+#define MAILBOX_READ_CONFIG (MAILBOX_BASE + 0x1C)// Interrupt configuration
 
-#define MBOX_READ_EMPTY (1 << 30)
-#define MBOX_WRITE_FULL (1 << 31)
+// Mailbox 1 registers (write mailbox)
+#define MAILBOX_WRITE        (MAILBOX_BASE + 0x20)// Writing to the VC
+#define MAILBOX_WRITE_PEEK   (MAILBOX_BASE + 0x10)
+#define MAILBOX_WRITE_SENDER (MAILBOX_BASE + 0x14)
+#define MAILBOX_WRITE_STATUS (MAILBOX_BASE + 0x18)// Queue status
+#define MAILBOX_WRITE_CONFIG (MAILBOX_BASE + 0x1C)// Interrupt configuration
 
-#define MBOX_SUCCESS 0x80000000
+// Mailbox status fields
+#define MAILBOX_STATUS_EMPTY (1 << 30)
+#define MAILBOX_STATUS_FULL  (1 << 31)
+
+// Property channel request response codes
+#define PROPERTY_REQUEST          0x00000000
+#define PROPERTY_RESPONSE_SUCCESS 0x80000000
+#define PROPERTY_RESPONSE_ERROR   0x80000001
 
 #endif//_ROSE_K_P_MAILBOX_H

@@ -21,7 +21,7 @@ void user_process1 (char * array) {
         for (int i = 0; i < 5; i++) {
             buf[0] = array[i];
             call_sys_write (buf);
-            delay (100000);
+            delay (200000);
         }
     }
 }
@@ -64,11 +64,13 @@ void kernel_process () {
 void kernel_init (void) {
     uart_init ();
     printf_register (putc);
+
     irq_vector_init ();
     timer_init ();
     enable_interrupt_controller ();
     enable_irq ();
     task_init ();
+
     init_rng ();
 
     // Turn status led OFF and power led ON
@@ -90,9 +92,6 @@ void kernel_init (void) {
             printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
     }
-
-    printf ("|...|...|...|...|\r\n");
-    printf ("|\t|\t|\t|\t|\r\n");
 
     LOG ("Initialisation done");
     ERROR ("I'm important!");

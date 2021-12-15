@@ -30,11 +30,14 @@ typedef enum {
 
 
 typedef struct {
-    unsigned int data    : 28;// most significant bits contain shared memory address
-    channel_t    channel : 4; // least four significant bits contain channel
-} mbox_message_t;
+    channel_t    channel : 4; // least four significant bits (LSB) contain channel
+    unsigned int data    : 28;// most significant bits (MSB) contain 28 MSB of shared memory address so that `mailbox_message_t` is in the proper format the mailbox expects. The 4 LSB are 0 anyways.
+} mailbox_message_t;
 
 // Send message and check responses
-bool mailbox_request (volatile unsigned int * data_ptr, channel_t channel);
+bool         mailbox_request (volatile unsigned int * buffer, channel_t channel);
+unsigned int mailbox_message_to_register_value (mailbox_message_t message);
+void         mailbox_read (mailbox_message_t message);
+void         mailbox_write (mailbox_message_t message);
 
 #endif//_ROSE_K_MAILBOX_H
