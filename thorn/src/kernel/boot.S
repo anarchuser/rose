@@ -6,19 +6,19 @@
 
 .globl _start
 _start:
-	mrs	x0, mpidr_el1
-	and	x0, x0,#0xFF		// Check processor id
-	cbz	x0, init_bss		// Hang for all non-primary CPU
+    mrs	x0, mpidr_el1       // Move content of program state register into x0
+    and	x0, x0,#0xFF		// Discard most significant 3 bytes
+    cbz	x0, init_bss		// Hang for all non-primary CPU
 
-	wfe
+    wfe                     // Wait for CPU 0 to finish
 
-	b	master
+    b	master
 
 init_bss:
     adr	x0, bss_begin
     adr	x1, bss_end
     sub	x1, x1, x0
-    bl	memzero
+    bl	memzero             // Zero out BSS section
 
     adr x0, move_to_el1
     mov	x1, #0xe0
@@ -35,31 +35,31 @@ init_bss:
     b move_to_el1
 
 move_to_el1:
-	ldr	x0, =SCTLR_VALUE_MMU_DISABLED
-	msr	sctlr_el1, x0
+    ldr	x0, =SCTLR_VALUE_MMU_DISABLED
+    msr	sctlr_el1, x0                   // Disable MMU
 
-	ldr	x0, =HCR_VALUE
-	msr	hcr_el2, x0
+    ldr	x0, =HCR_VALUE
+    msr	hcr_el2, x0                     // Configure hypervisor (= EL 2)
 
-	ldr	x0, =SPSR_VALUE
-	msr	spsr_el2, x0
+    ldr	x0, =SPSR_VALUE
+    msr	spsr_el2, x0
 
-	adr	x0, master
-	msr	elr_el2, x0
+    adr	x0, master
+    msr	elr_el2, x0                     // Move master address into exception link register
 
-	eret
+    eret                                // Exception return to go from EL 2 to EL 1
 
 master:
-	mrs	x0, mpidr_el1
-	and	x0, x0, #0xFF
-	mov	x1, #SECTION_SIZE
-	mul	x1, x1, x0
-	add	x1, x1, #LOW_MEMORY
-	mov	sp, x1
+    mrs	x0, mpidr_el1
+    and	x0, x0, #0xFF
+    mov	x1, #SECTION_SIZE
+    mul	x1, x1, x0
+    add	x1, x1, #LOW_MEMORY
+    mov	sp, x1
 
-	bl	kernel_main
-	b 	proc_hang		// should never come here
+    bl	kernel_main
+    b 	proc_hang		                // should never come here
 
 proc_hang:
-	b	proc_hang
+    b	proc_hang
 
