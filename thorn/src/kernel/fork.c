@@ -10,7 +10,7 @@ int copy_process (ptr_t clone_flags, ptr_t fn, ptr_t arg, ptr_t stack) {
     struct task_struct * p;
 
     p = (struct task_struct *) get_free_page ();
-    if (!p) {
+    if (! p) {
         return -1;
     }
 
@@ -49,7 +49,7 @@ int move_to_user_mode (ptr_t pc) {
     regs->pc     = pc;
     regs->pstate = PSR_MODE_EL0t;
     ptr_t stack  = get_free_page ();//allocate new user stack
-    if (!stack) {
+    if (! stack) {
         return -1;
     }
     regs->sp       = stack + PAGE_SIZE;

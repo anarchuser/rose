@@ -15,7 +15,7 @@ void hex_dump (byte_t * array) {
             print_hex (array[i - j]);
         }
         printf (" ");
-        if (!(i % 32))
+        if (! (i % 32))
             printf ("\r\n");
     }
     printf ("\r\n");

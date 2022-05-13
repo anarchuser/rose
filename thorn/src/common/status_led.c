@@ -16,10 +16,10 @@ bool get_led (int pin) {
 
     led_msg_buffer[0] = (4 * ++c);// Write message size at the beginning of the buffer
 
-    if (! mailbox_request (led_msg_buffer, PROPERTY_ARM_VC)) {
+    if (!mailbox_request (led_msg_buffer, PROPERTY_ARM_VC)) {
         printf ("ERROR\r\n");
     };
-    return ! led_msg_buffer[index_led];
+    return !led_msg_buffer[index_led];
 }
 
 /**
@@ -49,7 +49,7 @@ void set_led (bool status, int pin) {
 }
 
 bool toggle_led (int pin) {
-    bool status = get_led (pin);
+    bool status =  get_led (pin);
     set_led (status, pin);
     return status;
 }

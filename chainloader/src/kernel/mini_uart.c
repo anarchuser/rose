@@ -1,13 +1,13 @@
 #include "kernel/mini_uart.h"
 
 void uart_send (char c) {
-    while (!((*(unsigned int *) AUX_MU_LSR_REG) & 0x20))
+    while (! ((*(unsigned int *) AUX_MU_LSR_REG) & 0x20))
         ;
     *(unsigned int *) AUX_MU_IO_REG = c;
 }
 
 char uart_recv (void) {
-    while (!((*(unsigned int *) AUX_MU_LSR_REG) & 0x01))
+    while (! ((*(unsigned int *) AUX_MU_LSR_REG) & 0x01))
         ;
     return ((*(unsigned int *) AUX_MU_IO_REG) & 0xFF);
 }

@@ -1,3 +1,5 @@
+#include "kernel/mini_uart.h"// needs to be above kernel/irq.h
+
 #include "common/font.h"
 #include "common/gpu.h"
 #include "common/logging.h"
@@ -6,10 +8,10 @@
 #include "common/rng.h"
 #include "common/screen.h"
 #include "common/status_led.h"
+#include "common/temperature.h"
 #include "common/utils.h"
 #include "kernel/fork.h"
 #include "kernel/irq.h"
-#include "kernel/mini_uart.h"
 #include "kernel/mm.h"
 #include "kernel/sched.h"
 #include "kernel/sys.h"
@@ -54,7 +56,7 @@ void user_process () {
 }
 
 void kernel_process () {
-    // printf ("Kernel process started. EL %d\r\n", get_el ());
+    printf ("Kernel process started. EL %d\r\n", get_el ());
     int err = move_to_user_mode ((unsigned long) &user_process);
     if (err < 0) {
         printf ("Error while moving process to user mode\n\r");
@@ -90,10 +92,9 @@ void kernel_init (void) {
             printf ("Height resolution: %d\r\n", get_fb_info ()->virtual_height);
         }
     }
-
-    printf ("|...|...|...|...|\r\n");
-    printf ("|\t|\t|\t|\t|\r\n");
-
+    // Temperature
+    printf ("Initialising temperature %s. Max temperature set to %d C.\r\n",
+            init_temperature () ? "succeeded" : "failed", get_max_temperature () / 1000);
     LOG ("Initialisation done");
     ERROR ("I'm important!");
 }
@@ -113,26 +114,26 @@ void kernel_main (int processor_id) {
 
     switch (processor_id) {
         case 0: {
-            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
-            if (res < 0) {
-                ERROR ("Can't start kernel process");
-                break;
-            }
+            //            int res = copy_process (PF_KTHREAD, (unsigned long) &kernel_process, 0, 0);
+            //            if (res < 0) {
+            //                ERROR ("Can't start kernel process");
+            //                break;
+            //            }
             while (1) {
                 schedule ();
             }
             break;
         }
         case 1:
-            if (get_fb ()) {
-                test_drawing ();
+            while (get_fb ()) {
+                // Do screen work here
+                //                test_drawing ();
+                //                break;
             }
-            break;
         case 2:
         case 3:
         default:
-            while (1)
-                ;
+            while (1) {}
             printf ("Undefined behaviour on processor %d\r\n", processor_id);
     }
     printf ("Processor %d going out of scope\r\n", processor_id);

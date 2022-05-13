@@ -23,7 +23,7 @@ void _uart_init (void) {
     static volatile bool init_done     = false;
 
     if (init_progress) {
-        while (!init_done)
+        while (! init_done)
             ;
         return;
     }

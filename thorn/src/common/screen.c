@@ -1,6 +1,4 @@
 #include "common/screen.h"
-#include "common/font.h"
-#include "common/math.h"
 
 void drawpx (point_t p, color_t color) {
     unsigned long int location = p.y * (get_fb_info ()->pitch) / sizeof (color_t) + p.x;
@@ -10,6 +8,14 @@ void drawpx (point_t p, color_t color) {
 
 // Bresenham's line algorithm
 void drawline (point_t p0, point_t p1, color_t color) {
+    if (p0.x > get_max_width ()
+        || p0.y > get_max_height ()
+        || p1.x > get_max_width ()
+        || p1.y > get_max_height ()) {
+        ERROR ("Couldn't draw line");
+        printf ("Offending points: {%u, %u} - {%u, %u}\r\n", p0.x, p0.y, p1.x, p1.y);
+        return;
+    }
 
     if (p1.y == p0.y) {
         if (p0.x < p1.x)
@@ -149,6 +155,16 @@ short get_max_height () {
     return get_fb_info ()->virtual_height - 1;
 }
 
+void fillrec (point_t p0, point_t p1, color_t color) {
+    unsigned int startx = p0.x > p1.x ? p1.x : p0.x;
+    unsigned int starty = p0.y > p1.y ? p1.y : p0.y;
+    unsigned int endx   = p0.x < p1.x ? p1.x : p0.x;
+    unsigned int endy   = p0.y < p1.y ? p1.y : p0.y;
+    for (unsigned int i = starty; i <= endy; i++) {
+        drawline_grid ((point_t) {startx, i}, (point_t) {endx, i}, color);
+    }
+}
+
 void test_drawing () {
     color_t white_color  = {0xff, 0xff, 0xff, 0xff};
     color_t blue_color   = {0xff, 0x00, 0x00, 0xff};
@@ -234,4 +250,12 @@ void test_drawing () {
     drawcircle (POINT (1128, 428),
                 50,
                 red_color);
+
+    fillrec (POINT (800, 800),
+             POINT (900, 900),
+             blue_color);
+
+    fillrec (POINT (800, 800),
+             POINT (850, 850),
+             red_color);
 }

@@ -3,6 +3,9 @@
 
 #include "common/geometry.h"
 #include "common/gpu.h"
+#include "common/logging.h"
+#include "common/math.h"
+#include "common/printf.h"
 
 void drawpx (point_t p, color_t color);
 
@@ -16,6 +19,7 @@ void drawline_grid (point_t p0, point_t p1, color_t color);
 void drawrec (point_t p0, point_t p1, color_t color);
 void drawcircle (point_t p, int radius, color_t color);
 void draw_all_octant_points (point_t p, point_t offset, color_t color);
+void fillrec (point_t pp0, point_t p1, color_t color);
 
 void test_drawing ();
 
